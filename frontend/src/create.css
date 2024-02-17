@@ -1,0 +1,86 @@
+/* create.css */
+body, h1, p {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    font-family: 'Arial', sans-serif;
+}
+
+#sortify-text {
+    font-size: 90px;
+    font-weight: bold;
+    letter-spacing: 20px; 
+    color: #6e3652;
+    text-align: center;
+}
+
+.tan-box {
+    background-color: #f1dbd6;
+    width: 50vw;
+    height: 50vh;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    margin: auto;
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Pushes the content to the top and the button to the bottom */
+}
+
+.tan-box-content {
+    color: #6e3652;
+    letter-spacing: 1px;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.login-button {
+    background-color: #d17ea8;
+    color: white;
+    padding: 10px;
+    width: 20vw;
+    font-size: 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    margin: auto;
+    margin-bottom: 10px;
+    /* Push the button to the bottom */
+}
+
+.new-here {
+    font-size: 14px;
+    color: #6e3652;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-bottom: 0;
+
+}
+
+/* Additional styles for the text input boxes */
+.input-container {
+    background-color: white;
+    border: 1px solid #6e3652; /* Border color */
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+    width: 80%; /* Adjust the width as needed */
+    margin: auto; /* Center the input container horizontally */
+}
+
+.login-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
