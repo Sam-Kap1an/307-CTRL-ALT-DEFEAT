@@ -1,18 +1,17 @@
 {
-  "name": "307-ctrl-alt-defeat",
+  "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "workspaces": [
-    "backend",
-    "frontend"
-  ],
+  "main": "backend.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "create-react-app": "^5.0.1"
+    "dotenv": "^16.4.4",
+    "express": "^4.18.2",
+    "mongoose": "^8.1.3"
   }
 }
