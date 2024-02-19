@@ -1,8 +1,16 @@
 // Login.js
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import './login.css';
 
-function Login({ onSignUpClick }) {
+function Login() {
+  const navigate = useNavigate(); // Use useNavigate to get the navigate function
+
+  const handleSignUpClick = () => {
+    // Navigate to the signup page
+    navigate('/signup');
+  };
+
   return (
     <div className="login-container">
       <div id="sortify-text">
@@ -35,13 +43,15 @@ function Login({ onSignUpClick }) {
         <button className="login-button">Login</button>
 
         {/* "New Here?" text */}
-        <p className="new-here" onClick={onSignUpClick}>New Here? Create an Account</p>
+        <p className="new-here" onClick={handleSignUpClick}>New Here? Create an Account</p>
       </div>
     </div>
   );
 }
 
 export default Login;
+
+
 
 
 

@@ -1,27 +1,22 @@
 // App.js
-import React, { useState } from 'react';
-import Login from './login';
-import Create from './create';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from './login/login'; // Update the import paths
+import Create from './create/create'; // Update the import paths
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('login');
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
   return (
-    <div>
-      {currentPage === 'login' ? (
-        <Login onSignUpClick={() => handlePageChange('create')} />
-      ) : (
-        <Create onLoginClick={() => handlePageChange('login')} />
-      )}
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/signup" element={<Create />} />
+      </Routes>
+    </Router>
   );
 }
 
 export default App;
+
 
 
 

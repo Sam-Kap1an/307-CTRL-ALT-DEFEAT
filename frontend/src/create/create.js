@@ -1,8 +1,16 @@
 // Create.js
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import './create.css';
 
-function Create({ onLoginClick }) {
+function Create() {
+  const navigate = useNavigate(); // Use useNavigate to get the navigate function
+
+  const handleLoginClick = () => {
+    // Navigate to the login page
+    navigate('/');
+  };
+
   return (
     <div className="login-container">
       <div id="sortify-text">
@@ -40,7 +48,7 @@ function Create({ onLoginClick }) {
         <button className="login-button">Sign Up</button>
 
         {/* "New Here?" text */}
-        <p className="new-here" onClick={onLoginClick}>Already Signed Up? Log In</p>
+        <p className="new-here" onClick={handleLoginClick}>Already Signed Up? Log In</p>
       </div>
     </div>
   );
