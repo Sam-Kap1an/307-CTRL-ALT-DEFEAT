@@ -18,6 +18,7 @@ body {
     letter-spacing: 20px; 
     color: #6e3652;
     text-align: center;
+    cursor: pointer;
 }
 
 .tan-box {

@@ -11,9 +11,14 @@ function Login() {
     navigate('/signup');
   };
 
+  const handleSortifyClick = () => {
+    // Navigate to the home page
+    navigate('/');
+  };
+
   return (
     <div className="login-container">
-      <div id="sortify-text">
+      <div id="sortify-text" onClick={handleSortifyClick}>
         <span style={{ color: '#d17ea8' }}>S</span>
         <span style={{ color: '#d17ea8' }}>O</span>
         <span style={{ color: '#d17ea8' }}>R</span>
