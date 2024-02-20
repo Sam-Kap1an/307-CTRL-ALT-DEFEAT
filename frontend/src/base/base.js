@@ -32,7 +32,7 @@ function BaseHeader() {
             <th>
               <div id="username-text" onClick={handleSortifyClick}>
               <span style={{ color: '#d17ea8' }}>Welcome, </span>
-              <span style={{ color: '#6e3652' }}>USER</span>
+              <span style={{ color: '#6e3652' }}>USER.</span>
 
               </div>
             </th>
