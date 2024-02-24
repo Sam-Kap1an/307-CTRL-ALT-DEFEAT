@@ -1,46 +1,70 @@
 // Inventory.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Inventory.css';
 
 function Inventory() {
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [newProduct, setNewProduct] = useState({
+    name: '',
+    quantity: '',
+    description: '',
+  });
+  const [inventory, setInventory] = useState([]);
+
+  useEffect(() => {
+    fetchInventory();
+  }, [searchTerm]);
 
   const handleBackClick = () => {
-    // Navigate back to the previous page
     navigate('/');
   };
 
   const handleSortifyClick = () => {
-    // Navigate to the home page
     navigate('/');
   };
 
   const handleEditStockClick = () => {
-    console.log("Edit Stock");
+    console.log('Edit Stock');
     // Add logic for handling "Edit Stock" button click
   };
 
-  const [newProduct, setNewProduct] = useState({
-    product: '',
-    category: '',
-    stock: '',
-  });
-
-  const [inventory, setInventory] = useState([
-    // Sample initial inventory data, you can replace it with your data
-    { id: 1, product: 'Laptop', category: 'Electronics', stock: 10 },
-    { id: 2, product: 'T-Shirt', category: 'Clothing', stock: 20 },
-    // Add more items as needed
-  ]);
+  const fetchInventory = () => {
+    fetch(`http://localhost:8000/inventory?search=${searchTerm}`)
+      .then((response) => response.json())
+      .then((data) => setInventory(data))
+      .catch((error) => console.error('Error fetching inventory:', error));
+  };
 
   const handleAddNewClick = () => {
-    console.log("Add New");
-    // Add logic for handling "Add New" button click
-    // For now, let's update the inventory state with the new product
-    setInventory([...inventory, { id: inventory.length + 1, ...newProduct }]);
-    // Reset the newProduct state for the next entry
-    setNewProduct({ product: '', category: '', stock: '' });
+    fetch('http://localhost:8000/inventory', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newProduct),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setInventory([...inventory, data]);
+        setNewProduct({ name: '', quantity: '', description: '' });
+      })
+      .catch((error) => console.error('Error adding new product:', error));
+  };
+
+  const handleDeleteClick = (itemId) => {
+    fetch(`http://localhost:8000/inventory/${itemId}`, {
+      method: 'DELETE',
+    })
+      .then((response) => {
+        if (response.ok) {
+          fetchInventory();
+        } else {
+          console.error('Error deleting item');
+        }
+      })
+      .catch((error) => console.error('Error deleting item:', error));
   };
 
   return (
@@ -49,7 +73,6 @@ function Inventory() {
         {/* Your sortify text here */}
       </div>
 
-      {/* Header with back button */}
       <header>
         <div className="title">Inventory</div>
         <button className="back-button" onClick={handleBackClick}>
@@ -57,10 +80,20 @@ function Inventory() {
         </button>
       </header>
 
-      {/* Search, Filter, and Action buttons */}
       <section className="search-filter-buttons">
         <div className="search-box">
-          <input type="text" placeholder="Search" className="search-input" />
+          <input
+            type="text"
+            placeholder="Search Product"
+            className="search-input"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                fetchInventory();
+              }
+            }}
+          />
         </div>
 
         <div className="filter-box">
@@ -71,25 +104,24 @@ function Inventory() {
           Edit Stock
         </button>
 
-        {/* Add New button with input fields */}
         <div className="blue-buttons">
           <input
             type="text"
             placeholder="Product"
-            value={newProduct.product}
-            onChange={(e) => setNewProduct({ ...newProduct, product: e.target.value })}
+            value={newProduct.name}
+            onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
           />
           <input
             type="text"
-            placeholder="Category"
-            value={newProduct.category}
-            onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
+            placeholder="Quantity"
+            value={newProduct.quantity}
+            onChange={(e) => setNewProduct({ ...newProduct, quantity: e.target.value })}
           />
           <input
             type="text"
-            placeholder="Stock"
-            value={newProduct.stock}
-            onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })}
+            placeholder="Description"
+            value={newProduct.description}
+            onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
           />
           <button className="blue-button" onClick={handleAddNewClick}>
             Add New
@@ -97,21 +129,26 @@ function Inventory() {
         </div>
       </section>
 
-      {/* Table to display inventory */}
       <table>
         <thead>
           <tr>
             <th>Product</th>
-            <th>Category</th>
-            <th>Stock</th>
+            <th>Quantity</th>
+            <th>Description</th>
+            <th className="delete-column">Delete</th>
           </tr>
         </thead>
         <tbody>
           {inventory.map((item) => (
-            <tr key={item.id}>
-              <td>{item.product}</td>
-              <td>{item.category}</td>
-              <td>{item.stock}</td>
+            <tr key={item._id}>
+              <td>{item.name}</td>
+              <td>{item.quantity}</td>
+              <td>{item.description}</td>
+              <td className="delete-column">
+                <button className="delete-button" onClick={() => handleDeleteClick(item._id)}>
+                  🗑️
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -121,6 +158,7 @@ function Inventory() {
 }
 
 export default Inventory;
+
 
 
 
