@@ -1,0 +1,109 @@
+/* Inventory.css */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #fff;
+    height: 100vh;
+  }
+  
+  #sortify-text {
+    cursor: pointer;
+  }
+  
+  .inventory-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: 100%;
+  }
+  
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    color: #d17ea8;
+    width: 100vw;
+  }
+  
+  .back-button {
+    cursor: pointer;
+    background-color: #4e6f4f;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+  }
+  
+  .title {
+    font-weight: bold;
+    font-size: 30px;
+    margin-right: 10px;
+  }
+  
+  .search-filter-buttons {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    background-color: #f1dbd6;
+  }
+  
+  .search-box,
+  .filter-box {
+    flex: 1.5;
+    margin-right: 10px;
+  }
+  
+  .search-input,
+  .filter-input {
+    padding: 10px;
+    margin-right: 10px;
+    overflow: hidden;
+    flex: 1;
+    border-radius: 5px;
+    border: none;
+  }
+  
+  .blue-buttons {
+    display: flex;
+    flex: 1.5;
+  }
+  
+  .blue-button {
+    cursor: pointer;
+    background-color: #213f60;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-right: 10px;
+  }
+  
+  /* Styling adjustments for the table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+  }
+  
+ 
