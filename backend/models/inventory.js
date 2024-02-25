@@ -14,6 +14,10 @@ const InventorySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    minimumThreshold: {
+      type: String,  // Change the type to String
+      required: true,
+    },
   },
   { collection: "inventory" }
 );
@@ -21,3 +25,4 @@ const InventorySchema = new mongoose.Schema(
 const Inventory = mongoose.model("Inventory", InventorySchema);
 
 export default Inventory;
+
