@@ -33,10 +33,15 @@ mongoose
   function searchInventory(searchTerm) {
     return Inventory.find({ name: { $regex: new RegExp(searchTerm, 'i') } });
   }
+
+  function updateItemInInventory(itemId, updatedData) {
+    return Inventory.findByIdAndUpdate(itemId, updatedData, { new: true });
+  }
   
   export default {
     getInventory,
     addItemToInventory,
     deleteItemFromInventory,
     searchInventory,
+    updateItemInInventory,
   };

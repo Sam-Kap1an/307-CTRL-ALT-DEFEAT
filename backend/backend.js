@@ -64,6 +64,20 @@ app.delete("/inventory/:id", (req, res) => {
       });
   });
 
+// modify row
+app.put("/inventory/:id", (req, res) => {
+    const itemId = req.params.id;
+    const updatedData = req.body;
+  
+    inventoryServices.updateItemInInventory(itemId, updatedData)
+      .then(() => {
+        res.status(200).send("Item updated successfully");
+      })
+      .catch((error) => {
+        res.status(500).send("Internal Server Error");
+      });
+  });
+
 // ----------------------------------------------------
 
 app.listen(port, () => {
