@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Category from "./category";
+import Category from "./category.js";
 
 const LocationSchema = new mongoose.Schema(
   {
@@ -11,7 +11,7 @@ const LocationSchema = new mongoose.Schema(
     categories: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Category",
+        ref: Category,
         required: false,
       },
     ],

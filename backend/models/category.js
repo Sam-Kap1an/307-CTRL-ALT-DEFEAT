@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Inventory from "./inventory";
+import Inventory from "./inventory.js";
 
 const CategorySchema = new mongoose.Schema(
   {
@@ -11,7 +11,7 @@ const CategorySchema = new mongoose.Schema(
     inventory: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Inventory",
+        ref: Inventory,
         required: false,
       },
     ],

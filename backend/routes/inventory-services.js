@@ -1,10 +1,13 @@
 import Inventory from "../models/inventory.js";
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 
 mongoose.set("debug", true);
 
+dotenv.config();
+
 mongoose
-  .connect("mongodb://localhost:27017/inventory", {
+  .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -15,33 +18,33 @@ mongoose
     console.error("Error connecting to MongoDB:", error);
   });
 
-  function getInventory(searchQuery) {
-    // Use a regex to perform case-insensitive search
-    const regex = new RegExp(searchQuery, 'i');
-    return Inventory.find({ name: regex });
-  }
-  
-  function addItemToInventory(item) {
-    const newItem = new Inventory(item);
-    return newItem.save();
-  }
-  
-  function deleteItemFromInventory(itemId) {
-    return Inventory.findByIdAndDelete(itemId);
-  }
+function getInventory(searchQuery) {
+  // Use a regex to perform case-insensitive search
+  const regex = new RegExp(searchQuery, "i");
+  return Inventory.find({ name: regex });
+}
 
-  function searchInventory(searchTerm) {
-    return Inventory.find({ name: { $regex: new RegExp(searchTerm, 'i') } });
-  }
+function addItemToInventory(item) {
+  const newItem = new Inventory(item);
+  return newItem.save();
+}
 
-  function updateItemInInventory(itemId, updatedData) {
-    return Inventory.findByIdAndUpdate(itemId, updatedData, { new: true });
-  }
-  
-  export default {
-    getInventory,
-    addItemToInventory,
-    deleteItemFromInventory,
-    searchInventory,
-    updateItemInInventory,
-  };
+function deleteItemFromInventory(itemId) {
+  return Inventory.findByIdAndDelete(itemId);
+}
+
+function searchInventory(searchTerm) {
+  return Inventory.find({ name: { $regex: new RegExp(searchTerm, "i") } });
+}
+
+function updateItemInInventory(itemId, updatedData) {
+  return Inventory.findByIdAndUpdate(itemId, updatedData, { new: true });
+}
+
+export default {
+  getInventory,
+  addItemToInventory,
+  deleteItemFromInventory,
+  searchInventory,
+  updateItemInInventory,
+};
