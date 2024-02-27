@@ -15,13 +15,13 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    // locations: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: Location,
-    //     required: false,
-    //   },
-    // ],
+    locations: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: Location,
+        required: false,
+      },
+    ],
   },
   { collection: "users" },
 );

@@ -5,5 +5,5 @@
 /backend/node_modules
 
 /backend/.env
-#307-CTRL-ALT-DEFEAT\backend npm run dev
-#\307-CTRL-ALT-DEFEAT\frontend npm start
+
+/frontend/node_modules
