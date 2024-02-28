@@ -7,12 +7,8 @@ import {
   Input,
   Table,
   Tbody,
-  Td,
-  Th,
-  Thead,
   Tr,
   Text,
-  Select,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -27,10 +23,6 @@ function Base_portal() {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure(); // Manage modal state
 
-  const handleBackClick = () => {
-    navigate('/');
-  };
-
   const handleSortifyClick = () => {
     navigate('/');
   };
@@ -41,7 +33,7 @@ function Base_portal() {
   });
 
   const [location, setLocation] = useState([]);
-  const [editedItemId, setEditedItemId] = useState(null);
+  const [editedLocationId, setLocationId] = useState(null);
 
 
   useEffect(() => {
@@ -76,13 +68,13 @@ function Base_portal() {
       .catch((error) => console.error('Error adding new product:', error));
   };
 
-  const handleDeleteClick = (itemId) => {
-    fetch(`http://localhost:8000/inventory/${itemId}`, {
+  const handleDeleteClick = (LocationId) => {
+    fetch(`http://localhost:8000/location/${LocationId}`, {
       method: 'DELETE',
     })
       .then((response) => {
         if (response.ok) {
-          fetchInventory();
+          fetchLocation();
         } else {
           console.error('Error deleting item');
         }
@@ -90,17 +82,26 @@ function Base_portal() {
       .catch((error) => console.error('Error deleting item:', error));
   };
 
-  const handleEditClick = (itemId) => {
-    setEditedItemId(itemId);
+  const handleEditClick = (LocationId) => {
+    setLocationId(LocationId);
   };
 
-  const handleSaveEdit = (itemId) => {
+  const handleSaveEdit = (LocationId) => {
     const editedData = {
-      name: document.getElementById(`name-${itemId}`).value,
-      catagories: document.getElementById(`catagories-${itemId}`).value,
+      name: document.getElementById(`name-${LocationId}`).value,
+      catagories: document.getElementById(`catagories-${LocationId}`).value,
     };
 
-    fetch(`http://localhost:8000/inventory/${itemId}`, {
+    const handleInputChange = (e, LocationId, field) => {
+      const updatedLocation = location.map((item) =>
+        item._id === LocationId ? { ...item, [field]: e.target.value } : item
+      );
+      setLocation(updatedLocation);
+    };
+  
+
+    
+    fetch(`http://localhost:8000/location/${LocationId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -112,38 +113,36 @@ function Base_portal() {
         console.log('Item updated successfully');
         setLocation((prevLocation) => {
           const updatedLocation = prevLocation.map((item) =>
-            item._id === itemId ? { ...item, ...editedData } : item
+            item._id === LocationId ? { ...item, ...editedData } : item
           );
           return updatedLocation;
         });
       })
       .catch((error) => console.error('Error updating item:', error))
       .finally(() => {
-        setEditedItemId(null);
+        setLocationId(null);
       });
   };
 
-  const handleInputChange = (e, itemId, field) => {
-    const updatedLocation = location.map((item) =>
-      item._id === itemId ? { ...item, [field]: e.target.value } : item
-    );
-    setLocation(updatedLocation);
-  };
-
-
+  
   return (
     <Box className="inventory-container">
       <Box id="sortify-text" onClick={handleSortifyClick}>
-        {/* Your sortify text here */}
+        <Text fontSize="90px" fontWeight="bold" letterSpacing="20px">
+            <span style={{ color: "#D47697" }}>SOR</span>
+            <span style={{ color: "#6e3652" }}>TIFY</span>
+          </Text>
       </Box>
 
       <Box>
         <Text fontSize="2xl" fontWeight="bold">
-          Inventory
+          Groups
         </Text>
-        <Button onClick={handleAddNewClick} colorScheme="Red" variant="outline">
-          Back
-        </Button>
+        <Button onClick={handleAddNewClick} colorScheme="red" variant="outline">
+        <Text fontSize="20px">
+            <span style={{ color: "#6e3652" }}>ADD Group</span>
+          </Text>        
+          </Button>
       </Box>
       
       {/* Modal for adding a new product */}
@@ -157,20 +156,20 @@ function Base_portal() {
               type="text"
               placeholder="Product Name"
               value={newLocation.name}
-              onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+              onChange={(e) => setNewLocation({ ...newLocation, name: e.target.value })}
             />
             <Input
               type="text"
-              placeholder="Minimum Threshold"
-              value={newProduct.minimumThreshold}
-              onChange={(e) => setNewProduct({ ...newProduct, minimumThreshold: e.target.value })}
+              placeholder="Catagories"
+              value={newLocation.catagories}
+              onChange={(e) => setNewLocation({ ...newLocation, catagories: e.target.value })}
             />
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={onClose}>
               Close
             </Button>
-            <Button colorScheme="teal" onClick={handleAddNewProduct}>
+            <Button colorScheme="teal" onClick={handleAddNewLoction}>
               Add
             </Button>
           </ModalFooter>
@@ -178,24 +177,10 @@ function Base_portal() {
       </Modal>
 
       <Table>
-        <Thead>
-          <Tr>
-            {/*all of the groups*/}
-          </Tr>
-        </Thead>
         <Tbody>
           {location.map((item) => (
             <Tr
               key={item._id}
-              display={
-                filterOption === 'All' ||
-                (filterOption === 'Low' &&
-                  parseFloat(item.minimumThreshold) > parseFloat(item.quantity)) ||
-                (filterOption === 'High' &&
-                  parseFloat(item.minimumThreshold) <= parseFloat(item.quantity))
-                  ? 'table-row'
-                  : 'none'
-              }
             >
             </Tr>
           ))}

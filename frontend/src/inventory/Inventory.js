@@ -142,7 +142,10 @@ function Inventory() {
   return (
     <Box className="inventory-container">
       <Box id="sortify-text" onClick={handleSortifyClick}>
-        {/* Your sortify text here */}
+      <Text fontSize="90px" fontWeight="bold" letter-spacing="20px">
+            <span style={{ color: "#D47697" }}>SOR</span>
+            <span style={{ color: "#6e3652" }}>TIFY</span>
+          </Text>
       </Box>
 
       <Box>
