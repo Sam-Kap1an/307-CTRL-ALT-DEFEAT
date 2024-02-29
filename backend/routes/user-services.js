@@ -18,7 +18,6 @@ mongoose
     console.error("Error connecting to MongoDB:", error);
   });
 
-
 function addNewUser(user) {
   const newUser = new User(user);
   return newUser.save();
