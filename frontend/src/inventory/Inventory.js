@@ -147,15 +147,22 @@ function Inventory() {
   );
 
   return (
-    <Box className="inventory-container">
-      <Box id="sortify-text" onClick={handleSortifyClick}>
-        {/* Your sortify text here */}
-      </Box>
-
-      <Box>
-        <Text fontSize="2xl" fontWeight="bold">
-          Inventory
-        </Text>
+    <>
+      <Flex
+        mt="5"
+        ml="5"
+        alignItems="center"
+        justifyContent="space-between"
+        onClick={handleSortifyClick}
+      >
+        <Flex>
+          <Text fontSize="40px" fontWeight="bold" color="#D47697" mr="3">
+            Kitchen
+          </Text>
+          <Text fontSize="40px" fontWeight="bold" color="#6e3652">
+            Inventory
+          </Text>
+        </Flex>
         <Button onClick={handleBackClick} colorScheme="teal" variant="outline">
           Back
         </Button>
