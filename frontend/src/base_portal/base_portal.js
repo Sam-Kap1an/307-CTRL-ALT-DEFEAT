@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
+  Textarea,
   Box,
   Button,
   Input,
@@ -34,6 +35,12 @@ function Base_portal() {
 
   const [location, setLocation] = useState([]);
   const [category, setCatagory] = useState([]);
+  let [NotesTxt, setNotes] = React.useState('')
+
+  let handlesetNotesInputChange = (e) => {
+    let inputValue = e.target.value
+    setNotes(inputValue)
+  }
 
   useEffect(() => {
     fetchLocation();
@@ -143,6 +150,38 @@ function Base_portal() {
           ))}
         </Tbody>
       </Table>
+
+      <Box onClick={handleAddNewClick}>
+        <Text fontSize="2xl" fontWeight="bold">
+          Notes: {NotesTxt}
+        </Text>
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Add New Location</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+              <>
+                <Textarea
+                  value={NotesTxt}
+                  onChange={handlesetNotesInputChange}
+                  placeholder='Put user Notes Here'
+                  size='sm'
+                />
+              </>
+              </ModalBody>
+              <ModalFooter>
+                <Button colorScheme="pink" mr={3} onClick={onClose}>
+                  Close
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+
+      </Box>
+
+
+      
     </Box>
   );
 }
