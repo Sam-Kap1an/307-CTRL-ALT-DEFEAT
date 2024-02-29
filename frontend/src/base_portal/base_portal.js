@@ -22,20 +22,14 @@ import {
 
 function Base_portal() {
   const navigate = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure(); // Manage modal state
+  const { isOpen: locIO, onOpen: LO, onClose: LC} = useDisclosure(); // Manage modal state
+  const { isOpen: NIO, onOpen: NO, onClose:NC } = useDisclosure(); // Manage modal state
 
   const handleSortifyClick = () => {
     navigate('/');
   };
 
-  const [newLocation, setNewLocation] = useState({
-    name: '',
-    catagories: '',
-  });
-
-  const [location, setLocation] = useState([]);
-  const [category, setCatagory] = useState([]);
-  let [NotesTxt, setNotes] = React.useState('')
+  
 
   let handlesetNotesInputChange = (e) => {
     let inputValue = e.target.value
@@ -46,6 +40,14 @@ function Base_portal() {
     fetchLocation();
   }, []);
 
+  const [newLocation, setNewLocation] = useState({
+    name: '',
+    catagories: '',
+  });
+
+  const [location, setLocation] = useState([]);
+  let [NotesTxt, setNotes] = React.useState('')
+
   const fetchLocation = () => {
     fetch('http://localhost:8000/location')
       .then((response) => response.json())
@@ -53,23 +55,6 @@ function Base_portal() {
       .catch((error) => console.error('Error fetching location:', error));
   };
 
-  const fetchCategory = (Catagory) => {
-    fetch(`http://localhost:8000/catagory/${Catagory}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(category),
-    })
-    .then((response) => response.json())
-    .then((data) => setCatagory(data))
-    .catch((error) => console.error('Error fetching Catagory:', error));
-  };
-
-
-  const handleAddNewClick = () => {
-    onOpen(); // Open the modal when Add New button is clicked
-  };
 
   const handleAddNewLoction = () => {
     fetch('http://localhost:8000/location', {
@@ -82,12 +67,11 @@ function Base_portal() {
       .then((response) => response.json())
       .then((data) => {
         setLocation([...location, data]);
-        setNewLocation({ name: '', catagories: fetchCategory('') });
-        onClose(); // Close the modal after adding a new product
+        setNewLocation({ name: '', catagories: '' });
+        LC(); // Close the modal after adding a new product
       })
       .catch((error) => console.error('Error adding new product:', error));
   };
-
   
   return (
     <Box className="Location-container">
@@ -102,7 +86,7 @@ function Base_portal() {
         <Text fontSize="2xl" fontWeight="bold">
           Groups
         </Text>
-        <Button onClick={handleAddNewClick} colorScheme="red" variant="outline">
+        <Button onClick={LO} colorScheme="red" variant="outline">
         <Text fontSize="20px">
             <span style={{ color: "#6e3652" }}>ADD Group</span>
           </Text>        
@@ -110,7 +94,7 @@ function Base_portal() {
       </Box>
       
       {/* Modal for adding a new product */}
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={locIO} onClose={LC}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Add New Location</ModalHeader>
@@ -130,7 +114,7 @@ function Base_portal() {
             />
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="pink" mr={3} onClick={onClose}>
+            <Button colorScheme="pink" mr={3} onClick={LC}>
               Close
             </Button>
             <Button colorScheme="pink" onClick={handleAddNewLoction}>
@@ -151,14 +135,14 @@ function Base_portal() {
         </Tbody>
       </Table>
 
-      <Box backgroundColor='pink' onClick={handleAddNewClick}>
+      <Box backgroundColor='pink' onClick={NO}>
         <Text fontSize="2xl" fontWeight="bold">
           Notes:
         </Text>
         <Text fontSize="2xl">
           {NotesTxt}
         </Text>
-          <Modal isOpen={isOpen} onClose={onClose}>
+          <Modal isOpen={NIO} onClose={NC}>
             <ModalOverlay />
             <ModalContent>
               <ModalHeader>Add New Location</ModalHeader>
@@ -174,7 +158,7 @@ function Base_portal() {
               </>
               </ModalBody>
               <ModalFooter>
-                <Button colorScheme="pink" mr={3} onClick={onClose}>
+                <Button colorScheme="pink" mr={3} onClick={NC}>
                   Close
                 </Button>
               </ModalFooter>
