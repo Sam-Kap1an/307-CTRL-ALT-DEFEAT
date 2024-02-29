@@ -4,6 +4,8 @@ import Login from "./login/login";
 import Create from "./create/create";
 import Home from "./components/home/Home";
 import Inventory from "./inventory/Inventory"
+import Base_portal from './base_portal/base_portal';
+
 
 
 function App() {
