@@ -16,7 +16,7 @@ const LocationSchema = new mongoose.Schema(
       },
     ],
   },
-  { collection: "locations" }
+  { collection: "locations" },
 );
 
 const Location = mongoose.model("Location", LocationSchema);
