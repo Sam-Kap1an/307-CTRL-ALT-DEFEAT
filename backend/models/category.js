@@ -16,7 +16,7 @@ const CategorySchema = new mongoose.Schema(
       },
     ],
   },
-  { collection: "inventory" }
+  { collection: "inventory" },
 );
 
 const Category = mongoose.model("Category", CategorySchema);
