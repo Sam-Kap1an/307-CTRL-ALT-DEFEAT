@@ -18,12 +18,23 @@ mongoose
     console.error("Error connecting to MongoDB:", error);
   });
 
+async function addNewUser(name, email, hashedPassword) {
+  try {
+    const newUser = new User({ name, email, hashedPassword });
+    await newUser.save();
+    console.log("User added successfully.");
+    return newUser;
+  } catch (error) {
+    console.error("Error adding new user:", error);
+    throw error;
+  }
+}
 
-function addNewUser(user) {
-  const newUser = new User(user);
-  return newUser.save();
+async function findUserByEmail(email) {
+  return User.findOne({ email });
 }
 
 export default {
   addNewUser,
+  findUserByEmail,
 };

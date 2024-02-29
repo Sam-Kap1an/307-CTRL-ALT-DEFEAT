@@ -3,15 +3,15 @@ import Location from "./location.js";
 
 const UserSchema = new mongoose.Schema(
   {
-    email: {
-      type: String,
-      required: true,
-    },
     name: {
       type: String,
       required: true,
     },
-    password: {
+    email: {
+      type: String,
+      required: true,
+    },
+    hashedPassword: {
       type: String,
       required: true,
     },

@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import inventoryServices from "./routes/inventory-services.js";
 import userServices from "./routes/user-services.js";
+import { authenticateUser, loginUser, registerUser } from "./routes/auth.js";
 
 const app = express();
 const port = 8000;
@@ -9,7 +10,7 @@ const port = 8000;
 app.use(cors());
 app.use(express.json());
 
-app.get("/inventory", (req, res) => {
+app.get("/inventory", authenticateUser, (req, res) => {
   const { search } = req.query;
 
   if (search) {
@@ -33,7 +34,7 @@ app.get("/inventory", (req, res) => {
   }
 });
 
-app.post("/inventory", (req, res) => {
+app.post("/inventory", authenticateUser, (req, res) => {
   const itemToAdd = req.body;
 
   inventoryServices
@@ -46,7 +47,7 @@ app.post("/inventory", (req, res) => {
     });
 });
 
-app.delete("/inventory/:id", (req, res) => {
+app.delete("/inventory/:id", authenticateUser, (req, res) => {
   const itemId = req.params.id;
 
   inventoryServices
@@ -59,7 +60,7 @@ app.delete("/inventory/:id", (req, res) => {
     });
 });
 
-app.put("/inventory/:id", (req, res) => {
+app.put("/inventory/:id", authenticateUser, (req, res) => {
   const itemId = req.params.id;
   const updatedData = req.body;
 
@@ -73,18 +74,22 @@ app.put("/inventory/:id", (req, res) => {
     });
 });
 
-app.post("/signup", (req, res) => {
-  const userToAdd = req.body;
+// app.post("/signup", (req, res) => {
+//   const userToAdd = req.body;
 
-  userServices
-    .addNewUser(userToAdd)
-    .then((result) => {
-      res.status(201).send(result);
-    })
-    .catch((error) => {
-      res.status(500).send("Internal Server Error");
-    });
-});
+//   userServices
+//     .addNewUser(userToAdd)
+//     .then((result) => {
+//       res.status(201).send(result);
+//     })
+//     .catch((error) => {
+//       res.status(500).send("Internal Server Error");
+//     });
+// });
+
+app.post("/signup", registerUser);
+
+app.post("/login", loginUser);
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);

@@ -7,7 +7,7 @@ function Create() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [pwd, setPassword] = useState("");
 
   const handleLoginClick = () => {
     navigate("/login");
@@ -18,7 +18,7 @@ function Create() {
   };
 
   const handleSignUp = () => {
-    const newUser = { name, email, password };
+    const newUser = { name, email, pwd };
 
     fetch("http://localhost:8000/signup", {
       method: "POST",
@@ -36,6 +36,8 @@ function Create() {
         setName("");
         setEmail("");
         setPassword("");
+
+        // change so it takes you to a base portal
       })
       .catch((error) => {
         console.error("Error adding new user:", error);
@@ -82,7 +84,7 @@ function Create() {
             type="password"
             placeholder="Password"
             className="login-input"
-            value={password}
+            value={pwd}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
