@@ -151,9 +151,12 @@ function Base_portal() {
         </Tbody>
       </Table>
 
-      <Box onClick={handleAddNewClick}>
+      <Box backgroundColor='pink' onClick={handleAddNewClick}>
         <Text fontSize="2xl" fontWeight="bold">
-          Notes: {NotesTxt}
+          Notes:
+        </Text>
+        <Text fontSize="2xl">
+          {NotesTxt}
         </Text>
           <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
