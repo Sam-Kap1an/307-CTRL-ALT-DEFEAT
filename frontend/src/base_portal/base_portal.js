@@ -30,10 +30,7 @@ function Base_portal() {
     { name: "Location1", components: "componentId1"},
     { name: "Location2", components: "componentId2"},
     { name: "Location3", components: "componentId3"},
-    { name: "Location3", components: "componentId3"},
-    { name: "Location3", components: "componentId3"},
-    { name: "Location3", components: "componentId3"},
-    { name: "Location3", components: "componentId3"},
+    { name: "Location4", components: "componentId4"},
     // Add more locations as needed
   ];
 
