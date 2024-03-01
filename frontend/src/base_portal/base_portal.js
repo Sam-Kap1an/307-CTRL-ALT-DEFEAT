@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
+  Flex,
   Textarea,
   Box,
   Button,
@@ -9,6 +10,7 @@ import {
   Table,
   Tbody,
   Tr,
+  Td,
   Text,
   Modal,
   ModalOverlay,
@@ -24,12 +26,22 @@ function Base_portal() {
   const navigate = useNavigate();
   const { isOpen: locIO, onOpen: LO, onClose: LC} = useDisclosure(); // Manage modal state
   const { isOpen: NIO, onOpen: NO, onClose:NC } = useDisclosure(); // Manage modal state
+  const locations = [
+    { name: "Location1", components: "componentId1"},
+    { name: "Location2", components: "componentId2"},
+    { name: "Location3", components: "componentId3"},
+    // Add more locations as needed
+  ];
 
   const handleSortifyClick = () => {
     navigate('/');
   };
 
-  
+  const handleLocationClick = (components) => {
+    /* 
+  navigate(`/${components}`); 
+  */
+  };
 
   let handlesetNotesInputChange = (e) => {
     let inputValue = e.target.value
@@ -37,7 +49,7 @@ function Base_portal() {
   }
 
   useEffect(() => {
-    fetchLocation();
+    setLocation(locations);
   }, []);
 
   const [newLocation, setNewLocation] = useState({
@@ -48,31 +60,16 @@ function Base_portal() {
   const [location, setLocation] = useState([]);
   let [NotesTxt, setNotes] = React.useState('')
 
-  const fetchLocation = () => {
-    fetch('http://localhost:8000/location')
-      .then((response) => response.json())
-      .then((data) => setLocation(data))
-      .catch((error) => console.error('Error fetching location:', error));
+
+  const handleAddNewLocation = () => {
+    // Simulate adding a new location
+    const generatedId = `componentId${location.length + 1}`; // Generate componentId
+    const newLocationData = { ...newLocation, components: generatedId }; // Assign generatedId to newLocation
+    setLocation([...location, newLocationData]); // Add new location to the array
+    setNewLocation({ name: '', catagories: '' }); // Reset newLocation state
+    LC(); // Close the modal after adding a new location
   };
 
-
-  const handleAddNewLoction = () => {
-    fetch('http://localhost:8000/location', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newLocation),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setLocation([...location, data]);
-        setNewLocation({ name: '', catagories: '' });
-        LC(); // Close the modal after adding a new product
-      })
-      .catch((error) => console.error('Error adding new product:', error));
-  };
-  
   return (
     <Box className="Location-container">
       <Box id="sortify-text" onClick={handleSortifyClick}>
@@ -82,16 +79,11 @@ function Base_portal() {
           </Text>
       </Box>
 
-      <Box>
-        <Text fontSize="2xl" fontWeight="bold">
-          Groups
-        </Text>
-        <Button onClick={LO} colorScheme="red" variant="outline">
-        <Text fontSize="20px">
-            <span style={{ color: "#6e3652" }}>ADD Group</span>
+      <Flex borderRadius ='10' mt='2' align="center" justify="center" backgroundColor='#6e3652' onClick={LO}>
+        <Text mt='2' mb='2' fontSize="20px">
+            <span style={{ color: "white" }}>Add Group</span>
           </Text>        
-          </Button>
-      </Box>
+      </Flex>
       
       {/* Modal for adding a new product */}
       <Modal isOpen={locIO} onClose={LC}>
@@ -114,33 +106,33 @@ function Base_portal() {
             />
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="pink" mr={3} onClick={LC}>
-              Close
-            </Button>
-            <Button colorScheme="pink" onClick={handleAddNewLoction}>
+            <Button colorScheme="pink" onClick={handleAddNewLocation}>
               Add
             </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
 
-      <Table>
-        <Tbody>
-          {location.map((item) => (
-            <Tr
-              key={item._id}
-            >
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
-
-      <Box backgroundColor='pink' onClick={NO}>
-        <Text fontSize="2xl" fontWeight="bold">
-          Notes:
-        </Text>
-        <Text fontSize="2xl">
-          {NotesTxt}
+      <Box display="grid" gridTemplateColumns="repeat(auto-fill, minmax(150px, 1fr))" gap={4}>
+        {location.map((item) => (
+          <Box mt='2'
+            key={item._id}
+            p={4}
+            borderWidth="1px"
+            borderRadius="lg"
+            onClick={() => handleLocationClick(item.components)}
+            cursor="pointer"
+          >
+            <Box fontWeight="bold">{item.name}</Box>
+          </Box>
+        ))}
+      </Box>
+      <Box borderRadius ='10' backgroundColor="#EDC7B7" onClick={NO}>
+        <Text ml='2' mt='2' fontSize="2xl" fontWeight="bold">
+          <span style={{ color: 'White' }}>Notes:</span>        
+          </Text>
+        <Text  ml='2' fontSize="2xl">
+        <span style={{ color: 'White' }}>{NotesTxt}</span>
         </Text>
           <Modal isOpen={NIO} onClose={NC}>
             <ModalOverlay />
@@ -158,9 +150,6 @@ function Base_portal() {
               </>
               </ModalBody>
               <ModalFooter>
-                <Button colorScheme="pink" mr={3} onClick={NC}>
-                  Close
-                </Button>
               </ModalFooter>
             </ModalContent>
           </Modal>
