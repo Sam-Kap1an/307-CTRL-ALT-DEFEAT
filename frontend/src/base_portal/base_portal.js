@@ -30,6 +30,10 @@ function Base_portal() {
     { name: "Location1", components: "componentId1"},
     { name: "Location2", components: "componentId2"},
     { name: "Location3", components: "componentId3"},
+    { name: "Location3", components: "componentId3"},
+    { name: "Location3", components: "componentId3"},
+    { name: "Location3", components: "componentId3"},
+    { name: "Location3", components: "componentId3"},
     // Add more locations as needed
   ];
 
@@ -38,9 +42,7 @@ function Base_portal() {
   };
 
   const handleLocationClick = (components) => {
-    /* 
-  navigate(`/${components}`); 
-  */
+    navigate(`/${components}`); 
   };
 
   let handlesetNotesInputChange = (e) => {
@@ -79,7 +81,7 @@ function Base_portal() {
           </Text>
       </Box>
 
-      <Flex borderRadius ='10' mt='2' align="center" justify="center" backgroundColor='#6e3652' onClick={LO}>
+      <Flex borderRadius ='10' mt='2' mb='3'align="center" justify="center" backgroundColor='#6e3652' onClick={LO}>
         <Text mt='2' mb='2' fontSize="20px">
             <span style={{ color: "white" }}>Add Group</span>
           </Text>        
@@ -113,22 +115,27 @@ function Base_portal() {
         </ModalContent>
       </Modal>
 
-      <Box display="grid" gridTemplateColumns="repeat(auto-fill, minmax(150px, 1fr))" gap={4}>
+      <Flex display="grid" gridTemplateColumns="repeat(auto-fill, minmax(150px, 1fr))" gap={2}>
         {location.map((item) => (
-          <Box mt='2'
+          <Flex 
+            align="center" 
+            justify="center"
             key={item._id}
             p={4}
             borderWidth="1px"
             borderRadius="lg"
             onClick={() => handleLocationClick(item.components)}
             cursor="pointer"
+            backgroundColor="#EDC7B7"
           >
-            <Box fontWeight="bold">{item.name}</Box>
-          </Box>
+              <Flex fontWeight="bold" align="center" justify="center"  >
+                <span style={{ color: 'White' }}>{item.name}</span>
+              </Flex>
+          </Flex>
         ))}
-      </Box>
+      </Flex>
       <Box borderRadius ='10' backgroundColor="#EDC7B7" onClick={NO}>
-        <Text ml='2' mt='2' fontSize="2xl" fontWeight="bold">
+        <Text ml='2' mt='3' fontSize="2xl" fontWeight="bold">
           <span style={{ color: 'White' }}>Notes:</span>        
           </Text>
         <Text  ml='2' fontSize="2xl">
