@@ -6,7 +6,6 @@ import Inventory from './Inventory';
 
 test('renders the empty form correctly', () => {
   render(<Inventory />);
-  
   expect(screen.getByPlaceholderText('Search Product')).toBeInTheDocument();
   expect(screen.getByLabelText('Product Name')).toBeInTheDocument();
   expect(screen.getByLabelText('Quantity')).toBeInTheDocument();
