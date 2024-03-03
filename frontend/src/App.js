@@ -1,12 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./login/login";
-import Create from "./create/create";
-import Home from "./components/home/Home";
-import Inventory from "./inventory/Inventory"
-import Base_portal from './base_portal/base_portal';
-
-
+import Login from "./login/login.js";
+import Create from "./create/create.js";
+import Home from "./components/home/Home.js";
+import Inventory from "./inventory/Inventory.js"
+import Baseportal from './base_portal/base_portal.js';
 
 function App() {
   return (
@@ -16,7 +14,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Create />} />
-        <Route path="/base_portal" element={<Base_portal />} />
+        <Route path="/base_portal" element={<Baseportal />} />
       </Routes>
     </Router>
   );

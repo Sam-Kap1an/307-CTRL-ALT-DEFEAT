@@ -24,7 +24,7 @@ const Home = () => {
         height="100vh"
       >
         <div>
-          <Text fontSize="90px" fontWeight="bold" letter-spacing="20px">
+          <Text fontSize="90px" fontWeight="bold" letterSpacing="20px"> 
             <span style={{ color: "#D47697" }}>SOR</span>
             <span style={{ color: "#6e3652" }}>TIFY</span>
           </Text>

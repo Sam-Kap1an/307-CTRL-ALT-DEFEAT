@@ -20,7 +20,6 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  ModalCloseButton,
   useDisclosure,
   Flex, // Import useDisclosure to control the modal state
 } from "@chakra-ui/react";
