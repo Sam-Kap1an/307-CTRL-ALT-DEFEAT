@@ -8,7 +8,6 @@ function Create() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [pwd, setPassword] = useState("");
-  const [token, setToken] = useState(null);
 
   const handleLoginClick = () => {
     navigate("/login");
@@ -32,7 +31,6 @@ function Create() {
 
       if (response.status === 201) {
         const payload = await response.json();
-        setToken(payload.token);
         localStorage.setItem("authToken", payload.token);
 
         const authToken = localStorage.getItem("authToken");
