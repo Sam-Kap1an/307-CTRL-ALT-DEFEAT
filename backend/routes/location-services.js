@@ -1,5 +1,7 @@
 import Location from "../models/location.js";
+
 import User from "../models/user.js";
+
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
@@ -64,3 +66,4 @@ export default {
 //   searchInventory,
 //   updateItemInInventory,
 // };
+
