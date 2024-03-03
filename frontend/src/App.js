@@ -4,7 +4,7 @@ import Login from "./login/login";
 import Create from "./create/create";
 import Home from "./components/home/Home";
 import Inventory from "./inventory/Inventory";
-import Base_portal from "./base_portal/base_portal";
+import BasePortal from "./base_portal/base_portal";
 
 function App() {
   return (
@@ -14,7 +14,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Create />} />
-        <Route path="/base-portal" element={<Base_portal />} />
+        <Route path="/base-portal" element={<BasePortal />} />
       </Routes>
     </Router>
   );

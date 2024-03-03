@@ -43,7 +43,7 @@ function generateAccessToken(username) {
         } else {
           resolve(token);
         }
-      }
+      },
     );
   });
 }
