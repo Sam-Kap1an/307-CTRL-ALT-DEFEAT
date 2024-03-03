@@ -26,6 +26,8 @@ import {
 
 function Inventory() {
   const navigate = useNavigate();
+  
+
   const { isOpen, onOpen, onClose } = useDisclosure(); // Manage modal state
   
   const handleBackClick = () => {
@@ -60,7 +62,7 @@ function Inventory() {
   };
 
   const handleAddNewClick = () => {
-    onOpen(); // Open the modal when Add New button is clicked
+    onOpen(); 
   };
 
   const handleAddNewProduct = () => {
@@ -80,7 +82,7 @@ function Inventory() {
           description: "",
           minimumThreshold: "",
         });
-        onClose(); // Close the modal after adding a new product
+        onClose(); 
       })
       .catch((error) => console.error("Error adding new product:", error));
   };
@@ -142,6 +144,7 @@ function Inventory() {
     setInventory(updatedInventory);
   };
 
+
   const filteredInventory = inventory.filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
@@ -188,6 +191,7 @@ function Inventory() {
             value={filterOption}
             onChange={(e) => setFilterOption(e.target.value)}
             className="filter-input"
+            data-testid="filter-input" // testing
             mr="3"
           >
             <option value="All">All</option>
@@ -244,6 +248,7 @@ function Inventory() {
                 <Td>
                   {editedItemId === item._id ? (
                     <Input
+                      
                       type="text"
                       id={`name-${item._id}`}
                       value={item.name}
@@ -256,9 +261,11 @@ function Inventory() {
                 <Td>
                   {editedItemId === item._id ? (
                     <Input
+                      
                       type="text"
                       id={`quantity-${item._id}`}
                       value={item.quantity}
+                      data-testid={`quantity-${item._id}`}
                       onChange={(e) =>
                         handleInputChange(e, item._id, "quantity")
                       }
@@ -270,6 +277,7 @@ function Inventory() {
                 <Td>
                   {editedItemId === item._id ? (
                     <Input
+                      
                       type="text"
                       id={`description-${item._id}`}
                       value={item.description}
@@ -284,9 +292,11 @@ function Inventory() {
                 <Td>
                   {editedItemId === item._id ? (
                     <Input
+                      
                       type="text"
                       id={`minimumThreshold-${item._id}`}
                       value={item.minimumThreshold}
+                      data-testid={`name-${item._id}`} // testing
                       onChange={(e) =>
                         handleInputChange(e, item._id, "minimumThreshold")
                       }
@@ -305,6 +315,7 @@ function Inventory() {
                     </Button>
                   ) : (
                     <Button
+                      data-testid={`edit-button-${item._id}`} //testing
                       onClick={() => handleEditClick(item._id)}
                       colorScheme="teal"
                     >
@@ -315,6 +326,7 @@ function Inventory() {
                 <Td>
                   <Button
                     onClick={() => handleDeleteClick(item._id)}
+                    data-testid={`delete-button-${item._id}`} //testing 2 
                     colorScheme="red"
                     variant="outline"
                   >
