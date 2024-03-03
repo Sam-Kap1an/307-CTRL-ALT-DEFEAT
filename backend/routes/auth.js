@@ -2,8 +2,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import userServices from "./user-services.js";
 
-const creds = [];
-
 export async function registerUser(req, res) {
   const { name, email, pwd } = req.body;
 
