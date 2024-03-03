@@ -1,4 +1,5 @@
 // Inventory.js
+import 'whatwg-fetch';
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -27,7 +28,7 @@ import {
 function Inventory() {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure(); // Manage modal state
-
+  
   const handleBackClick = () => {
     navigate("/");
   };
