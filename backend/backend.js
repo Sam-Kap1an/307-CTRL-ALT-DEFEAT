@@ -1,13 +1,10 @@
 import express from "express";
 import cors from "cors";
 import inventoryServices from "./routes/inventory-services.js";
-import userServices from "./routes/user-services.js";
 
 import { authenticateUser, loginUser, registerUser } from "./routes/auth.js";
 
 import locationServices from "./routes/location-services.js";
-import User from "./models/user.js";
-
 
 const app = express();
 const port = 8000;
@@ -27,6 +24,7 @@ app.get("/inventory", authenticateUser, (req, res) => {
         res.send({ result, userEmail });
       })
       .catch((error) => {
+        console.error(error);
         res.status(500).send("Internal Server Error");
       });
   } else {
@@ -37,6 +35,7 @@ app.get("/inventory", authenticateUser, (req, res) => {
         res.send({ result, userEmail });
       })
       .catch((error) => {
+        console.error(error);
         res.status(500).send("Internal Server Error");
       });
   }
@@ -51,6 +50,7 @@ app.post("/inventory", authenticateUser, (req, res) => {
       res.status(201).send(result);
     })
     .catch((error) => {
+      console.error(error);
       res.status(500).send("Internal Server Error");
     });
 });
@@ -64,6 +64,7 @@ app.delete("/inventory/:id", authenticateUser, (req, res) => {
       res.status(200).send("Item deleted successfully");
     })
     .catch((error) => {
+      console.error(error);
       res.status(500).send("Internal Server Error");
     });
 });
@@ -78,22 +79,10 @@ app.put("/inventory/:id", authenticateUser, (req, res) => {
       res.status(200).send("Item updated successfully");
     })
     .catch((error) => {
+      console.error(error);
       res.status(500).send("Internal Server Error");
     });
 });
-
-// app.post("/signup", (req, res) => {
-//   const userToAdd = req.body;
-
-//   userServices
-//     .addNewUser(userToAdd)
-//     .then((result) => {
-//       res.status(201).send(result);
-//     })
-//     .catch((error) => {
-//       res.status(500).send("Internal Server Error");
-//     });
-// });
 
 app.post("/signup", registerUser);
 
