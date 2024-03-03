@@ -77,19 +77,6 @@ app.put("/inventory/:id", authenticateUser, (req, res) => {
     });
 });
 
-// app.post("/signup", (req, res) => {
-//   const userToAdd = req.body;
-
-//   userServices
-//     .addNewUser(userToAdd)
-//     .then((result) => {
-//       res.status(201).send(result);
-//     })
-//     .catch((error) => {
-//       res.status(500).send("Internal Server Error");
-//     });
-// });
-
 app.post("/signup", registerUser);
 
 app.post("/login", loginUser);

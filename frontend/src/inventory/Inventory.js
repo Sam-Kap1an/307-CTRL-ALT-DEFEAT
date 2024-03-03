@@ -48,6 +48,7 @@ function Inventory() {
   const [filterOption, setFilterOption] = useState("All");
   const [userEmail, setUserEmail] = useState("");
 
+
   const fetchInventory = async () => {
     try {
       const authToken = localStorage.getItem("authToken");
@@ -89,30 +90,62 @@ function Inventory() {
   };
 
   const handleAddNewProduct = () => {
-    fetch("http://localhost:8000/inventory", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newProduct),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setInventory([...inventory, data]);
-        setNewProduct({
-          name: "",
-          quantity: "",
-          description: "",
-          minimumThreshold: "",
-        });
-        onClose();
+    try {
+      const authToken = localStorage.getItem("authToken");
+  
+      if (!authToken) {
+        console.log("Authentication token not found");
+        return;
+      }
+  
+      fetch("http://localhost:8000/inventory", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newProduct),
       })
-      .catch((error) => console.error("Error adding new product:", error));
+        .then((response) => response.json())
+        .then((data) => {
+          if (data && data._id) {
+            setInventory((prevInventory) => {
+              const newArray = Array.isArray(prevInventory) ? prevInventory : [];
+              return [...newArray, data];
+            });
+            setNewProduct({
+              name: "",
+              quantity: "",
+              description: "",
+              minimumThreshold: "",
+            });
+            onClose();
+          } else {
+            console.error("Error adding new product: Invalid response format", data);
+          }
+        })
+        .catch((error) => console.error("Error adding new product:", error));
+    } catch (error) {
+      console.error("Error adding inventory:", error);
+    }
   };
+  
+  
 
   const handleDeleteClick = (itemId) => {
+    try {
+      const authToken = localStorage.getItem("authToken");
+  
+      if (!authToken) {
+        console.log("Authentication token not found");
+        return;
+      }
     fetch(`http://localhost:8000/inventory/${itemId}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
+      },
     })
       .then((response) => {
         if (response.ok) {
@@ -122,6 +155,9 @@ function Inventory() {
         }
       })
       .catch((error) => console.error("Error deleting item:", error));
+    } catch (error) {
+      console.error("Error deleting inventory:", error);
+    }
   };
 
   const handleEditClick = (itemId) => {
@@ -129,6 +165,7 @@ function Inventory() {
   };
 
   const handleSaveEdit = (itemId) => {
+
     const editedData = {
       name: document.getElementById(`name-${itemId}`).value,
       quantity: document.getElementById(`quantity-${itemId}`).value,
@@ -136,10 +173,18 @@ function Inventory() {
       minimumThreshold: document.getElementById(`minimumThreshold-${itemId}`)
         .value,
     };
+    try {
+      const authToken = localStorage.getItem("authToken");
+  
+      if (!authToken) {
+        console.log("Authentication token not found");
+        return;
+      }
 
     fetch(`http://localhost:8000/inventory/${itemId}`, {
       method: "PUT",
       headers: {
+        Authorization: `Bearer ${authToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(editedData),
@@ -158,6 +203,10 @@ function Inventory() {
       .finally(() => {
         setEditedItemId(null);
       });
+    }
+    catch (error) {
+      console.error("Error deleting inventory:", error);
+    }
   };
 
   const handleInputChange = (e, itemId, field) => {
@@ -187,11 +236,15 @@ function Inventory() {
           <Text fontSize="40px" fontWeight="bold" color="#6e3652">
             Inventory
           </Text>
+          
         </Flex>
         <Button onClick={handleBackClick} colorScheme="teal" variant="outline">
           Back
         </Button>
       </Flex>
+      <Box>
+            <Text fontSize="md">User Email: {userEmail}</Text>
+          </Box>
       <Box className="inventory-container" p="6">
         <Flex direction="row" justifyContent="space-between">
           <Text fontSize="2xl" fontWeight="bold">
