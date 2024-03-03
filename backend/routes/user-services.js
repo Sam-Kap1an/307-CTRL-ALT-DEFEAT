@@ -31,7 +31,8 @@ async function addNewUser(name, email, hashedPassword) {
 }
 
 async function findUserByEmail(email) {
-  return User.findOne({ email });
+  const user = await User.findOne({ email });
+  return user;
 }
 
 export default {

@@ -12,12 +12,14 @@ app.use(express.json());
 
 app.get("/inventory", authenticateUser, (req, res) => {
   const { search } = req.query;
+  const userEmail = req.user.username;
 
   if (search) {
     inventoryServices
       .searchInventory(search)
       .then((result) => {
-        res.send(result);
+        // Send both result and user email in the response
+        res.send({ result, userEmail });
       })
       .catch((error) => {
         res.status(500).send("Internal Server Error");
@@ -26,7 +28,8 @@ app.get("/inventory", authenticateUser, (req, res) => {
     inventoryServices
       .getInventory()
       .then((result) => {
-        res.send(result);
+        // Send both result and user email in the response
+        res.send({ result, userEmail });
       })
       .catch((error) => {
         res.status(500).send("Internal Server Error");

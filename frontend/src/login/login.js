@@ -7,6 +7,7 @@ function Login() {
   const navigate = useNavigate(); // Use useNavigate to get the navigate function
   const [email, setEmail] = useState("");
   const [pwd, setPassword] = useState("");
+  const [token, setToken] = useState(null);
 
   const handleSignUpClick = () => {
     // Navigate to the signup page
@@ -29,8 +30,16 @@ function Login() {
       });
 
       if (response.status === 200) {
+        const payload = await response.json();
+        setToken(payload.token);
+        localStorage.setItem("authToken", payload.token);
+
+        const authToken = localStorage.getItem("authToken");
+        console.log("Token stored in local storage:", authToken);
+
         console.log("Login successful!");
         // Redirect to user portal
+        navigate("/base-portal");
       } else {
         console.log("Invalid email or password", response.status);
       }

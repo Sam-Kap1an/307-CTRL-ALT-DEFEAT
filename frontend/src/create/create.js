@@ -8,6 +8,7 @@ function Create() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [pwd, setPassword] = useState("");
+  const [token, setToken] = useState(null);
 
   const handleLoginClick = () => {
     navigate("/login");
@@ -17,31 +18,34 @@ function Create() {
     navigate("/");
   };
 
-  const handleSignUp = () => {
-    const newUser = { name, email, pwd };
+  const handleSignUp = async () => {
+    try {
+      const newUser = { name, email, pwd };
 
-    fetch("http://localhost:8000/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newUser),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // Handle the response data as needed
-        console.log("User signed up successfully", data);
-
-        // Clear form fields
-        setName("");
-        setEmail("");
-        setPassword("");
-
-        // change so it takes you to a base portal
-      })
-      .catch((error) => {
-        console.error("Error adding new user:", error);
+      const response = await fetch("http://localhost:8000/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newUser),
       });
+
+      if (response.status === 201) {
+        const payload = await response.json();
+        setToken(payload.token);
+        localStorage.setItem("authToken", payload.token);
+
+        const authToken = localStorage.getItem("authToken");
+        console.log("Token stored in local storage:", authToken);
+
+        console.log("Sign up successful!");
+        // Redirect to user portal
+      } else {
+        console.log("Could not sign up", response.status);
+      }
+    } catch (error) {
+      console.error("Error signing up:", error);
+    }
   };
 
   return (

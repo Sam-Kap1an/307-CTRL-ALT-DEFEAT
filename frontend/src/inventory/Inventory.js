@@ -1,6 +1,6 @@
 // Inventory.js
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -21,76 +21,110 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure, // Import useDisclosure to control the modal state
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 
 function Inventory() {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure(); // Manage modal state
 
   const handleBackClick = () => {
-    navigate('/');
+    navigate("/");
   };
 
   const handleSortifyClick = () => {
-    navigate('/');
+    navigate("/");
   };
 
   const [newProduct, setNewProduct] = useState({
-    name: '',
-    quantity: '',
-    description: '',
-    minimumThreshold: '',
+    name: "",
+    quantity: "",
+    description: "",
+    minimumThreshold: "",
   });
 
   const [inventory, setInventory] = useState([]);
   const [editedItemId, setEditedItemId] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterOption, setFilterOption] = useState('All');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterOption, setFilterOption] = useState("All");
+  const [userEmail, setUserEmail] = useState("");
+
+  const fetchInventory = async () => {
+    try {
+      const authToken = localStorage.getItem("authToken");
+
+      if (!authToken) {
+        console.log("Authentication token not found");
+        return;
+      }
+
+      const response = await fetch("http://localhost:8000/inventory", {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.status === 200) {
+        const data = await response.json();
+        setInventory(data.inventory);
+        setUserEmail(data.userEmail);
+        console.log(userEmail);
+      } else if (response.status === 401) {
+        // Unauthorized, handle accordingly
+        console.error("User is not logged in or token is expired");
+
+        // For example, redirect to the login page
+        navigate("/login");
+      } else {
+        console.error("Error fetching inventory:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching inventory:", error);
+    }
+  };
 
   useEffect(() => {
     fetchInventory();
   }, []);
-
-  const fetchInventory = () => {
-    fetch('http://localhost:8000/inventory')
-      .then((response) => response.json())
-      .then((data) => setInventory(data))
-      .catch((error) => console.error('Error fetching inventory:', error));
-  };
 
   const handleAddNewClick = () => {
     onOpen(); // Open the modal when Add New button is clicked
   };
 
   const handleAddNewProduct = () => {
-    fetch('http://localhost:8000/inventory', {
-      method: 'POST',
+    fetch("http://localhost:8000/inventory", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(newProduct),
     })
       .then((response) => response.json())
       .then((data) => {
         setInventory([...inventory, data]);
-        setNewProduct({ name: '', quantity: '', description: '', minimumThreshold: '' });
+        setNewProduct({
+          name: "",
+          quantity: "",
+          description: "",
+          minimumThreshold: "",
+        });
         onClose(); // Close the modal after adding a new product
       })
-      .catch((error) => console.error('Error adding new product:', error));
+      .catch((error) => console.error("Error adding new product:", error));
   };
 
   const handleDeleteClick = (itemId) => {
     fetch(`http://localhost:8000/inventory/${itemId}`, {
-      method: 'DELETE',
+      method: "DELETE",
     })
       .then((response) => {
         if (response.ok) {
           fetchInventory();
         } else {
-          console.error('Error deleting item');
+          console.error("Error deleting item");
         }
       })
-      .catch((error) => console.error('Error deleting item:', error));
+      .catch((error) => console.error("Error deleting item:", error));
   };
 
   const handleEditClick = (itemId) => {
@@ -102,19 +136,20 @@ function Inventory() {
       name: document.getElementById(`name-${itemId}`).value,
       quantity: document.getElementById(`quantity-${itemId}`).value,
       description: document.getElementById(`description-${itemId}`).value,
-      minimumThreshold: document.getElementById(`minimumThreshold-${itemId}`).value,
+      minimumThreshold: document.getElementById(`minimumThreshold-${itemId}`)
+        .value,
     };
 
     fetch(`http://localhost:8000/inventory/${itemId}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(editedData),
     })
       .then((response) => response.json())
       .then(() => {
-        console.log('Item updated successfully');
+        console.log("Item updated successfully");
         setInventory((prevInventory) => {
           const updatedInventory = prevInventory.map((item) =>
             item._id === itemId ? { ...item, ...editedData } : item
@@ -122,7 +157,7 @@ function Inventory() {
           return updatedInventory;
         });
       })
-      .catch((error) => console.error('Error updating item:', error))
+      .catch((error) => console.error("Error updating item:", error))
       .finally(() => {
         setEditedItemId(null);
       });
@@ -135,7 +170,7 @@ function Inventory() {
     setInventory(updatedInventory);
   };
 
-  const filteredInventory = inventory.filter((item) =>
+  const filteredInventory = (inventory ?? []).filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -148,6 +183,9 @@ function Inventory() {
       <Box>
         <Text fontSize="2xl" fontWeight="bold">
           Inventory
+        </Text>
+        <Text fontSize="md" mt={2}>
+          User Email: {userEmail}
         </Text>
         <Button onClick={handleBackClick} colorScheme="teal" variant="outline">
           Back
@@ -166,7 +204,6 @@ function Inventory() {
         <Select
           value={filterOption}
           onChange={(e) => setFilterOption(e.target.value)}
-          
           className="filter-input"
         >
           <option value="All">All</option>
@@ -200,17 +237,19 @@ function Inventory() {
               style={{
                 backgroundColor:
                   parseFloat(item.minimumThreshold) > parseFloat(item.quantity)
-                    ? 'rgba(255, 0, 0, 0.1)' // Red with transparency
-                    : 'rgba(0, 255, 0, 0.1)', // Green with transparency
+                    ? "rgba(255, 0, 0, 0.1)" // Red with transparency
+                    : "rgba(0, 255, 0, 0.1)", // Green with transparency
               }}
               display={
-                filterOption === 'All' ||
-                (filterOption === 'Low' &&
-                  parseFloat(item.minimumThreshold) > parseFloat(item.quantity)) ||
-                (filterOption === 'High' &&
-                  parseFloat(item.minimumThreshold) <= parseFloat(item.quantity))
-                  ? 'table-row'
-                  : 'none'
+                filterOption === "All" ||
+                (filterOption === "Low" &&
+                  parseFloat(item.minimumThreshold) >
+                    parseFloat(item.quantity)) ||
+                (filterOption === "High" &&
+                  parseFloat(item.minimumThreshold) <=
+                    parseFloat(item.quantity))
+                  ? "table-row"
+                  : "none"
               }
             >
               <Td>
@@ -219,7 +258,7 @@ function Inventory() {
                     type="text"
                     id={`name-${item._id}`}
                     value={item.name}
-                    onChange={(e) => handleInputChange(e, item._id, 'name')}
+                    onChange={(e) => handleInputChange(e, item._id, "name")}
                   />
                 ) : (
                   item.name
@@ -231,7 +270,7 @@ function Inventory() {
                     type="text"
                     id={`quantity-${item._id}`}
                     value={item.quantity}
-                    onChange={(e) => handleInputChange(e, item._id, 'quantity')}
+                    onChange={(e) => handleInputChange(e, item._id, "quantity")}
                   />
                 ) : (
                   item.quantity
@@ -243,7 +282,9 @@ function Inventory() {
                     type="text"
                     id={`description-${item._id}`}
                     value={item.description}
-                    onChange={(e) => handleInputChange(e, item._id, 'description')}
+                    onChange={(e) =>
+                      handleInputChange(e, item._id, "description")
+                    }
                   />
                 ) : (
                   item.description
@@ -255,7 +296,9 @@ function Inventory() {
                     type="text"
                     id={`minimumThreshold-${item._id}`}
                     value={item.minimumThreshold}
-                    onChange={(e) => handleInputChange(e, item._id, 'minimumThreshold')}
+                    onChange={(e) =>
+                      handleInputChange(e, item._id, "minimumThreshold")
+                    }
                   />
                 ) : (
                   item.minimumThreshold
@@ -263,11 +306,17 @@ function Inventory() {
               </Td>
               <Td>
                 {editedItemId === item._id ? (
-                  <Button onClick={() => handleSaveEdit(item._id)} colorScheme="teal">
+                  <Button
+                    onClick={() => handleSaveEdit(item._id)}
+                    colorScheme="teal"
+                  >
                     Save
                   </Button>
                 ) : (
-                  <Button onClick={() => handleEditClick(item._id)} colorScheme="teal">
+                  <Button
+                    onClick={() => handleEditClick(item._id)}
+                    colorScheme="teal"
+                  >
                     Edit
                   </Button>
                 )}
@@ -297,25 +346,36 @@ function Inventory() {
               type="text"
               placeholder="Product Name"
               value={newProduct.name}
-              onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+              onChange={(e) =>
+                setNewProduct({ ...newProduct, name: e.target.value })
+              }
             />
             <Input
               type="text"
               placeholder="Quantity"
               value={newProduct.quantity}
-              onChange={(e) => setNewProduct({ ...newProduct, quantity: e.target.value })}
+              onChange={(e) =>
+                setNewProduct({ ...newProduct, quantity: e.target.value })
+              }
             />
             <Input
               type="text"
               placeholder="Description"
               value={newProduct.description}
-              onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
+              onChange={(e) =>
+                setNewProduct({ ...newProduct, description: e.target.value })
+              }
             />
             <Input
               type="text"
               placeholder="Minimum Threshold"
               value={newProduct.minimumThreshold}
-              onChange={(e) => setNewProduct({ ...newProduct, minimumThreshold: e.target.value })}
+              onChange={(e) =>
+                setNewProduct({
+                  ...newProduct,
+                  minimumThreshold: e.target.value,
+                })
+              }
             />
           </ModalBody>
           <ModalFooter>
@@ -333,10 +393,3 @@ function Inventory() {
 }
 
 export default Inventory;
-
-
-
-
-
-
-
