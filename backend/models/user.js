@@ -11,10 +11,13 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+<<<<<<< HEAD
     hashedPassword: {
       type: String,
       required: true,
     },
+=======
+>>>>>>> main
     locations: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -23,7 +26,7 @@ const UserSchema = new mongoose.Schema(
       },
     ],
   },
-  { collection: "users" }
+  { collection: "users" },
 );
 
 const User = mongoose.model("User", UserSchema);

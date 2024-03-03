@@ -6,6 +6,10 @@
 
 /backend/.env
 
+<<<<<<< HEAD
 /frontend/node_modules
 
 /backend/secret-key.js
+=======
+/frontend/node_modules
+>>>>>>> main
