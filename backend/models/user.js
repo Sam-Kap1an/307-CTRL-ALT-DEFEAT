@@ -11,13 +11,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-<<<<<<< HEAD
     hashedPassword: {
       type: String,
       required: true,
     },
-=======
->>>>>>> main
     locations: [
       {
         type: mongoose.Schema.Types.ObjectId,
