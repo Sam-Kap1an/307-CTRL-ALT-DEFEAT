@@ -1,9 +1,7 @@
 // Login.js
-<<<<<<< HEAD
+
 import React, { useState } from "react";
-=======
-import React from "react";
->>>>>>> main
+
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "./login.css";
 
@@ -21,7 +19,6 @@ function Login() {
   const handleSortifyClick = () => {
     // Navigate to the home page
     navigate("/");
-<<<<<<< HEAD
   };
 
   const handleLogin = async () => {
@@ -51,8 +48,6 @@ function Login() {
     } catch (error) {
       console.error("Error during login:", error);
     }
-=======
->>>>>>> main
   };
 
   return (
@@ -88,11 +83,8 @@ function Login() {
             type="password"
             placeholder="Password"
             className="login-input"
-<<<<<<< HEAD
             value={pwd}
             onChange={(e) => setPassword(e.target.value)}
-=======
->>>>>>> main
           />
         </div>
 
