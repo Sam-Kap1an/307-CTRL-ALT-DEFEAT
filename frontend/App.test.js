@@ -4,5 +4,4 @@ import React from 'react';
 
 test("renders react link", () => {
   render(<App />);
-  
 });

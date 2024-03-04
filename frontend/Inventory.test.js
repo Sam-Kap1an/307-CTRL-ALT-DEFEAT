@@ -151,7 +151,7 @@ test('filters inventory based on quantity and minimum threshold', async () => {
 
 
 
-/*
+
 test('deletes a product and updates display', async () => {
   const mockData = [
     { _id: '1', name: 'DeletableProduct', quantity: '5', description: 'DeletableDescription', minimumThreshold: '2' },
@@ -174,7 +174,7 @@ test('deletes a product and updates display', async () => {
     expect(screen.queryByText('DeletableProduct')).not.toBeInTheDocument();
   });
 });
-*/
+
 
 /*
 test('adds a new product and updates display', async () => {
