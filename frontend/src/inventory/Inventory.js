@@ -123,7 +123,7 @@ function Inventory() {
           } else {
             console.error(
               "Error adding new product: Invalid response format",
-              data,
+              data
             );
           }
         })
@@ -194,7 +194,7 @@ function Inventory() {
           console.log("Item updated successfully");
           setInventory((prevInventory) => {
             const updatedInventory = prevInventory.map((item) =>
-              item._id === itemId ? { ...item, ...editedData } : item,
+              item._id === itemId ? { ...item, ...editedData } : item
             );
             return updatedInventory;
           });
@@ -210,24 +210,18 @@ function Inventory() {
 
   const handleInputChange = (e, itemId, field) => {
     const updatedInventory = inventory.map((item) =>
-      item._id === itemId ? { ...item, [field]: e.target.value } : item,
+      item._id === itemId ? { ...item, [field]: e.target.value } : item
     );
     setInventory(updatedInventory);
   };
 
   const filteredInventory = (inventory ?? []).filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <>
-      <Flex
-        mt="5"
-        ml="5"
-        alignItems="center"
-        justifyContent="space-between"
-        onClick={handleSortifyClick}
-      >
+      <Flex mt="5" alignItems="center" gap="400px" onClick={handleSortifyClick}>
         <Flex>
           <Text fontSize="40px" fontWeight="bold" color="#D47697" mr="3">
             Kitchen
