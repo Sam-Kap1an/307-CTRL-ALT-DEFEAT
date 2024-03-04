@@ -1,5 +1,4 @@
-// Inventory.js
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -19,14 +18,13 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  ModalCloseButton,
   useDisclosure,
-  Flex, // Import useDisclosure to control the modal state
+  Flex,
 } from "@chakra-ui/react";
 
 function Inventory() {
   const navigate = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure(); // Manage modal state
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleBackClick = () => {
     navigate("/");
@@ -47,56 +45,120 @@ function Inventory() {
   const [editedItemId, setEditedItemId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterOption, setFilterOption] = useState("All");
+  const [userEmail, setUserEmail] = useState("");
+
+  const fetchInventory = useCallback(async () => {
+    try {
+      const authToken = localStorage.getItem("authToken");
+
+      if (!authToken) {
+        console.log("Authentication token not found");
+        return;
+      }
+
+      const response = await fetch("http://localhost:8000/inventory", {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.status === 200) {
+        const data = await response.json();
+        setInventory(data.inventory);
+        setUserEmail(data.userEmail);
+        console.log(userEmail);
+      } else if (response.status === 401) {
+        console.error("User is not logged in or token is expired");
+        navigate("/login");
+      } else {
+        console.error("Error fetching inventory:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching inventory:", error);
+    }
+  }, [navigate, setInventory, userEmail]);
 
   useEffect(() => {
     fetchInventory();
-  }, []);
-
-  const fetchInventory = () => {
-    fetch("http://localhost:8000/inventory")
-      .then((response) => response.json())
-      .then((data) => setInventory(data))
-      .catch((error) => console.error("Error fetching inventory:", error));
-  };
+  }, [fetchInventory]);
 
   const handleAddNewClick = () => {
-    onOpen(); // Open the modal when Add New button is clicked
+    onOpen();
   };
 
   const handleAddNewProduct = () => {
-    fetch("http://localhost:8000/inventory", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newProduct),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setInventory([...inventory, data]);
-        setNewProduct({
-          name: "",
-          quantity: "",
-          description: "",
-          minimumThreshold: "",
-        });
-        onClose(); // Close the modal after adding a new product
+    try {
+      const authToken = localStorage.getItem("authToken");
+
+      if (!authToken) {
+        console.log("Authentication token not found");
+        return;
+      }
+
+      fetch("http://localhost:8000/inventory", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newProduct),
       })
-      .catch((error) => console.error("Error adding new product:", error));
+        .then((response) => response.json())
+        .then((data) => {
+          if (data && data._id) {
+            setInventory((prevInventory) => {
+              const newArray = Array.isArray(prevInventory)
+                ? prevInventory
+                : [];
+              return [...newArray, data];
+            });
+            setNewProduct({
+              name: "",
+              quantity: "",
+              description: "",
+              minimumThreshold: "",
+            });
+            onClose();
+          } else {
+            console.error(
+              "Error adding new product: Invalid response format",
+              data
+            );
+          }
+        })
+        .catch((error) => console.error("Error adding new product:", error));
+    } catch (error) {
+      console.error("Error adding inventory:", error);
+    }
   };
 
   const handleDeleteClick = (itemId) => {
-    fetch(`http://localhost:8000/inventory/${itemId}`, {
-      method: "DELETE",
-    })
-      .then((response) => {
-        if (response.ok) {
-          fetchInventory();
-        } else {
-          console.error("Error deleting item");
-        }
+    try {
+      const authToken = localStorage.getItem("authToken");
+
+      if (!authToken) {
+        console.log("Authentication token not found");
+        return;
+      }
+      fetch(`http://localhost:8000/inventory/${itemId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
       })
-      .catch((error) => console.error("Error deleting item:", error));
+        .then((response) => {
+          if (response.ok) {
+            fetchInventory();
+          } else {
+            console.error("Error deleting item");
+          }
+        })
+        .catch((error) => console.error("Error deleting item:", error));
+    } catch (error) {
+      console.error("Error deleting inventory:", error);
+    }
   };
 
   const handleEditClick = (itemId) => {
@@ -111,50 +173,55 @@ function Inventory() {
       minimumThreshold: document.getElementById(`minimumThreshold-${itemId}`)
         .value,
     };
+    try {
+      const authToken = localStorage.getItem("authToken");
 
-    fetch(`http://localhost:8000/inventory/${itemId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(editedData),
-    })
-      .then((response) => response.json())
-      .then(() => {
-        console.log("Item updated successfully");
-        setInventory((prevInventory) => {
-          const updatedInventory = prevInventory.map((item) =>
-            item._id === itemId ? { ...item, ...editedData } : item,
-          );
-          return updatedInventory;
-        });
+      if (!authToken) {
+        console.log("Authentication token not found");
+        return;
+      }
+
+      fetch(`http://localhost:8000/inventory/${itemId}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editedData),
       })
-      .catch((error) => console.error("Error updating item:", error))
-      .finally(() => {
-        setEditedItemId(null);
-      });
+        .then((response) => response.json())
+        .then(() => {
+          console.log("Item updated successfully");
+          setInventory((prevInventory) => {
+            const updatedInventory = prevInventory.map((item) =>
+              item._id === itemId ? { ...item, ...editedData } : item
+            );
+            return updatedInventory;
+          });
+        })
+        .catch((error) => console.error("Error updating item:", error))
+        .finally(() => {
+          setEditedItemId(null);
+        });
+    } catch (error) {
+      console.error("Error deleting inventory:", error);
+    }
   };
 
   const handleInputChange = (e, itemId, field) => {
     const updatedInventory = inventory.map((item) =>
-      item._id === itemId ? { ...item, [field]: e.target.value } : item,
+      item._id === itemId ? { ...item, [field]: e.target.value } : item
     );
     setInventory(updatedInventory);
   };
 
-  const filteredInventory = inventory.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredInventory = (inventory ?? []).filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <>
-      <Flex
-        mt="5"
-        ml="5"
-        alignItems="center"
-        justifyContent="space-between"
-        onClick={handleSortifyClick}
-      >
+      <Flex mt="5" alignItems="center" gap="400px" onClick={handleSortifyClick}>
         <Flex>
           <Text fontSize="40px" fontWeight="bold" color="#D47697" mr="3">
             Kitchen
@@ -167,6 +234,9 @@ function Inventory() {
           Back
         </Button>
       </Flex>
+      <Box>
+        <Text fontSize="md">User Email: {userEmail}</Text>
+      </Box>
       <Box className="inventory-container" p="6">
         <Flex direction="row" justifyContent="space-between">
           <Text fontSize="2xl" fontWeight="bold">
@@ -196,7 +266,6 @@ function Inventory() {
           </Select>
 
           <Box className="blue-buttons">
-            {/* Change the Add New button to open the modal */}
             <Button
               onClick={handleAddNewClick}
               backgroundColor="darkBlue"
@@ -326,7 +395,6 @@ function Inventory() {
           </Tbody>
         </Table>
 
-        {/* Modal for adding a new product */}
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>

@@ -3,10 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./login/login";
 import Create from "./create/create";
 import Home from "./components/home/Home";
-import Inventory from "./inventory/Inventory"
-import Base_portal from './base_portal/base_portal';
-
-
+import Inventory from "./inventory/Inventory";
+import BasePortal from "./base_portal/base_portal";
+import Areas from "./area_page/Areas";
 
 function App() {
   return (
@@ -16,7 +15,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Create />} />
-        <Route path="/base_portal" element={<Base_portal />} />
+        <Route path="/base-portal" element={<BasePortal />} />
+        <Route path="/areas" element={<Areas />} />
       </Routes>
     </Router>
   );

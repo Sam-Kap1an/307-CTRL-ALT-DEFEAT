@@ -1,16 +1,12 @@
 // base_portal.js
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate,findByEmail,addLocationsByUser } from "react-router-dom";
 import {
   Flex,
   Textarea,
   Box,
   Button,
   Input,
-  Table,
-  Tbody,
-  Tr,
-  Td,
   Text,
   Modal,
   ModalOverlay,
@@ -20,62 +16,92 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure, // Import useDisclosure to control the modal state
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 
-function Base_portal() {
+function BasePortal() {
   const navigate = useNavigate();
-  const { isOpen: locIO, onOpen: LO, onClose: LC} = useDisclosure(); // Manage modal state
-  const { isOpen: NIO, onOpen: NO, onClose:NC } = useDisclosure(); // Manage modal state
-  const locations = [
-    { name: "Location1", components: "componentId1"},
-    { name: "Location2", components: "componentId2"},
-    { name: "Location3", components: "componentId3"},
-    { name: "Location4", components: "componentId4"},
-    // Add more locations as needed
-  ];
+  const { isOpen: locIO, onOpen: LO, onClose: LC } = useDisclosure(); // Manage modal state
+  const { isOpen: NIO, onOpen: NO, onClose: NC } = useDisclosure(); // Manage modal state
+
+  const [userEmail, setUserEmail] = useState("");
+  const [locations, setLocations] = useState([]);
+  let [NotesTxt, setNotes] = React.useState("");
+
+  const [newLocation, setNewLocation] = useState({
+    name: "",
+    catagories: "",
+  });
+  
+  const fetchLocation = useCallback(async () => {
+    try {
+      const authToken = localStorage.getItem("authToken");
+
+      if (!authToken) {
+        console.log("Authentication token not found");
+        return;
+      }
+
+      const response = await fetch("http://localhost:8000/location", {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.status === 200) {
+        const data = await response.json();
+        setLocations(data.location);
+        setUserEmail(data.userEmail);
+        console.log(userEmail);
+      } else if (response.status === 401) {
+        console.error("User is not logged in or token is expired");
+        navigate("/login");
+      } else {
+        console.error("Error fetching inventory:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching inventory:", error);
+    }
+  }, [navigate, setLocations, userEmail]);
+
+  useEffect(() => {
+    fetchLocation();
+  }, [fetchLocation]);
+
+
 
   const handleSortifyClick = () => {
-    navigate('/');
+    navigate("/");
   };
 
-  const handleLocationClick = (components) => {
-    navigate(`/${components}`); 
+  const handleLocationClick = (ID) => {
+    navigate(`/${ID}`); 
   };
 
   let handlesetNotesInputChange = (e) => {
-    let inputValue = e.target.value
-    setNotes(inputValue)
-  }
-
-  useEffect(() => {
-    setLocation(locations);
-  }, []);
-
-  const [newLocation, setNewLocation] = useState({
-    name: '',
-    catagories: '',
-  });
-
-  const [location, setLocation] = useState([]);
-  let [NotesTxt, setNotes] = React.useState('')
-
-
-  const handleAddNewLocation = () => {
-    // Simulate adding a new location
-    const generatedId = `componentId${location.length + 1}`; // Generate componentId
-    const newLocationData = { ...newLocation, components: generatedId }; // Assign generatedId to newLocation
-    setLocation([...location, newLocationData]); // Add new location to the array
-    setNewLocation({ name: '', catagories: '' }); // Reset newLocation state
-    LC(); // Close the modal after adding a new location
+    let inputValue = e.target.value;
+    setNotes(inputValue);
   };
+
+
+
+  const handleAddNewLoction = () => {
+    const generatedId = `componentId${locations.length + 1}`; // Generate componentId
+    const newLocationData = { ...newLocation, components: generatedId }; // Assign generatedId to newLocation
+    addLocationsByUser(findByEmail(userEmail),newLocationData)
+    setNewLocation(fetchLocation()); // Reset newLocation state
+    LC(); // Close the modal after adding a new location
+    }
+
+
 
   return (
     <Box className="Location-container">
       <Box id="sortify-text" onClick={handleSortifyClick}>
         <Text fontSize="90px" fontWeight="bold" letterSpacing="20px">
-            <span style={{ color: "#D47697" }}>SOR</span>
-            <span style={{ color: "#6e3652" }}>TIFY</span>
-          </Text>
+          <span style={{ color: "#D47697" }}>SOR</span>
+          <span style={{ color: "#6e3652" }}>TIFY</span>
+        </Text>
       </Box>
 
       <Flex borderRadius ='10' mt='2' mb='3'align="center" justify="center" backgroundColor='#6e3652' onClick={LO}>
@@ -95,11 +121,13 @@ function Base_portal() {
               type="text"
               placeholder="Location Name"
               value={newLocation.name}
-              onChange={(e) => setNewLocation({ ...newLocation, name: e.target.value })}
+              onChange={(e) =>
+                setNewLocation({ ...newLocation, name: e.target.value })
+              }
             />
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="pink" onClick={handleAddNewLocation}>
+            <Button colorScheme="pink" onClick={handleAddNewLoction}>
               Add
             </Button>
           </ModalFooter>
@@ -107,7 +135,7 @@ function Base_portal() {
       </Modal>
 
       <Flex display="grid" gridTemplateColumns="repeat(auto-fill, minmax(150px, 1fr))" gap={2}>
-        {location.map((item) => (
+        {locations.map((item) => (
           <Flex 
             align="center" 
             justify="center"
@@ -142,8 +170,8 @@ function Base_portal() {
                 <Textarea
                   value={NotesTxt}
                   onChange={handlesetNotesInputChange}
-                  placeholder='Put user Notes Here'
-                  size='sm'
+                  placeholder="Put user Notes Here"
+                  size="sm"
                 />
               </>
               </ModalBody>
@@ -153,18 +181,8 @@ function Base_portal() {
           </Modal>
 
       </Box>
-
-
-      
     </Box>
   );
 }
 
-export default Base_portal;
-
-
-
-
-
-
-
+export default BasePortal;
