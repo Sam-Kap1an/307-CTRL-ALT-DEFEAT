@@ -20,7 +20,7 @@ import {
   useDisclosure, // Import useDisclosure to control the modal state
 } from "@chakra-ui/react";
 
-function Base_portal() {
+function BasePortal() {
   const navigate = useNavigate();
   const { isOpen: locIO, onOpen: LO, onClose: LC } = useDisclosure(); // Manage modal state
   const { isOpen: NIO, onOpen: NO, onClose: NC } = useDisclosure(); // Manage modal state
@@ -165,4 +165,5 @@ function Base_portal() {
   );
 }
 
-export default Base_portal;
+
+export default BasePortal;
