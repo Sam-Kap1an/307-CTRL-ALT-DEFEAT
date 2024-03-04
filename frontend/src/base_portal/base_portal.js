@@ -1,6 +1,6 @@
 // base_portal.js
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate,findByEmail,addLocationsByUser } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Flex,
   Textarea,
@@ -86,13 +86,49 @@ function BasePortal() {
 
 
   const handleAddNewLoction = () => {
-    const generatedId = `componentId${locations.length + 1}`; // Generate componentId
-    const newLocationData = { ...newLocation, components: generatedId }; // Assign generatedId to newLocation
-    addLocationsByUser(findByEmail(userEmail),newLocationData)
-    setNewLocation(fetchLocation()); // Reset newLocation state
-    LC(); // Close the modal after adding a new location
-    }
+    try {
+      const authToken = localStorage.getItem("authToken");
 
+      if (!authToken) {
+        console.log("Authentication token not found");
+        return;
+      }
+
+      fetch("http://localhost:8000/location", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newLocation),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data && data._id) {
+            setLocations((prevLocation) => {
+              const newArray = Array.isArray(prevLocation)
+                ? prevLocation
+                : [];
+              return [...newArray, data];
+            });
+            setNewLocation({
+              name: "",
+              catagories: "",
+            });
+            LC(); // Close the modal after adding a new location
+          } else {
+            console.error(
+              "Error adding new loation: Invalid response format",
+              data
+            );
+          }
+        })
+        .catch((error) => console.error("Error adding new loation:", error));
+    } catch (error) {
+      console.error("Error adding loation:", error);
+    }
+  };
+  
 
 
   return (
