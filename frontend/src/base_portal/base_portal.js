@@ -31,38 +31,75 @@ function BasePortal() {
     name: "",
     catagories: "",
   });
-  
-  const fetchLocation = useCallback(async () => {
+
+  const fetchUserEmail = useCallback(async () => {
     try {
       const authToken = localStorage.getItem("authToken");
-
+  
       if (!authToken) {
         console.log("Authentication token not found");
         return;
       }
-
-      const response = await fetch(`http://localhost:8000/locations?email=${userEmail}`, {
+  
+      const response = await fetch("http://localhost:8000/useremail", {
         headers: {
           Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json",
         },
       });
-
+  
       if (response.status === 200) {
         const data = await response.json();
-        setLocations(data.location);
-        setUserEmail(data.userEmail);
-        console.log(userEmail);
+        setUserEmail(data.userEmail); // Set userEmail here
       } else if (response.status === 401) {
         console.error("User is not logged in or token is expired");
         navigate("/login");
       } else {
-        console.error("Error fetching Location:", response.status);
+        console.error("Error fetching user email:", response.status);
       }
     } catch (error) {
-      console.error("Error Fetching Location:", error);
+      console.error("Error fetching user email:", error);
     }
-  }, [navigate, setLocations, userEmail]);
+  }, [navigate, setUserEmail]);
+  
+  
+  const fetchLocation = useCallback(async () => {
+  try {
+    const userEmail = await fetchUserEmail(); // Get the user email using the fetchUserEmail function
+
+    if (!userEmail) {
+      console.log("User email not found");
+      return;
+    }
+
+    const authToken = localStorage.getItem("authToken");
+
+    if (!authToken) {
+      console.log("Authentication token not found");
+      return;
+    }
+
+    const response = await fetch(`http://localhost:8000/locations?email=${userEmail}`, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.status === 200) {
+      const data = await response.json();
+      setLocations(data.location);
+      console.log(userEmail);
+    } else if (response.status === 401) {
+      console.error("User is not logged in or token is expired");
+      navigate("/login");
+    } else {
+      console.error("Error fetching Location:", response.status);
+    }
+  } catch (error) {
+    console.error("Error Fetching Location:", error);
+  }
+}, [navigate, setLocations, fetchUserEmail]);
 
   useEffect(() => {
     fetchLocation();
