@@ -97,12 +97,6 @@ function Base_portal() {
               value={newLocation.name}
               onChange={(e) => setNewLocation({ ...newLocation, name: e.target.value })}
             />
-            <Input
-              type="text"
-              placeholder="Catagories"
-              value={newLocation.catagories}
-              onChange={(e) => setNewLocation({ ...newLocation, catagories: e.target.value })}
-            />
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="pink" onClick={handleAddNewLocation}>
