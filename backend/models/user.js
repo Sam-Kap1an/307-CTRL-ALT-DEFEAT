@@ -3,25 +3,25 @@ import Location from "./location.js";
 
 const UserSchema = new mongoose.Schema(
   {
-    email: {
-      type: String,
-      required: true,
-    },
     name: {
       type: String,
       required: true,
     },
-    password: {
+    email: {
       type: String,
       required: true,
     },
-    // locations: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: Location,
-    //     required: false,
-    //   },
-    // ],
+    hashedPassword: {
+      type: String,
+      required: true,
+    },
+    locations: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: Location,
+        required: false,
+      },
+    ],
   },
   { collection: "users" },
 );

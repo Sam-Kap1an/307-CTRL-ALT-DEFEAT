@@ -15,7 +15,7 @@ const InventorySchema = new mongoose.Schema(
       required: true,
     },
     minimumThreshold: {
-      type: String, // Change the type to String
+      type: String,
       required: true,
     },
   },

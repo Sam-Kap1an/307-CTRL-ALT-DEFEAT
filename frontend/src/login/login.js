@@ -1,10 +1,12 @@
 // Login.js
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "./login.css";
 
 function Login() {
   const navigate = useNavigate(); // Use useNavigate to get the navigate function
+  const [email, setEmail] = useState("");
+  const [pwd, setPassword] = useState("");
 
   const handleSignUpClick = () => {
     // Navigate to the signup page
@@ -14,6 +16,34 @@ function Login() {
   const handleSortifyClick = () => {
     // Navigate to the home page
     navigate("/");
+  };
+
+  const handleLogin = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, pwd }),
+      });
+
+      if (response.status === 200) {
+        const payload = await response.json();
+        localStorage.setItem("authToken", payload.token);
+
+        const authToken = localStorage.getItem("authToken");
+        console.log("Token stored in local storage:", authToken);
+
+        console.log("Login successful!");
+        // Redirect to user portal
+        navigate("/base-portal");
+      } else {
+        console.log("Invalid email or password", response.status);
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
   };
 
   return (
@@ -34,7 +64,13 @@ function Login() {
 
         {/* Email input */}
         <div className="input-container">
-          <input type="text" placeholder="Email" className="login-input" />
+          <input
+            type="text"
+            placeholder="Email"
+            className="login-input"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </div>
 
         {/* Password input */}
@@ -43,13 +79,17 @@ function Login() {
             type="password"
             placeholder="Password"
             className="login-input"
+            value={pwd}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
 
         {/* Your existing login form goes here */}
 
         {/* Login button inside tan box */}
-        <button className="login-button">Login</button>
+        <button className="login-button" onClick={handleLogin}>
+          Login
+        </button>
 
         {/* "New Here?" text */}
         <p className="new-here" onClick={handleSignUpClick}>
