@@ -1,5 +1,4 @@
 import Location from "../models/location.js";
-
 import User from "../models/user.js";
 
 import mongoose from "mongoose";
@@ -30,14 +29,11 @@ async function findByEmail(email) {
 async function findLocationsByUser(User) {
   return Location.find({ _id: { $in: User.locations } }).select("name");
 }
-function addLocationsByUser(User,location) {
-  Location.find({ _id: { $in: User.locations } }).add(location);
-}
+
 
 export default {
   findByEmail,
   findLocationsByUser,
-  addLocationsByUser,
 };
 
 // function getInventory(searchQuery) {

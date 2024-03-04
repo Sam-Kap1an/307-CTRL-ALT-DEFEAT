@@ -107,6 +107,18 @@ app.get("/locations", async (req, res) => {
   }
 });
 
+
+app.get("/useremail", authenticateUser, (req, res) => {
+  const userEmail = req.user.username;
+  try {
+    res.send({ userEmail });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });

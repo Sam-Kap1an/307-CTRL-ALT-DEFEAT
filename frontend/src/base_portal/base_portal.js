@@ -41,7 +41,7 @@ function BasePortal() {
         return;
       }
 
-      const response = await fetch("http://localhost:8000/location", {
+      const response = await fetch(`http://localhost:8000/locations?email=${userEmail}`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json",
@@ -57,10 +57,10 @@ function BasePortal() {
         console.error("User is not logged in or token is expired");
         navigate("/login");
       } else {
-        console.error("Error fetching inventory:", response.status);
+        console.error("Error fetching Location:", response.status);
       }
     } catch (error) {
-      console.error("Error fetching inventory:", error);
+      console.error("Error Fetching Location:", error);
     }
   }, [navigate, setLocations, userEmail]);
 
@@ -94,7 +94,7 @@ function BasePortal() {
         return;
       }
 
-      fetch("http://localhost:8000/location", {
+      fetch("http://localhost:8000/locations", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -113,7 +113,6 @@ function BasePortal() {
             });
             setNewLocation({
               name: "",
-              catagories: "",
             });
             LC(); // Close the modal after adding a new location
           } else {
