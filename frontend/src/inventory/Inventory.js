@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -47,7 +47,7 @@ function Inventory() {
   const [filterOption, setFilterOption] = useState("All");
   const [userEmail, setUserEmail] = useState("");
 
-  const fetchInventory = async () => {
+  const fetchInventory = useCallback(async () => {
     try {
       const authToken = localStorage.getItem("authToken");
 
@@ -77,11 +77,11 @@ function Inventory() {
     } catch (error) {
       console.error("Error fetching inventory:", error);
     }
-  };
+  }, [navigate, setInventory, userEmail]);
 
   useEffect(() => {
     fetchInventory();
-  }, []);
+  }, [fetchInventory]);
 
   const handleAddNewClick = () => {
     onOpen();

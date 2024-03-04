@@ -31,10 +31,7 @@ function Create() {
 
       if (response.status === 201) {
         const payload = await response.json();
-
-        setToken(payload.token);
-        localStorage.setItem("authToken", token);
-
+        localStorage.setItem("authToken", payload.token);
 
         const authToken = localStorage.getItem("authToken");
         console.log("Token stored in local storage:", authToken);
