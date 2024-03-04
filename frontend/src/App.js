@@ -5,6 +5,7 @@ import Create from "./create/create";
 import Home from "./components/home/Home";
 import Inventory from "./inventory/Inventory";
 import BasePortal from "./base_portal/base_portal";
+import Areas from "./area_page/Areas";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Create />} />
         <Route path="/base-portal" element={<BasePortal />} />
+        <Route path="/areas" element={<Areas />} />
       </Routes>
     </Router>
   );
