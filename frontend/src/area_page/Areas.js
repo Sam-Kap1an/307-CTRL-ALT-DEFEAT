@@ -15,6 +15,7 @@ import {
   ModalBody,
 } from "@chakra-ui/react";
 import AreaCards from "./AreaCards";
+import LogoutButton from "../components/Logout.js";
 
 const Areas = () => {
   // need a header for the name of the location
@@ -57,13 +58,7 @@ const Areas = () => {
   ];
   return (
     <Flex direction="column">
-      <Flex
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        mt="5"
-        gap="400px"
-      >
+      <Flex alignItems="center" justifyContent="space-between" mt="5">
         <Flex>
           <Text fontSize="40px" fontWeight="bold" color="#D47697" mr="3">
             Location
@@ -72,10 +67,14 @@ const Areas = () => {
             Areas
           </Text>
         </Flex>
-        <Button colorScheme="teal" variant="outline">
-          Back
-        </Button>
+        <Flex>
+          <Button colorScheme="teal" variant="outline" mr="3">
+            Back
+          </Button>
+          <LogoutButton />
+        </Flex>
       </Flex>
+
       <Box className="inventory-container" p="6">
         <Flex mt="2" mb="2" className="search-filter-buttons" direction="row">
           <Input

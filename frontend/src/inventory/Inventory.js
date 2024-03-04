@@ -21,13 +21,14 @@ import {
   useDisclosure,
   Flex,
 } from "@chakra-ui/react";
+import LogoutButton from "../components/Logout.js";
 
 function Inventory() {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleBackClick = () => {
-    navigate("/");
+    navigate("/areas");
   };
 
   const handleSortifyClick = () => {
@@ -53,7 +54,7 @@ function Inventory() {
 
       if (!authToken) {
         console.log("Authentication token not found");
-        return;
+        navigate("/login");
       }
 
       const response = await fetch("http://localhost:8000/inventory", {
@@ -221,7 +222,12 @@ function Inventory() {
 
   return (
     <>
-      <Flex mt="5" alignItems="center" gap="400px" onClick={handleSortifyClick}>
+      <Flex
+        mt="5"
+        alignItems="center"
+        justifyContent="space-between"
+        onClick={handleSortifyClick}
+      >
         <Flex>
           <Text fontSize="40px" fontWeight="bold" color="#D47697" mr="3">
             Kitchen
@@ -230,10 +236,19 @@ function Inventory() {
             Inventory
           </Text>
         </Flex>
-        <Button onClick={handleBackClick} colorScheme="teal" variant="outline">
-          Back
-        </Button>
+        <Flex>
+          <Button
+            onClick={handleBackClick}
+            colorScheme="teal"
+            variant="outline"
+            mr="3"
+          >
+            Back
+          </Button>
+          <LogoutButton />
+        </Flex>
       </Flex>
+
       <Box>
         <Text fontSize="md">User Email: {userEmail}</Text>
       </Box>
