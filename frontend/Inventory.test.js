@@ -86,9 +86,6 @@ test('opens and closes the modal when clicking Add New button', async () => {
 });
 
 
-
-
-
 test('edits product and updates display', async () => {
 
   const mockData = [
@@ -119,6 +116,7 @@ test('edits product and updates display', async () => {
   });
 });
 
+
 test('filters inventory based on quantity and minimum threshold', async () => {
   fetchMock.mockResponseOnce(JSON.stringify([
     { name: 'LowQuantity', quantity: '1', minimumThreshold: '5' },
@@ -143,6 +141,15 @@ test('filters inventory based on quantity and minimum threshold', async () => {
   expect(screen.getByText('HighQuantity')).toBeInTheDocument();
   expect(screen.queryByText(<td class="css-0">LowQuantity</td>)).not.toBeInTheDocument();
 });
+
+
+
+
+
+
+
+
+
 
 /*
 test('deletes a product and updates display', async () => {
@@ -211,6 +218,6 @@ test('adds a new product and updates display', async () => {
   });
 });
 
-
 */
+
 
