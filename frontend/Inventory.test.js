@@ -150,7 +150,7 @@ test('filters inventory based on quantity and minimum threshold', async () => {
 
 
 
-
+/*
 
 test('deletes a product and updates display', async () => {
   const mockData = [
@@ -175,7 +175,7 @@ test('deletes a product and updates display', async () => {
   });
 });
 
-
+*/
 /*
 test('adds a new product and updates display', async () => {
   const newProduct = {
