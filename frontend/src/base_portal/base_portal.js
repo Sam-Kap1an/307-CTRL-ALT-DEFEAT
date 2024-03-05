@@ -91,7 +91,8 @@ function BasePortal() {
 
     if (response.status === 200) {
       const data = await response.json();
-      setLocations(data.location);
+      const locations = data.location
+      setLocations(locations);
       console.log(userEmail);
     } else if (response.status === 401) {
       console.error("User is not logged in or token is expired");
@@ -111,44 +112,42 @@ function BasePortal() {
 
 
 
-  const handleAddNewLoction = () => {
-    try {
-      const authToken = localStorage.getItem("authToken");
+const handleAddNewLocation = () => {
+  try {
+    const authToken = localStorage.getItem("authToken");
 
-      if (!authToken) {
-        console.log("Authentication token not found");
-        return;
-      }
-
-      fetch(`http://localhost:8000/locations?email=${userEmail}`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newLocation),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data && data._id) {
-            setNewLocation({
-              name: "",
-              catagories: "",
-            });
-            setLocations(locations)
-            LC(); // Close the modal after adding a new location
-          } else {
-            console.error(
-              "Error adding new loation: Invalid response format",
-              data
-            );
-          }
-        })
-        .catch((error) => console.error("Error adding new loation:", error));
-    } catch (error) {
-      console.error("Error adding loation:", error);
+    if (!authToken) {
+      console.log("Authentication token not found");
+      return;
     }
-  };
+
+    fetch(`http://localhost:8000/location?email=${userEmail}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newLocation), // Make sure newLocation contains name and categories
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data && data._id) {
+          setNewLocation({
+            name: "",
+            categories: "", // Make sure categories are included
+          });
+          fetchLocation(); // Fetch locations again after adding a new location
+          LC(); // Close the modal after adding a new location
+        } else {
+          console.error("Error adding new location: Invalid response format", data);
+        }
+      })
+      .catch((error) => console.error("Error adding new location:", error));
+  } catch (error) {
+    console.error("Error adding location:", error);
+  }
+};
+
   
 
 
@@ -198,31 +197,34 @@ function BasePortal() {
             />
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="pink" onClick={handleAddNewLoction}>
+            <Button colorScheme="pink" onClick={handleAddNewLocation}>
               Add
             </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
-
       <Flex display="grid" gridTemplateColumns="repeat(auto-fill, minmax(150px, 1fr))" gap={2}>
-        {locations.map((item) => (
-          <Flex 
-            align="center" 
-            justify="center"
-            key={item._id}
-            p={4}
-            borderWidth="1px"
-            borderRadius="lg"
-            onClick={() => handleLocationClick(item.components)}
-            cursor="pointer"
-            backgroundColor="#EDC7B7"
-          >
+        {locations && locations.length > 0 ? (
+          locations.map((item) => (
+            <Flex 
+              align="center" 
+              justify="center"
+              key={item._id}
+              p={4}
+              borderWidth="1px"
+              borderRadius="lg"
+              onClick={() => handleLocationClick(item.components)}
+              cursor="pointer"
+              backgroundColor="#EDC7B7"
+            >
               <Flex fontWeight="bold" align="center" justify="center"  >
                 <span style={{ color: 'White' }}>{item.name}</span>
               </Flex>
-          </Flex>
-        ))}
+            </Flex>
+          ))
+        ) : (
+          <Text>Loading locations...</Text>
+        )}
       </Flex>
       <Box borderRadius ='10' backgroundColor="#EDC7B7" onClick={NO}>
         <Text ml='2' mt='3' fontSize="2xl" fontWeight="bold">

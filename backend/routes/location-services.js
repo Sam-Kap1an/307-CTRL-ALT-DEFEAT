@@ -26,9 +26,6 @@ async function findByEmail(email) {
   return user;
 }
 
-async function findLocationsByUser(User) {
-  return Location.find({ _id: { $in: User.locations } }).select("name");
-}
 
 
 function addLocation(location) {
@@ -38,7 +35,6 @@ function addLocation(location) {
 
 export default {
   findByEmail,
-  findLocationsByUser,
   addLocation,
 };
 

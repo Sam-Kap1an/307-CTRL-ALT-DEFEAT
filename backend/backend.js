@@ -5,6 +5,7 @@ import inventoryServices from "./routes/inventory-services.js";
 import { authenticateUser, loginUser, registerUser } from "./routes/auth.js";
 
 import locationServices from "./routes/location-services.js";
+import userServices from "./routes/user-services.js";
 
 const app = express();
 const port = 8000;
@@ -99,7 +100,7 @@ app.get("/locations", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     // Now you can access the user object and send it in the response
-    const locations = await locationServices.findLocationsByUser(user);
+    const locations = await userServices.findLocationsByEmail(email);
     res.status(200).json(locations);
   } catch (error) {
     console.error("Error fetching locations:", error);
@@ -121,21 +122,34 @@ app.get("/useremail", authenticateUser, (req, res) => {
 app.post("/location", authenticateUser, async (req, res) => {
   const { email } = req.query;
   const locationToAdd = req.body;
-  console.log(email);
-  //const user = User.findOne({ email });
-  const user = await locationServices.findByEmail(email);
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }  
-  locationServices
-    .addLocation(locationToAdd)
-    .then((result) => {
-      res.status(201).send(result);
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
-    });
+
+  try {
+    const user = await locationServices.findByEmail(email);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }  
+
+    locationServices.addLocation(locationToAdd)
+      .then((result) => {
+        res.status(201).send(result);
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+      });
+
+      userServices.addLocation(email, locationToAdd)
+      .then((result) => {
+        res.status(201).send(result);
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+      });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 
