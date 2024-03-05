@@ -36,18 +36,15 @@ async function findUserByEmail(email) {
 }
 
 async function findLocationsByEmail(email) {
-  const locations = await User.findOne({ email }).locations;
+  const user = await User.findOne({ email });
+  const locations = user.locations;
   return locations;
 }
 
 
-async function addLocation(email,  newLocation) {
-  return await User.findOne({ email }).locations.add(newLocation);
-}
 
 export default {
   addNewUser,
   findUserByEmail,
   findLocationsByEmail,
-  addLocation,
 };

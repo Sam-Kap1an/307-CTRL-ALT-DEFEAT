@@ -5,7 +5,6 @@ import inventoryServices from "./routes/inventory-services.js";
 import { authenticateUser, loginUser, registerUser } from "./routes/auth.js";
 
 import locationServices from "./routes/location-services.js";
-import userServices from "./routes/user-services.js";
 
 const app = express();
 const port = 8000;
@@ -90,23 +89,7 @@ app.post("/signup", registerUser);
 app.post("/login", loginUser);
 
 // returns a list of all locations provided a user email address
-app.get("/locations", async (req, res) => {
-  try {
-    const { email } = req.query;
-    console.log(email);
-    //const user = User.findOne({ email });
-    const user = await locationServices.findByEmail(email);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    // Now you can access the user object and send it in the response
-    const locations = await userServices.findLocationsByEmail(email);
-    res.status(200).json(locations);
-  } catch (error) {
-    console.error("Error fetching locations:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
+
 
 
 app.get("/useremail", authenticateUser, (req, res) => {
@@ -119,6 +102,22 @@ app.get("/useremail", authenticateUser, (req, res) => {
   }
 });
 
+// Fetching Locations Endpoint
+app.get("/location", async (req, res) => {
+  try {
+    const { email } = req.query;
+    const user = await locationServices.findByEmail(email).populate('locations');
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json(user.locations); // Send only the locations array
+  } catch (error) {
+    console.error("Error fetching locations:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Adding Location Endpoint
 app.post("/location", authenticateUser, async (req, res) => {
   const { email } = req.query;
   const locationToAdd = req.body;
@@ -127,30 +126,23 @@ app.post("/location", authenticateUser, async (req, res) => {
     const user = await locationServices.findByEmail(email);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
-    }  
+    }
 
-    locationServices.addLocation(locationToAdd)
-      .then((result) => {
-        res.status(201).send(result);
-      })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-      });
+    // Add location to locationServices and get the created location
+    const createdLocation = await locationServices.addLocation(locationToAdd);
 
-      userServices.addLocation(email, locationToAdd)
-      .then((result) => {
-        res.status(201).send(result);
-      })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-      });
+    // Add the created location's id to the user's locations array
+    user.locations.push(createdLocation._id);
+    await user.save();
+
+    res.status(201).json(createdLocation); // Return the created location
   } catch (error) {
     console.error(error);
-    res.status(500).send("Internal Server Error");
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+
 
 
 app.listen(port, () => {
