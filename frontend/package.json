@@ -30,7 +30,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "npx eslint . && npx prettier --check .",
-    "test:comp": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
+    "test:comp": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+    "coverage": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --collectCoverage"
   },
   "jest": {
     "testEnvironment": "jest-environment-jsdom",
