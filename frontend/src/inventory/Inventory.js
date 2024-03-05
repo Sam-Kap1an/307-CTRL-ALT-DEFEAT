@@ -22,10 +22,15 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import LogoutButton from "../components/Logout.js";
+import SearchBar from "./SearchBar.js";
 
 function Inventory() {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const handleSearchChange = (value) => {
+    setSearchTerm(value);
+  };
 
   const handleBackClick = () => {
     navigate("/areas");
@@ -260,14 +265,7 @@ function Inventory() {
         </Flex>
 
         <Flex mt="2" mb="2" className="search-filter-buttons" direction="row">
-          <Input
-            type="text"
-            placeholder="Search Product"
-            className="search-input"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            mr="3"
-          />
+          <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
 
           <Select
             value={filterOption}

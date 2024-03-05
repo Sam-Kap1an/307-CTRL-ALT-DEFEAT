@@ -14,7 +14,7 @@ import {
   ModalHeader,
   ModalBody,
 } from "@chakra-ui/react";
-import AreaCards from "./AreaCards";
+import AreaCards from "./AreaCards.js";
 import LogoutButton from "../components/Logout.js";
 
 const Areas = () => {
