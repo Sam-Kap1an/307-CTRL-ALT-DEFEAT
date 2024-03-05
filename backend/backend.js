@@ -91,7 +91,7 @@ app.post("/login", loginUser);
 // returns a list of all locations provided a user email address
 app.get("/locations", async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email } = req.query;
     console.log(email);
     //const user = User.findOne({ email });
     const user = await locationServices.findByEmail(email);
@@ -118,7 +118,27 @@ app.get("/useremail", authenticateUser, (req, res) => {
   }
 });
 
-//need a post for loccations
+app.post("/location", authenticateUser, async (req, res) => {
+  const { email } = req.query;
+  const locationToAdd = req.body;
+  console.log(email);
+  //const user = User.findOne({ email });
+  const user = await locationServices.findByEmail(email);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }  
+  locationServices
+    .addLocation(locationToAdd)
+    .then((result) => {
+      res.status(201).send(result);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    });
+});
+
+
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });

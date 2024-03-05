@@ -31,9 +31,15 @@ async function findLocationsByUser(User) {
 }
 
 
+function addLocation(location) {
+  const newLocation = new Location(location);
+  return newLocation.save();
+}
+
 export default {
   findByEmail,
   findLocationsByUser,
+  addLocation,
 };
 
 // function getInventory(searchQuery) {

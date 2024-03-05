@@ -22,10 +22,10 @@ function BasePortal() {
   const navigate = useNavigate();
   const { isOpen: locIO, onOpen: LO, onClose: LC } = useDisclosure(); // Manage modal state
   const { isOpen: NIO, onOpen: NO, onClose: NC } = useDisclosure(); // Manage modal state
+  let [NotesTxt, setNotes] = React.useState("");
 
   const [userEmail, setUserEmail] = useState("");
   const [locations, setLocations] = useState([]);
-  let [NotesTxt, setNotes] = React.useState("");
 
   const [newLocation, setNewLocation] = useState({
     name: "",
@@ -51,6 +51,8 @@ function BasePortal() {
       if (response.status === 200) {
         const data = await response.json();
         setUserEmail(data.userEmail); // Set userEmail here
+        console.log(`user email:${data.userEmail}`);
+        return data.userEmail
       } else if (response.status === 401) {
         console.error("User is not logged in or token is expired");
         navigate("/login");
@@ -65,7 +67,7 @@ function BasePortal() {
   
   const fetchLocation = useCallback(async () => {
   try {
-    fetchUserEmail(); // Get the user email using the fetchUserEmail function
+    const userEmail = await fetchUserEmail(); // Get the user email using the fetchUserEmail function
 
     if (!userEmail) {
       console.log(userEmail);
@@ -100,26 +102,12 @@ function BasePortal() {
   } catch (error) {
     console.error("Error Fetching Location:", error);
   }
-}, [navigate, setLocations, fetchUserEmail,userEmail]);
+}, [navigate, setLocations, fetchUserEmail]);
 
   useEffect(() => {
     fetchLocation();
   }, [fetchLocation]);
 
-
-
-  const handleSortifyClick = () => {
-    navigate("/");
-  };
-
-  const handleLocationClick = (ID) => {
-    navigate(`/${ID}`); 
-  };
-
-  let handlesetNotesInputChange = (e) => {
-    let inputValue = e.target.value;
-    setNotes(inputValue);
-  };
 
 
 
@@ -132,7 +120,7 @@ function BasePortal() {
         return;
       }
 
-      fetch("http://localhost:8000/locations", {
+      fetch(`http://localhost:8000/locations?email=${userEmail}`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -162,6 +150,20 @@ function BasePortal() {
     }
   };
   
+
+
+  const handleSortifyClick = () => {
+    navigate("/");
+  };
+
+  const handleLocationClick = (ID) => {
+    navigate(`/${ID}`); 
+  };
+
+  let handlesetNotesInputChange = (e) => {
+    let inputValue = e.target.value;
+    setNotes(inputValue);
+  };
 
 
   return (
