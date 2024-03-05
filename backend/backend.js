@@ -86,10 +86,9 @@ app.post("/login", loginUser);
 
 // returns a list of all locations provided a user email address
 app.get("/locations", async (req, res) => {
+  const { email } = req.query;
+
   try {
-    const { email } = req.body;
-    // const email = "sohini@gmail.com";
-    console.log(email);
     //const user = User.findOne({ email });
     const user = await userServices.findUserByEmail(email);
     if (!user) {
@@ -103,6 +102,31 @@ app.get("/locations", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+app.post("/location", authenticateUser, async (req, res) => {
+  const { email } = req.query;
+  const locationToAdd = req.body;
+
+  try {
+    const user = await locationServices.findByEmail(email);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Add location to locationServices and get the created location
+    const createdLocation = await locationServices.addLocation(locationToAdd);
+
+    // Add the created location's id to the user's locations array
+    user.locations.push(createdLocation._id);
+    await user.save();
+
+    res.status(201).json(createdLocation); // Return the created location
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 
 app.get("/:id/categories", async (req, res) => {
   try {

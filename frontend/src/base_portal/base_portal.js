@@ -54,7 +54,14 @@ function BasePortal() {
   };
 
   const handleAddNewLoction = () => {
-    fetch("http://localhost:8000/location", {
+    try {
+      const authToken = localStorage.getItem("authToken");
+
+      if (!authToken) {
+        console.log("Authentication token not found");
+        return;
+      }
+    fetch(`http://localhost:8000/location?email=${userEmail}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -68,6 +75,9 @@ function BasePortal() {
         LC(); // Close the modal after adding a new product
       })
       .catch((error) => console.error("Error adding new product:", error));
+    } catch (error) {
+      console.error("Error adding location:", error);
+    }
   };
 
   return (
@@ -79,17 +89,12 @@ function BasePortal() {
         </Text>
       </Box>
 
-      <Box>
-        <Text fontSize="2xl" fontWeight="bold">
-          Groups
-        </Text>
-        <Button onClick={LO} colorScheme="red" variant="outline">
-          <Text fontSize="20px">
-            <span style={{ color: "#6e3652" }}>ADD Group</span>
-          </Text>
-        </Button>
-      </Box>
-
+      <Flex borderRadius ='10' mt='2' mb='3'align="center" justify="center" backgroundColor='#6e3652' onClick={LO}>
+        <Text mt='2' mb='2' fontSize="20px">
+            <span style={{ color: "white" }}>Add Group</span>
+          </Text>        
+      </Flex>
+      
       {/* Modal for adding a new product */}
       <Modal isOpen={locIO} onClose={LC}>
         <ModalOverlay />
@@ -105,45 +110,50 @@ function BasePortal() {
                 setNewLocation({ ...newLocation, name: e.target.value })
               }
             />
-            <Input
-              type="text"
-              placeholder="Catagories"
-              value={newLocation.catagories}
-              onChange={(e) =>
-                setNewLocation({ ...newLocation, catagories: e.target.value })
-              }
-            />
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="pink" mr={3} onClick={LC}>
-              Close
-            </Button>
-            <Button colorScheme="pink" onClick={handleAddNewLoction}>
+            <Button colorScheme="pink" onClick={handleAddNewLocation}>
               Add
             </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
-
-      <Table>
-        <Tbody>
-          {location.map((item) => (
-            <Tr key={item._id}></Tr>
-          ))}
-        </Tbody>
-      </Table>
-
-      <Box backgroundColor="pink" onClick={NO}>
-        <Text fontSize="2xl" fontWeight="bold">
-          Notes:
+      <Flex display="grid" gridTemplateColumns="repeat(auto-fill, minmax(150px, 1fr))" gap={2}>
+        {locations && locations.length > 0 ? (
+          locations.map((item) => (
+            <Flex 
+              align="center" 
+              justify="center"
+              key={item._id}
+              p={4}
+              borderWidth="1px"
+              borderRadius="lg"
+              onClick={() => handleLocationClick(item.components)}
+              cursor="pointer"
+              backgroundColor="#EDC7B7"
+            >
+              <Flex fontWeight="bold" align="center" justify="center"  >
+                <span style={{ color: 'White' }}>{item.name}</span>
+              </Flex>
+            </Flex>
+          ))
+        ) : (
+          <Text>Loading locations...</Text>
+        )}
+      </Flex>
+      <Box borderRadius ='10' backgroundColor="#EDC7B7" onClick={NO}>
+        <Text ml='2' mt='3' fontSize="2xl" fontWeight="bold">
+          <span style={{ color: 'White' }}>Notes:</span>        
+          </Text>
+        <Text  ml='2' fontSize="2xl">
+        <span style={{ color: 'White' }}>{NotesTxt}</span>
         </Text>
-        <Text fontSize="2xl">{NotesTxt}</Text>
-        <Modal isOpen={NIO} onClose={NC}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Add New Location</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
+          <Modal isOpen={NIO} onClose={NC}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Add New Location</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
               <>
                 <Textarea
                   value={NotesTxt}
@@ -152,14 +162,12 @@ function BasePortal() {
                   size="sm"
                 />
               </>
-            </ModalBody>
-            <ModalFooter>
-              <Button colorScheme="pink" mr={3} onClick={NC}>
-                Close
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+              </ModalBody>
+              <ModalFooter>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+
       </Box>
     </Box>
   );
