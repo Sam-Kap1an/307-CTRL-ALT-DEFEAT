@@ -1,8 +1,15 @@
 // SearchBar.js
-import React from "react";
+import React, { useState } from "react";
 import { Input, Flex } from "@chakra-ui/react";
 
-function SearchBar({ searchTerm, onSearchChange }) {
+function SearchBar({ onSearchChange }) {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearchChange = (value) => {
+    setSearchTerm(value);
+    onSearchChange(value);
+  };
+
   return (
     <Flex>
       <Input
@@ -10,7 +17,7 @@ function SearchBar({ searchTerm, onSearchChange }) {
         placeholder="Search Product"
         className="search-input"
         value={searchTerm}
-        onChange={(e) => onSearchChange(e.target.value)}
+        onChange={(e) => handleSearchChange(e.target.value)}
         mr="3"
       />
     </Flex>
@@ -18,3 +25,4 @@ function SearchBar({ searchTerm, onSearchChange }) {
 }
 
 export default SearchBar;
+

@@ -22,3 +22,19 @@ describe("SearchBar", () => {
   });
 });
 
+describe("SearchBar", () => {
+    test("filters inventory based on search term", () => {
+      const onSearchChangeMock = jest.fn();
+      const filteredInventory = [
+        { _id: 1, name: "Product A" },
+        { _id: 2, name: "Product B" },
+      ];
+  
+      render(<SearchBar onSearchChange={onSearchChangeMock} filteredInventory={filteredInventory} />);
+  
+      const inputElement = screen.getByPlaceholderText("Search Product");
+      fireEvent.change(inputElement, { target: { value: "Product A" } });
+  
+      expect(onSearchChangeMock).toHaveBeenCalledWith("Product A");
+    });
+});

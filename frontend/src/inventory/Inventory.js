@@ -28,10 +28,11 @@ function Inventory() {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  
   const handleSearchChange = (value) => {
     setSearchTerm(value);
   };
-
+  
   const handleBackClick = () => {
     navigate("/areas");
   };
@@ -265,7 +266,8 @@ function Inventory() {
         </Flex>
 
         <Flex mt="2" mb="2" className="search-filter-buttons" direction="row">
-          <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
+            
+          <SearchBar onSearchChange={handleSearchChange} filteredInventory={filteredInventory}/>
 
           <Select
             value={filterOption}
