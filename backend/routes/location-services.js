@@ -26,7 +26,6 @@ async function findByEmail(email) {
 }
 
 
-
 function addLocation(location) {
   const newLocation = new Location(location);
   return newLocation.save();
@@ -34,11 +33,6 @@ function addLocation(location) {
 
 async function findLocationsByUser(User) {
   return Location.find({ _id: { $in: User.locations } });
-}
-
-function addLocation(location) {
-  const newLocation = new Location(location);
-  return newLocation.save();
 }
 
 export default {

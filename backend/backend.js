@@ -102,11 +102,12 @@ app.get("/useremail", authenticateUser, (req, res) => {
 app.get("/location", async (req, res) => {
   try {
     const { email } = req.query;
-    const user = await userServices.findUserByEmail(email).populate('locations');
+    const user = await locationServices.findUserByEmail(email);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.status(200).json(user.locations); // Send only the locations array
+    const locations = await locationServices.findLocationsByUser(user);
+    res.status(200).json(locations); // Send only the locations array
   } catch (error) {
     console.error("Error fetching locations:", error);
     res.status(500).json({ message: "Internal server error" });

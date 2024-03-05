@@ -1,4 +1,4 @@
-  // base_portal.js
+  // BasePortal.js
   import React, { useState, useEffect, useCallback } from "react";
   import { useNavigate } from "react-router-dom";
   import {
@@ -47,7 +47,6 @@
             "Content-Type": "application/json",
           },
         });
-    
         if (response.status === 200) {
           const data = await response.json();
           setUserEmail(data.userEmail); // Set userEmail here

@@ -4,7 +4,7 @@ import Login from "./login/login";
 import Create from "./create/create";
 import Home from "./components/home/Home";
 import Inventory from "./inventory/Inventory";
-import BasePortal from "./base_portal/base_portal";
+import BasePortal from "./BasePortal/BasePortal";
 import Areas from "./area_page/Areas";
 
 function App() {
