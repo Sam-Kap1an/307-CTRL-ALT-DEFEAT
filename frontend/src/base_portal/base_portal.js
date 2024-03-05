@@ -29,6 +29,10 @@ function BasePortal() {
     navigate("/");
   };
 
+  const handleLocationClick = (ID) => {
+    navigate(`/${ID}`); 
+  };
+
   let handlesetNotesInputChange = (e) => {
     let inputValue = e.target.value;
     setNotes(inputValue);
@@ -53,7 +57,7 @@ function BasePortal() {
       .catch((error) => console.error("Error fetching location:", error));
   };
 
-  const handleAddNewLoction = () => {
+  const handleAddNewLocation = () => {
     try {
       const authToken = localStorage.getItem("authToken");
 
@@ -61,7 +65,7 @@ function BasePortal() {
         console.log("Authentication token not found");
         return;
       }
-    fetch(`http://localhost:8000/location?email=${userEmail}`, {
+    fetch(`http://localhost:8000/location`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

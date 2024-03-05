@@ -85,12 +85,11 @@ app.post("/signup", registerUser);
 app.post("/login", loginUser);
 
 // returns a list of all locations provided a user email address
-app.get("/locations", async (req, res) => {
-  const { email } = req.query;
-
+app.get("/location", async (req, res) => {
+  const userEmail = req.user.username;
   try {
     //const user = User.findOne({ email });
-    const user = await userServices.findUserByEmail(email);
+    const user = await userServices.findUserByEmail(userEmail);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -104,11 +103,10 @@ app.get("/locations", async (req, res) => {
 });
 
 app.post("/location", authenticateUser, async (req, res) => {
-  const { email } = req.query;
   const locationToAdd = req.body;
-
+  const userEmail = req.user.username;
   try {
-    const user = await locationServices.findByEmail(email);
+    const user = await locationServices.findByEmail(userEmail);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
