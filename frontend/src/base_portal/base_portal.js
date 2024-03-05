@@ -65,9 +65,10 @@ function BasePortal() {
   
   const fetchLocation = useCallback(async () => {
   try {
-    const userEmail = await fetchUserEmail(); // Get the user email using the fetchUserEmail function
+    fetchUserEmail(); // Get the user email using the fetchUserEmail function
 
     if (!userEmail) {
+      console.log(userEmail);
       console.log("User email not found");
       return;
     }
@@ -99,7 +100,7 @@ function BasePortal() {
   } catch (error) {
     console.error("Error Fetching Location:", error);
   }
-}, [navigate, setLocations, fetchUserEmail]);
+}, [navigate, setLocations, fetchUserEmail,userEmail]);
 
   useEffect(() => {
     fetchLocation();
@@ -142,15 +143,11 @@ function BasePortal() {
         .then((response) => response.json())
         .then((data) => {
           if (data && data._id) {
-            setLocations((prevLocation) => {
-              const newArray = Array.isArray(prevLocation)
-                ? prevLocation
-                : [];
-              return [...newArray, data];
-            });
             setNewLocation({
               name: "",
+              catagories: "",
             });
+            setLocations(locations)
             LC(); // Close the modal after adding a new location
           } else {
             console.error(

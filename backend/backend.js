@@ -118,7 +118,7 @@ app.get("/useremail", authenticateUser, (req, res) => {
   }
 });
 
-
+//need a post for loccations
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
