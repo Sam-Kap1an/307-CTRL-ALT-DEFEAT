@@ -1,5 +1,5 @@
 import Location from "../models/location.js";
-import User from "../models/user.js";
+import Category from "../models/category.js";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
@@ -19,17 +19,18 @@ mongoose
     console.error("Error connecting to MongoDB:", error);
   });
 
-async function findByEmail(email) {
-  const user = await User.findOne({ email });
-  console.log(user);
-  return user;
+async function findLocationById(_id) {
+  console.log(_id);
+  const location = await Location.findOne({ _id });
+  console.log(location);
+  return location;
 }
 
-async function findLocationsByUser(User) {
-  return Location.find({ _id: { $in: User.locations } });
+async function findCategoryByLocation(Location) {
+  return Category.find({ _id: { $in: Location.categories } });
 }
 
 export default {
-  findByEmail,
-  findLocationsByUser,
+  findLocationById,
+  findCategoryByLocation,
 };

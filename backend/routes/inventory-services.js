@@ -1,4 +1,5 @@
 import Inventory from "../models/inventory.js";
+import Category from "../models/category.js";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
@@ -18,10 +19,15 @@ mongoose
     console.error("Error connecting to MongoDB:", error);
   });
 
-function getInventory(searchQuery) {
-  // Use a regex to perform case-insensitive search
-  const regex = new RegExp(searchQuery, "i");
-  return Inventory.find({ name: regex });
+async function findCategoryById(_id) {
+  console.log(_id);
+  const category = await Category.findOne({ _id });
+  console.log(category);
+  return category;
+}
+
+async function findInventoryByCategory(Category) {
+  return Inventory.find({ _id: { $in: Category.inventory } });
 }
 
 function addItemToInventory(item) {
@@ -42,7 +48,9 @@ function updateItemInInventory(itemId, updatedData) {
 }
 
 export default {
-  getInventory,
+  // getInventory,
+  findCategoryById,
+  findInventoryByCategory,
   addItemToInventory,
   deleteItemFromInventory,
   searchInventory,

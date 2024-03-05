@@ -1,10 +1,10 @@
 import express from "express";
 import cors from "cors";
 import inventoryServices from "./routes/inventory-services.js";
-
-import { authenticateUser, loginUser, registerUser } from "./routes/auth.js";
-
+import userServices from "./routes/user-services.js";
 import locationServices from "./routes/location-services.js";
+import categoryServices from "./routes/category-services.js";
+import { authenticateUser, loginUser, registerUser } from "./routes/auth.js";
 
 const app = express();
 const port = 8000;
@@ -12,32 +12,28 @@ const port = 8000;
 app.use(cors());
 app.use(express.json());
 
-app.get("/inventory", authenticateUser, (req, res) => {
-  const { search } = req.query;
-  const userEmail = req.user.username;
+app.get("/:id/inventory", async (req, res) => {
+  try {
+    const { search } = req.query;
+    const { id } = req.params;
 
-  if (search) {
-    inventoryServices
-      .searchInventory(search)
-      .then((result) => {
-        // Send both result and user email in the response
-        res.send({ result, userEmail });
-      })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-      });
-  } else {
-    inventoryServices
-      .getInventory()
-      .then((result) => {
-        // Send both result and user email in the response
-        res.send({ result, userEmail });
-      })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-      });
+    let category;
+    let inventory;
+
+    if (search) {
+      category = await inventoryServices.findCategoryById(id);
+      inventory = await inventoryServices.searchInventory(search, category);
+      console.log(inventory);
+    } else {
+      category = await inventoryServices.findCategoryById(id);
+      inventory = await inventoryServices.findInventoryByCategory(category);
+      console.log(inventory);
+    }
+
+    res.send({ inventory });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
   }
 });
 
@@ -92,9 +88,10 @@ app.post("/login", loginUser);
 app.get("/locations", async (req, res) => {
   try {
     const { email } = req.body;
+    // const email = "sohini@gmail.com";
     console.log(email);
     //const user = User.findOne({ email });
-    const user = await locationServices.findByEmail(email);
+    const user = await userServices.findUserByEmail(email);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -103,6 +100,23 @@ app.get("/locations", async (req, res) => {
     res.status(200).json(locations);
   } catch (error) {
     console.error("Error fetching locations:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.get("/:id/categories", async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+
+    const location = await categoryServices.findLocationById(id);
+    if (!location) {
+      return res.status(404).json({ message: "Location not found" });
+    }
+    const categories = await categoryServices.findCategoryByLocation(location);
+    res.status(200).json(categories);
+  } catch (error) {
+    console.error("Error fetching categories:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
