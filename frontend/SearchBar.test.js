@@ -15,10 +15,8 @@ describe("SearchBar", () => {
 test("handles search term change", () => {
     const onSearchChangeMock = jest.fn();
     render(<SearchBar searchTerm="" onSearchChange={onSearchChangeMock} />);
-
     const inputElement = screen.getByPlaceholderText("Search Product");
     fireEvent.change(inputElement, { target: { value: "new term" } });
-
     expect(onSearchChangeMock).toHaveBeenCalledWith([]);
 });
 
