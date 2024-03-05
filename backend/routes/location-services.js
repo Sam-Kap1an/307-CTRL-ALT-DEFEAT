@@ -34,7 +34,7 @@ function addLocation(location) {
 
 async function findLocationsByUser(User) {
   return Location.find({ _id: { $in: User.locations } });
-
+}
 
 function addLocation(location) {
   const newLocation = new Location(location);
@@ -44,4 +44,5 @@ function addLocation(location) {
 export default {
   findByEmail,
   findLocationsByUser,
+  addLocation,
 };

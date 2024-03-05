@@ -35,16 +35,9 @@ async function findUserByEmail(email) {
   return user;
 }
 
-async function findLocationsByEmail(email) {
-  const user = await User.findOne({ email });
-  const locations = user.locations;
-  return locations;
-}
-
 
 
 export default {
   addNewUser,
   findUserByEmail,
-  findLocationsByEmail,
 };
