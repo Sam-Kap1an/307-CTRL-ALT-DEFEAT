@@ -27,11 +27,13 @@ import SearchBar from "./SearchBar.js";
 function Inventory() {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  
+  /*
   const handleSearchChange = (value) => {
     setSearchTerm(value);
   };
+  */
+
+  
   
   const handleBackClick = () => {
     navigate("/areas");
@@ -53,6 +55,11 @@ function Inventory() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterOption, setFilterOption] = useState("All");
   const [userEmail, setUserEmail] = useState("");
+  const [filteredInventory, setFilteredInventory] = useState([]);
+
+  const handleSearchChange = (filteredInventory) => {
+    setFilteredInventory(filteredInventory);
+  };
 
   const fetchInventory = useCallback(async () => {
     try {
@@ -222,10 +229,11 @@ function Inventory() {
     setInventory(updatedInventory);
   };
 
+  /*
   const filteredInventory = (inventory ?? []).filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
-
+  */
   return (
     <>
       <Flex

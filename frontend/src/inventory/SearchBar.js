@@ -2,12 +2,15 @@
 import React, { useState } from "react";
 import { Input, Flex } from "@chakra-ui/react";
 
-function SearchBar({ onSearchChange }) {
+function SearchBar({ onSearchChange, inventory }) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearchChange = (value) => {
     setSearchTerm(value);
-    onSearchChange(value);
+    const filteredInventory = (inventory ?? []).filter((item) =>
+      item.name.toLowerCase().includes(value.toLowerCase())
+    );
+    onSearchChange(filteredInventory);
   };
 
   return (
@@ -25,4 +28,5 @@ function SearchBar({ onSearchChange }) {
 }
 
 export default SearchBar;
+
 
