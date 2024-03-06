@@ -53,7 +53,7 @@ function BasePortal() {
         console.log("Authentication token not found");
         return;
       }
-      const response = await fetch(`sortify-backend.azurewebsites.net/location`, {
+      const response = await fetch(`http://localhost:8000/location`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json",
@@ -85,7 +85,7 @@ function BasePortal() {
         console.log("Authentication token not found");
         return;
       }
-    fetch(`sortify-backend.azurewebsites.net/location`, {
+    fetch(`http://localhost:8000/location`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${authToken}`,
