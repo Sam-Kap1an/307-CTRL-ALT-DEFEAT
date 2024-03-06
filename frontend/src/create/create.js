@@ -21,7 +21,7 @@ function Create() {
     try {
       const newUser = { name, email, pwd };
 
-      const response = await fetch("http://localhost:8000/signup", {
+      const response = await fetch("sortify-backend.azurewebsites.net/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

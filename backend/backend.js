@@ -12,6 +12,10 @@ const port = 8000;
 app.use(cors());
 app.use(express.json());
 
+app.get("/", async (req, res) => {
+  res.status(200).send("Successfully connected");
+});
+
 app.get("/:id/inventory", async (req, res) => {
   try {
     const { search } = req.query;
