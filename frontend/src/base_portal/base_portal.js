@@ -23,21 +23,25 @@ import {
   useDisclosure, // Import useDisclosure to control the modal state
 } from "@chakra-ui/react";
 import LogoutButton from "../components/Logout";
-import { ChevronDownIcon } from "@chakra-ui/icons";
+import { HamburgerIcon } from "@chakra-ui/icons";
 
 function BasePortal() {
   const navigate = useNavigate();
   const { isOpen: locIO, onOpen: LO, onClose: LC } = useDisclosure(); // Manage modal state
   const { isOpen: NIO, onOpen: NO, onClose: NC } = useDisclosure(); // Manage modal state
   const { isOpen: UserLog, onOpen: UserOpen, onClose: UserClose } = useDisclosure(); // Manage modal state
-  const { isOpen: GroupButt, onOpen: GroupOpen, onClose: GroupClose } = useDisclosure(); // Manage modal state
+
+  const [editMode, setEditMode] = useState(false);
 
   const [locations, setLocations] = useState([]);
   const [newLocation, setNewLocation] = useState({
     name: "",
     categories: "",
   });
-
+  
+  const toggleEditMode = () => {
+    setEditMode(!editMode);
+  };
 
   const handleSortifyClick = () => {
     navigate("/");
@@ -191,17 +195,27 @@ function BasePortal() {
       <Box width="350px" onClick={UserOpen}/>
       {/* Welcome user message and logout dropdown */}
       <Menu>
-          <MenuButton as={Text} fontSize="30px" fontWeight="bold" cursor="pointer">
-            <span style={{ color: "#D47697" }}>Welcome, </span>
-            <span style={{ color: "#6e3652" }}>{username}.</span>
-            <ChevronDownIcon />
-          </MenuButton>
-          <MenuList>
-            <MenuItem >
-            <LogoutButton/>
-            </MenuItem>
-          </MenuList>
-        </Menu>
+        <MenuButton 
+          as={Text} 
+          fontSize="30px" 
+          fontWeight="bold" 
+          cursor="pointer"
+        >
+          <span style={{ color: "#D47697" }}>Welcome, </span>
+          <span style={{ color: "#6e3652" }}>{username}.</span>
+          <HamburgerIcon/>
+        </MenuButton>
+        <MenuList>
+          {editMode ? (
+            <MenuItem onClick={toggleEditMode}>Exit Edit Mode</MenuItem>
+          ) : (
+            <MenuItem onClick={toggleEditMode}>Edit Locations</MenuItem>
+          )}
+          <MenuItem>
+            <LogoutButton />
+          </MenuItem>
+        </MenuList>
+      </Menu>
       </Flex>
 
 
@@ -238,21 +252,21 @@ function BasePortal() {
   <Flex display="grid" gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={2}>
     {locations.map((item) => (
       <Flex 
-        align="center" 
-        justify="center"
-        key={item._id}
-        p={4}
-        borderWidth="1px"
-        borderRadius="lg"
-        onClick={() => handleLocationClick(item._id)}
-        cursor="pointer"
-        backgroundColor="#EDC7B7"
-        height="150px"
-      >
-        <Flex fontWeight="bold" align="center" justify="center" fontSize="25px">
-          <span style={{ color: 'White' }}>{item.name}</span>
-        </Flex>
+      align="center" 
+      justify="center"
+      key={item._id}
+      p={4}
+      borderWidth="1px"
+      borderRadius="lg"
+      onClick={editMode ? () => handleDeleteClick(item._id) : () => handleLocationClick(item._id)}
+      cursor="pointer"
+      backgroundColor="#EDC7B7"
+      height="150px"
+    >
+      <Flex fontWeight="bold" align="center" justify="center" fontSize="25px">
+        <span style={{ color: 'White' }}>{item.name}</span>
       </Flex>
+    </Flex>
     ))}
   </Flex>
 ) : (
@@ -282,7 +296,9 @@ function BasePortal() {
     </Box>
   </Box>
 )}
-
+    {editMode && (
+      <Button onClick={toggleEditMode}>Exit Edit Mode</Button>
+    )}
       <Box borderRadius ='10' backgroundColor="#EDC7B7" onClick={NO}>
         <Text ml='2' mt='3' fontSize="2xl" fontWeight="bold">
           <span style={{ color: 'White' }}>Notes:</span>        
