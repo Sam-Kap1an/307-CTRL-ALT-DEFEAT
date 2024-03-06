@@ -47,14 +47,14 @@ function BasePortal() {
   let [NotesTxt, setNotes] = React.useState("");
 
   const fetchLocation = () => {
-    fetch("http://localhost:8000/location")
+    fetch("sortify-backend.azurewebsites.net/location")
       .then((response) => response.json())
       .then((data) => setLocation(data))
       .catch((error) => console.error("Error fetching location:", error));
   };
 
   const handleAddNewLoction = () => {
-    fetch("http://localhost:8000/location", {
+    fetch("sortify-backend.azurewebsites.net/location", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

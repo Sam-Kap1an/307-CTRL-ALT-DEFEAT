@@ -57,12 +57,15 @@ function Inventory() {
         navigate("/login");
       }
 
-      const response = await fetch("http://localhost:8000/inventory", {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "sortify-backend.azurewebsites.net/inventory",
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
         },
-      });
+      );
 
       if (response.status === 200) {
         const data = await response.json();
@@ -97,7 +100,7 @@ function Inventory() {
         return;
       }
 
-      fetch("http://localhost:8000/inventory", {
+      fetch("sortify-backend.azurewebsites.net/inventory", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -142,7 +145,7 @@ function Inventory() {
         console.log("Authentication token not found");
         return;
       }
-      fetch(`http://localhost:8000/inventory/${itemId}`, {
+      fetch(`sortify-backend.azurewebsites.net/inventory/${itemId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -182,7 +185,7 @@ function Inventory() {
         return;
       }
 
-      fetch(`http://localhost:8000/inventory/${itemId}`, {
+      fetch(`sortify-backend.azurewebsites.net/inventory/${itemId}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${authToken}`,
