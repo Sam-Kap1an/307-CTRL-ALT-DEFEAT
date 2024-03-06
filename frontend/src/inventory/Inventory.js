@@ -28,6 +28,7 @@ function Inventory() {
     description: "",
     minimumThreshold: "",
   });
+  
 
   const [inventory, setInventory] = useState([]);
   const [editedItemId, setEditedItemId] = useState(null);

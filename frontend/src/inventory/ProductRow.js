@@ -1,5 +1,5 @@
 // ProductRow.js
-import React, { useState } from "react";
+import React from "react";
 import { Td, Input, Button } from "@chakra-ui/react";
 import DeleteButton from "./DeleteButton.js";
 
