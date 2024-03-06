@@ -15,6 +15,7 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  Spinner,
   useDisclosure, // Import useDisclosure to control the modal state
 } from "@chakra-ui/react";
 
@@ -33,7 +34,8 @@ function BasePortal() {
   };
 
   const handleLocationClick = (ID) => {
-    navigate(`/${ID}`); 
+    navigate(`/categories`); 
+    //navigate(`/categories?${ID}`); 
   };
 
   let handlesetNotesInputChange = (e) => {
@@ -141,9 +143,9 @@ function BasePortal() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <Flex display="grid" gridTemplateColumns="repeat(auto-fill, minmax(150px, 1fr))" gap={2}>
-        {locations && locations.length > 0 ? (
+      {locations && locations.length > 0 ? (
           locations.map((item) => (
+      <Flex display="grid" gridTemplateColumns="repeat(auto-fill, minmax(150px, 1fr))" gap={2}>
             <Flex 
               align="center" 
               justify="center"
@@ -151,7 +153,7 @@ function BasePortal() {
               p={4}
               borderWidth="1px"
               borderRadius="lg"
-              onClick={() => handleLocationClick(item.components)}
+              onClick={() => handleLocationClick(item._id)}
               cursor="pointer"
               backgroundColor="#EDC7B7"
             >
@@ -159,11 +161,28 @@ function BasePortal() {
                 <span style={{ color: 'White' }}>{item.name}</span>
               </Flex>
             </Flex>
-          ))
-        ) : (
-          <Text>Loading locations...</Text>
-        )}
       </Flex>
+              ))
+              ) : (
+                <Box
+                borderWidth="1px"
+                borderRadius="lg"
+                backgroundColor="#EDC7B7">
+                  <Flex fontWeight="bold" align="center" justify="center"  >
+                    <span style={{ color: 'White' }}>{`Loading locations...`}</span>
+                    <Spinner
+                      align="center" 
+                      justify="center"
+                      thickness='4px'
+                      speed='0.65s'
+                      emptyColor='#D47697'
+                      color='#6e3652'
+                      size='xl'
+                    />
+                  </Flex>
+
+                </Box>
+              )}
       <Box borderRadius ='10' backgroundColor="#EDC7B7" onClick={NO}>
         <Text ml='2' mt='3' fontSize="2xl" fontWeight="bold">
           <span style={{ color: 'White' }}>Notes:</span>        
