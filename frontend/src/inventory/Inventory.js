@@ -12,14 +12,11 @@ import {
 import LogoutButton from "../components/Logout.js";
 import AddNewProductModal from "./AddNewProductModal.js";
 import ProductTable from "./ProductTable.js";
+import BackButton from "./BackButton.js";
 
 function Inventory() {
   const navigate = useNavigate();
   const { onClose } = useDisclosure();
-
-  const handleBackClick = () => {
-    navigate("/areas");
-  };
 
   const handleSortifyClick = () => {
     navigate("/");
@@ -245,14 +242,7 @@ function Inventory() {
           </Text>
         </Flex>
         <Flex>
-          <Button
-            onClick={handleBackClick}
-            colorScheme="teal"
-            variant="outline"
-            mr="3"
-          >
-            Back
-          </Button>
+          <BackButton />
           <LogoutButton />
         </Flex>
       </Flex>
