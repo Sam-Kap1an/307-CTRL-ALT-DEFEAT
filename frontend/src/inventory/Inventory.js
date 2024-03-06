@@ -52,7 +52,7 @@ function Inventory() {
 
   const [inventory, setInventory] = useState([]);
   const [editedItemId, setEditedItemId] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
+  //const [searchTerm, setSearchTerm] = useState("");
   const [filterOption, setFilterOption] = useState("All");
   const [userEmail, setUserEmail] = useState("");
   const [filteredInventory, setFilteredInventory] = useState([]);
