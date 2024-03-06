@@ -5,6 +5,8 @@ import userServices from "./routes/user-services.js";
 import locationServices from "./routes/location-services.js";
 import categoryServices from "./routes/category-services.js";
 import { authenticateUser, loginUser, registerUser } from "./routes/auth.js";
+import mongoose from "mongoose";
+
 
 const app = express();
 const port = 8000;
@@ -154,20 +156,27 @@ app.delete("/location/:locationId", authenticateUser, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+  
     // Convert locationId to ObjectId
-    // Filter out the location with matching _id
+    const locationObjectId = mongoose.Types.ObjectId(locationId);
 
-    // Convert locationId to ObjectId
-    const LocationTBD = categoryServices.findLocationById(locationId);
+    // Find the location to be deleted
+    const locationToDelete = user.locations.find(location => location.equals(locationObjectId));
 
-    // Filter out the location with matching _id
-    user.locations = user.locations.filter(location => !location.equals(LocationTBD._id));
+    // If location is not found, return error
+    if (!locationToDelete) {
+      return res.status(404).json({ message: "Location not found for this user" });
+    }
+
+    // Remove the location from user's locations array
+    user.locations = user.locations.filter(location => !location.equals(locationObjectId));
 
     // Save the user
     await user.save();
 
     // Delete the item from locations
-    await locationServices.deleteItemFromLocations(LocationTBD._id);
+    await locationServices.deleteItemFromLocations(locationObjectId);
+
 
     res.status(200).send("Item deleted successfully");
   } catch (error) {
