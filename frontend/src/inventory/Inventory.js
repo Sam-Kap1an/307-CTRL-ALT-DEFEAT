@@ -4,12 +4,6 @@ import {
   Box,
   Button,
   Input,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
   Text,
   Select,
   useDisclosure,
@@ -17,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import LogoutButton from "../components/Logout.js";
 import AddNewProductModal from "./AddNewProductModal.js";
+import ProductTable from "./ProductTable.js";
 
 function Inventory() {
   const navigate = useNavigate();
@@ -48,7 +43,6 @@ function Inventory() {
     setIsAddNewModalOpen(true);
   };
   
-
   const fetchInventory = useCallback(async () => {
     try {
       const authToken = localStorage.getItem("authToken");
@@ -85,11 +79,6 @@ function Inventory() {
     fetchInventory();
   }, [fetchInventory]);
 
-  /*
-  const handleAddNewClick = () => {
-    onOpen();
-  };
-  */
 
   const handleAddNewProduct = (newProduct) => {
     try {
@@ -219,9 +208,25 @@ function Inventory() {
     setInventory(updatedInventory);
   };
 
-  const filteredInventory = (inventory ?? []).filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const filteredInventory = (inventory ?? []).filter((item) => {
+    const nameIncludesSearchTerm = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+  
+    if (filterOption === "All") {
+      return nameIncludesSearchTerm;
+    } else if (filterOption === "Low") {
+      return (
+        nameIncludesSearchTerm &&
+        parseFloat(item.minimumThreshold) > parseFloat(item.quantity)
+      );
+    } else if (filterOption === "High") {
+      return (
+        nameIncludesSearchTerm &&
+        parseFloat(item.minimumThreshold) <= parseFloat(item.quantity)
+      );
+    }
+  
+    return false;
+  });
 
   return (
     <>
@@ -294,124 +299,14 @@ function Inventory() {
           </Box>
         </Flex>
 
-        <Table>
-          <Thead>
-            <Tr>
-              <Th>Product</Th>
-              <Th>Quantity</Th>
-              <Th>Description</Th>
-              <Th>Minimum Threshold</Th>
-              <Th>Edit</Th>
-              <Th>Delete</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {filteredInventory.map((item) => (
-              <Tr
-                key={item._id}
-                style={{
-                  backgroundColor:
-                    parseFloat(item.minimumThreshold) >
-                    parseFloat(item.quantity)
-                      ? "rgba(255, 0, 0, 0.1)" // Red with transparency
-                      : "rgba(0, 255, 0, 0.1)", // Green with transparency
-                }}
-                display={
-                  filterOption === "All" ||
-                  (filterOption === "Low" &&
-                    parseFloat(item.minimumThreshold) >
-                      parseFloat(item.quantity)) ||
-                  (filterOption === "High" &&
-                    parseFloat(item.minimumThreshold) <=
-                      parseFloat(item.quantity))
-                    ? "table-row"
-                    : "none"
-                }
-              >
-                <Td>
-                  {editedItemId === item._id ? (
-                    <Input
-                      type="text"
-                      id={`name-${item._id}`}
-                      value={item.name}
-                      onChange={(e) => handleInputChange(e, item._id, "name")}
-                    />
-                  ) : (
-                    item.name
-                  )}
-                </Td>
-                <Td>
-                  {editedItemId === item._id ? (
-                    <Input
-                      type="text"
-                      id={`quantity-${item._id}`}
-                      value={item.quantity}
-                      onChange={(e) =>
-                        handleInputChange(e, item._id, "quantity")
-                      }
-                    />
-                  ) : (
-                    item.quantity
-                  )}
-                </Td>
-                <Td>
-                  {editedItemId === item._id ? (
-                    <Input
-                      type="text"
-                      id={`description-${item._id}`}
-                      value={item.description}
-                      onChange={(e) =>
-                        handleInputChange(e, item._id, "description")
-                      }
-                    />
-                  ) : (
-                    item.description
-                  )}
-                </Td>
-                <Td>
-                  {editedItemId === item._id ? (
-                    <Input
-                      type="text"
-                      id={`minimumThreshold-${item._id}`}
-                      value={item.minimumThreshold}
-                      onChange={(e) =>
-                        handleInputChange(e, item._id, "minimumThreshold")
-                      }
-                    />
-                  ) : (
-                    item.minimumThreshold
-                  )}
-                </Td>
-                <Td>
-                  {editedItemId === item._id ? (
-                    <Button
-                      onClick={() => handleSaveEdit(item._id)}
-                      colorScheme="teal"
-                    >
-                      Save
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={() => handleEditClick(item._id)}
-                      colorScheme="teal"
-                    >
-                      Edit
-                    </Button>
-                  )}
-                </Td>
-                <Td>
-                  <Button
-                    onClick={() => handleDeleteClick(item._id)}
-                    colorScheme="red"
-                    variant="outline"
-                  >
-                    🗑️
-                  </Button>
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
+        <ProductTable
+          filteredInventory={filteredInventory}
+          editedItemId={editedItemId}
+          handleEditClick={handleEditClick}
+          handleSaveEdit={handleSaveEdit}
+          handleDeleteClick={handleDeleteClick}
+          handleInputChange={handleInputChange}
+        />
         
         <AddNewProductModal
           isOpen={isAddNewModalOpen}
