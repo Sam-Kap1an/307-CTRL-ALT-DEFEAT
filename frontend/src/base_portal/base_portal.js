@@ -144,45 +144,53 @@ function BasePortal() {
         </ModalContent>
       </Modal>
       {locations && locations.length > 0 ? (
-          locations.map((item) => (
-      <Flex display="grid" gridTemplateColumns="repeat(auto-fill, minmax(150px, 1fr))" gap={2}>
-            <Flex 
-              align="center" 
-              justify="center"
-              key={item._id}
-              p={4}
-              borderWidth="1px"
-              borderRadius="lg"
-              onClick={() => handleLocationClick(item._id)}
-              cursor="pointer"
-              backgroundColor="#EDC7B7"
-            >
-              <Flex fontWeight="bold" align="center" justify="center"  >
-                <span style={{ color: 'White' }}>{item.name}</span>
-              </Flex>
-            </Flex>
+  <Flex display="grid" gridTemplateColumns="repeat(auto-fill, minmax(150px, 1fr))" gap={2}>
+    {locations.map((item) => (
+      <Flex 
+        align="center" 
+        justify="center"
+        key={item._id}
+        p={4}
+        borderWidth="1px"
+        borderRadius="lg"
+        onClick={() => handleLocationClick(item._id)}
+        cursor="pointer"
+        backgroundColor="#EDC7B7"
+      >
+        <Flex fontWeight="bold" align="center" justify="center">
+          <span style={{ color: 'White' }}>{item.name}</span>
+        </Flex>
       </Flex>
-              ))
-              ) : (
-                <Box
-                borderWidth="1px"
-                borderRadius="lg"
-                backgroundColor="#EDC7B7">
-                  <Flex fontWeight="bold" align="center" justify="center"  >
-                    <span style={{ color: 'White' }}>{`Loading locations...`}</span>
-                    <Spinner
-                      align="center" 
-                      justify="center"
-                      thickness='4px'
-                      speed='0.65s'
-                      emptyColor='#D47697'
-                      color='#6e3652'
-                      size='xl'
-                    />
-                  </Flex>
+    ))}
+  </Flex>
+) : (
+  <Box justifyContent="center" alignItems="center">
+    <Box
+      align="center"
+      justify="center"
+      borderWidth="1px"
+      borderRadius="lg"
+      backgroundColor="#EDC7B7"
+      p={4}
+    >
+      <Text color="white" fontWeight="bold">
+        Loading Locations...
+      </Text>
 
-                </Box>
-              )}
+      <Spinner
+        align="center"
+        justify="center"
+        mt={2}
+        thickness="4px"
+        speed="0.65s"
+        emptyColor="#D47697"
+        color="#6e3652"
+        size="xl"
+      />
+    </Box>
+  </Box>
+)}
+
       <Box borderRadius ='10' backgroundColor="#EDC7B7" onClick={NO}>
         <Text ml='2' mt='3' fontSize="2xl" fontWeight="bold">
           <span style={{ color: 'White' }}>Notes:</span>        
