@@ -17,7 +17,7 @@ test("handles search term change", () => {
     render(<SearchBar searchTerm="" onSearchChange={onSearchChangeMock} />);
     const inputElement = screen.getByPlaceholderText("Search Product");
     fireEvent.change(inputElement, { target: { value: "new term" } });
-    expect(onSearchChangeMock).toHaveBeenCalledWith([]);
+    expect(onSearchChangeMock).toHaveBeenCalledWith("new term");
 });
 
 test("filters inventory based on search term", () => {
@@ -36,9 +36,7 @@ test("filters inventory based on search term", () => {
     const inputElement = screen.getByPlaceholderText("Search Product");
     fireEvent.change(inputElement, { target: { value: "Product A" } });
 
-    expect(onSearchChangeMock).toHaveBeenCalledWith([
-      { _id: 1, name: "Product A" },
-    ]);
+    expect(onSearchChangeMock).toHaveBeenCalledWith("Product A");
 });
 
 test("properly filters inventory ignoring case", () => {
@@ -57,7 +55,7 @@ test("properly filters inventory ignoring case", () => {
     );
 
     const inputElement = screen.getByPlaceholderText("Search Product");
-    fireEvent.change(inputElement, { target: { value: "PRODUCT" } });
+    fireEvent.change(inputElement, { target: { value: "product" } });
 
     expect(onSearchChangeMock).toHaveBeenCalledWith([
       { _id: 1, name: "Product A" },

@@ -52,7 +52,7 @@ function Inventory() {
 
   const [inventory, setInventory] = useState([]);
   const [editedItemId, setEditedItemId] = useState(null);
-  //const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [filterOption, setFilterOption] = useState("All");
   const [userEmail, setUserEmail] = useState("");
   const [filteredInventory, setFilteredInventory] = useState([]);
@@ -104,12 +104,12 @@ function Inventory() {
   const handleAddNewProduct = () => {
     try {
       const authToken = localStorage.getItem("authToken");
-
+  
       if (!authToken) {
         console.log("Authentication token not found");
         return;
       }
-
+  
       fetch("http://localhost:8000/inventory", {
         method: "POST",
         headers: {
@@ -122,11 +122,18 @@ function Inventory() {
         .then((data) => {
           if (data && data._id) {
             setInventory((prevInventory) => {
-              const newArray = Array.isArray(prevInventory)
-                ? prevInventory
-                : [];
-              return [...newArray, data];
+              const newArray = Array.isArray(prevInventory) ? prevInventory : [];
+              const updatedInventory = [...newArray, data];
+  
+              // Update the filteredInventory state
+              const filteredInventory = updatedInventory.filter((item) =>
+                item.name.toLowerCase().includes(searchTerm.toLowerCase())
+              );
+              setFilteredInventory(filteredInventory);
+  
+              return updatedInventory;
             });
+  
             setNewProduct({
               name: "",
               quantity: "",
@@ -137,7 +144,7 @@ function Inventory() {
           } else {
             console.error(
               "Error adding new product: Invalid response format",
-              data,
+              data
             );
           }
         })
@@ -150,11 +157,12 @@ function Inventory() {
   const handleDeleteClick = (itemId) => {
     try {
       const authToken = localStorage.getItem("authToken");
-
+  
       if (!authToken) {
         console.log("Authentication token not found");
         return;
       }
+  
       fetch(`http://localhost:8000/inventory/${itemId}`, {
         method: "DELETE",
         headers: {
@@ -164,7 +172,16 @@ function Inventory() {
       })
         .then((response) => {
           if (response.ok) {
-            fetchInventory();
+            // After successfully deleting, update filteredInventory
+            const updatedInventory = inventory.filter(
+              (item) => item._id !== itemId
+            );
+            setInventory(updatedInventory);
+  
+            const filteredInventory = updatedInventory.filter((item) =>
+              item.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            setFilteredInventory(filteredInventory);
           } else {
             console.error("Error deleting item");
           }
@@ -174,6 +191,7 @@ function Inventory() {
       console.error("Error deleting inventory:", error);
     }
   };
+  
 
   const handleEditClick = (itemId) => {
     setEditedItemId(itemId);
@@ -275,7 +293,8 @@ function Inventory() {
 
         <Flex mt="2" mb="2" className="search-filter-buttons" direction="row">
             
-          <SearchBar onSearchChange={handleSearchChange} filteredInventory={filteredInventory}/>
+          <SearchBar onSearchChange={handleSearchChange} inventory={inventory} />
+
 
           <Select
             value={filterOption}
