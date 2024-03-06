@@ -145,25 +145,31 @@ app.post("/location", authenticateUser, async (req, res) => {
   }
 });
 
-app.delete("/location/:id", authenticateUser, async (req, res) => {
-  const locationId = req.params.id;
+app.delete("/location/:locationId", authenticateUser, async (req, res) => {
+  const { locationId } = req.params;
   const userEmail = req.user.username;
   try {
     const user = await userServices.findUserByEmail(userEmail);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    user.locations.delete(locationId._id);
+
+    // Convert locationId to ObjectId
+    // Filter out the location with matching _id
+
+    // Convert locationId to ObjectId
+    const LocationTBD = categoryServices.findLocationById(locationId);
+
+    // Filter out the location with matching _id
+    user.locations = user.locations.filter(location => !location.equals(LocationTBD._id));
+
+    // Save the user
     await user.save();
-  inventoryServices
-    .deleteItemFromLocations(locationId)
-    .then(() => {
-      res.status(200).send("Item deleted successfully");
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
-    });
+
+    // Delete the item from locations
+    await locationServices.deleteItemFromLocations(LocationTBD._id);
+
+    res.status(200).send("Item deleted successfully");
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });

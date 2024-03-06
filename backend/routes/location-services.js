@@ -30,7 +30,8 @@ async function findLocationsByUser(User) {
 }
 
 async function deleteItemFromLocations(ID) {
-  return Location.deleteOne({ _id: { ID } });
+  console.log(`loc services call on delete id: ${ID}`);
+  return Location.deleteOne({ _id: ID });
 }
 
 function addLocation(location) {
