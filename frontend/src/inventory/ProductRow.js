@@ -1,6 +1,7 @@
 // ProductRow.js
 import React, { useState } from "react";
 import { Td, Input, Button } from "@chakra-ui/react";
+import DeleteButton from "./DeleteButton.js";
 
 const ProductRow = ({ item, editedItemId, onEditClick, onSaveEdit, onDeleteClick, onInputChange }) => {
   return (
@@ -73,12 +74,13 @@ const ProductRow = ({ item, editedItemId, onEditClick, onSaveEdit, onDeleteClick
         )}
       </Td>
       <Td>
-        <Button onClick={() => onDeleteClick(item._id)} colorScheme="red" variant="outline">
-          🗑️
-        </Button>
+        <DeleteButton onDeleteClick={onDeleteClick} itemId={item._id} />
       </Td>
     </tr>
   );
 };
 
 export default ProductRow;
+
+
+
