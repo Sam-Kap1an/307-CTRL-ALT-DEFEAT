@@ -73,7 +73,7 @@ function BasePortal() {
 
   useEffect(() => {
     fetchLocation();
-  }, [fetchLocation]);
+  }, [fetchLocation, location]);
 
   const handleAddNewLocation = () => {
     try {
@@ -86,6 +86,7 @@ function BasePortal() {
     fetch(`http://localhost:8000/location`, {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${authToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(newLocation),
@@ -129,7 +130,7 @@ function BasePortal() {
               placeholder="Location Name"
               value={newLocation.name}
               onChange={(e) =>
-                setNewLocation({ ...newLocation, name: e.target.value })
+                setNewLocation({ ...newLocation, name: e.target.value, categories:[]})
               }
             />
           </ModalBody>
