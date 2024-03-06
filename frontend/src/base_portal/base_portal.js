@@ -23,7 +23,7 @@ import {
   useDisclosure, // Import useDisclosure to control the modal state
 } from "@chakra-ui/react";
 import LogoutButton from "../components/Logout";
-import { HamburgerIcon } from "@chakra-ui/icons"
+import { ChevronDownIcon } from "@chakra-ui/icons";
 
 function BasePortal() {
   const navigate = useNavigate();
@@ -191,23 +191,18 @@ function BasePortal() {
       <Box width="350px" onClick={UserOpen}/>
       {/* Welcome user message and logout dropdown */}
       <Menu>
-      <MenuButton 
-        as={Text} 
-        fontSize="30px" 
-        fontWeight="bold" 
-        cursor="pointer"
-        rightIcon={<HamburgerIcon />} // Use HamburgerIcon instead of ChevronDownIcon
-      >
-        <span style={{ color: "#D47697" }}>Welcome, </span>
-        <span style={{ color: "#6e3652" }}>{username}.</span>
-      </MenuButton>
-      <MenuList>
-        <MenuItem>
-          <LogoutButton />
-        </MenuItem>
-      </MenuList>
-    </Menu>
-  </Flex>
+          <MenuButton as={Text} fontSize="30px" fontWeight="bold" cursor="pointer">
+            <span style={{ color: "#D47697" }}>Welcome, </span>
+            <span style={{ color: "#6e3652" }}>{username}.</span>
+            <ChevronDownIcon />
+          </MenuButton>
+          <MenuList>
+            <MenuItem >
+            <LogoutButton/>
+            </MenuItem>
+          </MenuList>
+        </Menu>
+      </Flex>
 
 
       <Flex borderRadius ='10' mt='2' mb='3'align="center" justify="center" backgroundColor='#6e3652' onClick={LO}>
