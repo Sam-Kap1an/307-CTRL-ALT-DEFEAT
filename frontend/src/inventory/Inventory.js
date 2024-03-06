@@ -22,19 +22,11 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import LogoutButton from "../components/Logout.js";
-import SearchBar from "./SearchBar.js";
 
 function Inventory() {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  /*
-  const handleSearchChange = (value) => {
-    setSearchTerm(value);
-  };
-  */
 
-  
-  
   const handleBackClick = () => {
     navigate("/areas");
   };
@@ -55,11 +47,6 @@ function Inventory() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterOption, setFilterOption] = useState("All");
   const [userEmail, setUserEmail] = useState("");
-  const [filteredInventory, setFilteredInventory] = useState([]);
-
-  const handleSearchChange = (filteredInventory) => {
-    setFilteredInventory(filteredInventory);
-  };
 
   const fetchInventory = useCallback(async () => {
     try {
@@ -104,12 +91,12 @@ function Inventory() {
   const handleAddNewProduct = () => {
     try {
       const authToken = localStorage.getItem("authToken");
-  
+
       if (!authToken) {
         console.log("Authentication token not found");
         return;
       }
-  
+
       fetch("http://localhost:8000/inventory", {
         method: "POST",
         headers: {
@@ -122,18 +109,11 @@ function Inventory() {
         .then((data) => {
           if (data && data._id) {
             setInventory((prevInventory) => {
-              const newArray = Array.isArray(prevInventory) ? prevInventory : [];
-              const updatedInventory = [...newArray, data];
-  
-              // Update the filteredInventory state
-              const filteredInventory = updatedInventory.filter((item) =>
-                item.name.toLowerCase().includes(searchTerm.toLowerCase())
-              );
-              setFilteredInventory(filteredInventory);
-  
-              return updatedInventory;
+              const newArray = Array.isArray(prevInventory)
+                ? prevInventory
+                : [];
+              return [...newArray, data];
             });
-  
             setNewProduct({
               name: "",
               quantity: "",
@@ -144,7 +124,7 @@ function Inventory() {
           } else {
             console.error(
               "Error adding new product: Invalid response format",
-              data
+              data,
             );
           }
         })
@@ -157,12 +137,11 @@ function Inventory() {
   const handleDeleteClick = (itemId) => {
     try {
       const authToken = localStorage.getItem("authToken");
-  
+
       if (!authToken) {
         console.log("Authentication token not found");
         return;
       }
-  
       fetch(`http://localhost:8000/inventory/${itemId}`, {
         method: "DELETE",
         headers: {
@@ -172,16 +151,7 @@ function Inventory() {
       })
         .then((response) => {
           if (response.ok) {
-            // After successfully deleting, update filteredInventory
-            const updatedInventory = inventory.filter(
-              (item) => item._id !== itemId
-            );
-            setInventory(updatedInventory);
-  
-            const filteredInventory = updatedInventory.filter((item) =>
-              item.name.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-            setFilteredInventory(filteredInventory);
+            fetchInventory();
           } else {
             console.error("Error deleting item");
           }
@@ -191,7 +161,6 @@ function Inventory() {
       console.error("Error deleting inventory:", error);
     }
   };
-  
 
   const handleEditClick = (itemId) => {
     setEditedItemId(itemId);
@@ -247,11 +216,10 @@ function Inventory() {
     setInventory(updatedInventory);
   };
 
-  /*
   const filteredInventory = (inventory ?? []).filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
-  */
+
   return (
     <>
       <Flex
@@ -292,9 +260,14 @@ function Inventory() {
         </Flex>
 
         <Flex mt="2" mb="2" className="search-filter-buttons" direction="row">
-            
-          <SearchBar onSearchChange={handleSearchChange} inventory={inventory} />
-
+          <Input
+            type="text"
+            placeholder="Search Product"
+            className="search-input"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            mr="3"
+          />
 
           <Select
             value={filterOption}
