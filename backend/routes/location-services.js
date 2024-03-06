@@ -29,6 +29,9 @@ async function findLocationsByUser(User) {
   return Location.find({ _id: { $in: User.locations } });
 }
 
+async function deleteItemFromLocations(ID) {
+  return Location.deleteOne({ _id: { ID } });
+}
 
 function addLocation(location) {
   const newLocation = new Location(location);
@@ -39,4 +42,5 @@ export default {
   findByEmail,
   findLocationsByUser,
   addLocation,
+  deleteItemFromLocations,
 };
