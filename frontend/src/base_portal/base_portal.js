@@ -1,14 +1,12 @@
 // base_portal.js
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
+  Flex,
   Textarea,
   Box,
   Button,
   Input,
-  Table,
-  Tbody,
-  Tr,
   Text,
   Modal,
   ModalOverlay,
@@ -24,6 +22,11 @@ function BasePortal() {
   const navigate = useNavigate();
   const { isOpen: locIO, onOpen: LO, onClose: LC } = useDisclosure(); // Manage modal state
   const { isOpen: NIO, onOpen: NO, onClose: NC } = useDisclosure(); // Manage modal state
+  const [locations, setLocations] = useState([]);
+  const [newLocation, setNewLocation] = useState({
+    name: "",
+    categories: "",
+  });
 
   const handleSortifyClick = () => {
     navigate("/");
@@ -38,24 +41,39 @@ function BasePortal() {
     setNotes(inputValue);
   };
 
-  useEffect(() => {
-    fetchLocation();
-  }, []);
-
-  const [newLocation, setNewLocation] = useState({
-    name: "",
-    catagories: "",
-  });
-
   const [location, setLocation] = useState([]);
   let [NotesTxt, setNotes] = React.useState("");
 
-  const fetchLocation = () => {
-    fetch("http://localhost:8000/location")
-      .then((response) => response.json())
-      .then((data) => setLocation(data))
-      .catch((error) => console.error("Error fetching location:", error));
-  };
+  const fetchLocation = useCallback(async () => {
+    try {
+      const authToken = localStorage.getItem("authToken");
+      if (!authToken) {
+        console.log("Authentication token not found");
+        return;
+      }
+      const response = await fetch(`http://localhost:8000/location`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 200) {
+        const locations = await response.json();
+        setLocations(locations);
+      } else if (response.status === 401) {
+        console.error("User is not logged in or token is expired");
+        navigate("/login");
+      } else {
+        console.error("Error fetching Location:", response.status);
+      }
+    } catch (error) {
+      console.error("Error Fetching Location:", error);
+    }
+  }, [navigate, setLocations]);
+
+  useEffect(() => {
+    fetchLocation();
+  }, [fetchLocation]);
 
   const handleAddNewLocation = () => {
     try {
@@ -74,8 +92,8 @@ function BasePortal() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setLocation([...location, data]);
         setNewLocation({ name: "", catagories: "" });
+        setLocation([...location, data]);
         LC(); // Close the modal after adding a new product
       })
       .catch((error) => console.error("Error adding new product:", error));

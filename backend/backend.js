@@ -85,7 +85,7 @@ app.post("/signup", registerUser);
 app.post("/login", loginUser);
 
 // returns a list of all locations provided a user email address
-app.get("/location", async (req, res) => {
+app.get("/location", authenticateUser, async (req, res) => {
   const userEmail = req.user.username;
   try {
     //const user = User.findOne({ email });
