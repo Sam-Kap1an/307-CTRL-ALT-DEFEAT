@@ -24,7 +24,7 @@ async function findByEmail(email) {
   console.log(user);
   return user;
 }
-
+  
 
 function addLocation(location) {
   const newLocation = new Location(location);
