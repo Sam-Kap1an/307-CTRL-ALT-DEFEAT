@@ -22,7 +22,7 @@ function Inventory() {
     navigate("/");
   };
 
-  const [newProduct, setNewProduct] = useState({
+  const [setNewProduct] = useState({
     name: "",
     quantity: "",
     description: "",
