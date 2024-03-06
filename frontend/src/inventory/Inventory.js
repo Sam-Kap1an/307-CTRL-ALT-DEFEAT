@@ -12,20 +12,15 @@ import {
   Tr,
   Text,
   Select,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
   useDisclosure,
   Flex,
 } from "@chakra-ui/react";
 import LogoutButton from "../components/Logout.js";
+import AddNewProductModal from "./AddNewProductModal.js";
 
 function Inventory() {
   const navigate = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { onClose } = useDisclosure();
 
   const handleBackClick = () => {
     navigate("/areas");
@@ -47,6 +42,12 @@ function Inventory() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterOption, setFilterOption] = useState("All");
   const [userEmail, setUserEmail] = useState("");
+  const [isAddNewModalOpen, setIsAddNewModalOpen] = useState(false);
+
+  const handleAddNewClick = () => {
+    setIsAddNewModalOpen(true);
+  };
+  
 
   const fetchInventory = useCallback(async () => {
     try {
@@ -84,11 +85,13 @@ function Inventory() {
     fetchInventory();
   }, [fetchInventory]);
 
+  /*
   const handleAddNewClick = () => {
     onOpen();
   };
+  */
 
-  const handleAddNewProduct = () => {
+  const handleAddNewProduct = (newProduct) => {
     try {
       const authToken = localStorage.getItem("authToken");
 
@@ -409,66 +412,14 @@ function Inventory() {
             ))}
           </Tbody>
         </Table>
+        
+        <AddNewProductModal
+          isOpen={isAddNewModalOpen}
+          onClose={() => setIsAddNewModalOpen(false)}
+          onAddNewProduct={handleAddNewProduct}
+        />
 
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Add New Product</ModalHeader>
-            <ModalBody>
-              <Input
-                type="text"
-                placeholder="Product Name"
-                value={newProduct.name}
-                onChange={(e) =>
-                  setNewProduct({ ...newProduct, name: e.target.value })
-                }
-              />
-              <Flex mt="3" mb="3">
-                <Input
-                  mr="3"
-                  type="text"
-                  placeholder="Quantity"
-                  value={newProduct.quantity}
-                  onChange={(e) =>
-                    setNewProduct({ ...newProduct, quantity: e.target.value })
-                  }
-                />
-                <Input
-                  type="text"
-                  placeholder="Minimum Threshold"
-                  value={newProduct.minimumThreshold}
-                  onChange={(e) =>
-                    setNewProduct({
-                      ...newProduct,
-                      minimumThreshold: e.target.value,
-                    })
-                  }
-                />
-              </Flex>
-
-              <Input
-                type="text"
-                placeholder="Description"
-                value={newProduct.description}
-                onChange={(e) =>
-                  setNewProduct({ ...newProduct, description: e.target.value })
-                }
-              />
-            </ModalBody>
-            <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={onClose}>
-                Close
-              </Button>
-              <Button
-                backgroundColor="darkBlue"
-                color="white"
-                onClick={handleAddNewProduct}
-              >
-                Add
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+        
       </Box>
     </>
   );
