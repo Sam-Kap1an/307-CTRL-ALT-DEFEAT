@@ -16,20 +16,20 @@ app.get("/", async (req, res) => {
   res.status(200).send("Successfully connected");
 });
 
-app.get("/:id/inventory", async (req, res) => {
+// gets inventory for a specific areaID, used to navigate from the area portal to inventory page
+app.get("/inventory", async (req, res) => {
   try {
-    const { search } = req.query;
-    const { id } = req.params;
+    const { areaID, search } = req.query;
 
     let category;
     let inventory;
 
     if (search) {
-      category = await inventoryServices.findCategoryById(id);
+      category = await inventoryServices.findCategoryById(areaID);
       inventory = await inventoryServices.searchInventory(search, category);
       console.log(inventory);
     } else {
-      category = await inventoryServices.findCategoryById(id);
+      category = await inventoryServices.findCategoryById(areaID);
       inventory = await inventoryServices.findInventoryByCategory(category);
       console.log(inventory);
     }
@@ -179,12 +179,13 @@ app.delete("/location/:locationId", authenticateUser, async (req, res) => {
   }
 });
 
-app.get("/:id/categories", async (req, res) => {
+// used to navigate from the locations page to the areas page
+app.get("/categories", async (req, res) => {
   try {
-    const { id } = req.params;
-    console.log(id);
+    const { locationID } = req.query;
+    console.log(locationID);
 
-    const location = await categoryServices.findLocationById(id);
+    const location = await categoryServices.findLocationById(locationID);
     if (!location) {
       return res.status(404).json({ message: "Location not found" });
     }
