@@ -58,7 +58,7 @@ function Inventory() {
       }
 
       const response = await fetch(
-        "sortify-backend.azurewebsites.net/inventory",
+        "https://sortify-backend.azurewebsites.net/inventory",
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -100,7 +100,7 @@ function Inventory() {
         return;
       }
 
-      fetch("sortify-backend.azurewebsites.net/inventory", {
+      fetch("https://sortify-backend.azurewebsites.net/inventory", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -145,7 +145,7 @@ function Inventory() {
         console.log("Authentication token not found");
         return;
       }
-      fetch(`sortify-backend.azurewebsites.net/inventory/${itemId}`, {
+      fetch(`https://sortify-backend.azurewebsites.net/inventory/${itemId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -185,7 +185,7 @@ function Inventory() {
         return;
       }
 
-      fetch(`sortify-backend.azurewebsites.net/inventory/${itemId}`, {
+      fetch(`https://sortify-backend.azurewebsites.net/inventory/${itemId}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${authToken}`,

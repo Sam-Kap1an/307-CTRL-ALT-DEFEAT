@@ -20,13 +20,16 @@ function Login() {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://localhost:8000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "https://sortify-backend.azurewebsites.net/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, pwd }),
         },
-        body: JSON.stringify({ email, pwd }),
-      });
+      );
 
       if (response.status === 200) {
         const payload = await response.json();

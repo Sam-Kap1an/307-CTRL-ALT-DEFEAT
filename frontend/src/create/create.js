@@ -21,13 +21,16 @@ function Create() {
     try {
       const newUser = { name, email, pwd };
 
-      const response = await fetch("sortify-backend.azurewebsites.net/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "https://sortify-backend.azurewebsites.net/signup",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newUser),
         },
-        body: JSON.stringify(newUser),
-      });
+      );
 
       if (response.status === 201) {
         const payload = await response.json();
