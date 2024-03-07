@@ -28,7 +28,6 @@ function Inventory() {
     description: "",
     minimumThreshold: "",
   });
-  
 
   const [inventory, setInventory] = useState([]);
   const [editedItemId, setEditedItemId] = useState(null);
@@ -40,7 +39,7 @@ function Inventory() {
   const handleAddNewClick = () => {
     setIsAddNewModalOpen(true);
   };
-  
+
   const fetchInventory = useCallback(async () => {
     try {
       const authToken = localStorage.getItem("authToken");
@@ -76,7 +75,6 @@ function Inventory() {
   useEffect(() => {
     fetchInventory();
   }, [fetchInventory]);
-
 
   const handleAddNewProduct = (newProduct) => {
     try {
@@ -207,8 +205,10 @@ function Inventory() {
   };
 
   const filteredInventory = (inventory ?? []).filter((item) => {
-    const nameIncludesSearchTerm = item.name.toLowerCase().includes(searchTerm.toLowerCase());
-  
+    const nameIncludesSearchTerm = item.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+
     if (filterOption === "All") {
       return nameIncludesSearchTerm;
     } else if (filterOption === "Low") {
@@ -222,7 +222,7 @@ function Inventory() {
         parseFloat(item.minimumThreshold) <= parseFloat(item.quantity)
       );
     }
-  
+
     return false;
   });
 
@@ -298,14 +298,12 @@ function Inventory() {
           handleDeleteClick={handleDeleteClick}
           handleInputChange={handleInputChange}
         />
-        
+
         <AddNewProductModal
           isOpen={isAddNewModalOpen}
           onClose={() => setIsAddNewModalOpen(false)}
           onAddNewProduct={handleAddNewProduct}
         />
-
-        
       </Box>
     </>
   );

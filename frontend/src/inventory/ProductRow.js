@@ -3,7 +3,14 @@ import React from "react";
 import { Td, Input, Button } from "@chakra-ui/react";
 import DeleteButton from "./DeleteButton.js";
 
-const ProductRow = ({ item, editedItemId, onEditClick, onSaveEdit, onDeleteClick, onInputChange }) => {
+const ProductRow = ({
+  item,
+  editedItemId,
+  onEditClick,
+  onSaveEdit,
+  onDeleteClick,
+  onInputChange,
+}) => {
   return (
     <tr
       key={item._id}
@@ -81,6 +88,3 @@ const ProductRow = ({ item, editedItemId, onEditClick, onSaveEdit, onDeleteClick
 };
 
 export default ProductRow;
-
-
-

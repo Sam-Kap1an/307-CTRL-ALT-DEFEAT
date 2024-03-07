@@ -15,7 +15,7 @@ test("renders AddNewProductModal", () => {
       isOpen={true}
       onClose={onClose}
       onAddNewProduct={onAddNewProduct}
-    />
+    />,
   );
   expect(screen.getByText("Add New Product")).toBeInTheDocument();
   expect(screen.getByText("Close")).toBeInTheDocument();
@@ -35,7 +35,7 @@ test("handles input changes", () => {
       isOpen={true}
       onClose={onClose}
       onAddNewProduct={onAddNewProduct}
-    />
+    />,
   );
   const productNameInput = screen.getByPlaceholderText("Product Name");
   fireEvent.change(productNameInput, { target: { value: "Test Product" } });
@@ -51,7 +51,7 @@ test("calls onAddNewProduct when 'Add' button is clicked", () => {
       isOpen={true}
       onClose={onClose}
       onAddNewProduct={onAddNewProduct}
-    />
+    />,
   );
 
   expect(onAddNewProduct).not.toHaveBeenCalled();
@@ -77,7 +77,7 @@ test("handles input changes for minimumThreshold", () => {
       isOpen={true}
       onClose={onClose}
       onAddNewProduct={onAddNewProduct}
-    />
+    />,
   );
   const minThresholdInput = screen.getByPlaceholderText("Minimum Threshold");
   fireEvent.change(minThresholdInput, { target: { value: "2" } });
@@ -92,10 +92,12 @@ test("handles input changes for description", () => {
       isOpen={true}
       onClose={onClose}
       onAddNewProduct={onAddNewProduct}
-    />
+    />,
   );
   const descriptionInput = screen.getByPlaceholderText("Description");
-  fireEvent.change(descriptionInput, { target: { value: "Sample Description" } });
+  fireEvent.change(descriptionInput, {
+    target: { value: "Sample Description" },
+  });
   expect(descriptionInput).toHaveValue("Sample Description");
 });
 
@@ -108,7 +110,7 @@ test("handles input changes for quantity", () => {
       isOpen={true}
       onClose={onClose}
       onAddNewProduct={onAddNewProduct}
-    />
+    />,
   );
 
   const quantityInput = screen.getByPlaceholderText("Quantity");
@@ -125,7 +127,7 @@ test("clears input fields after 'Add' button is clicked", () => {
       isOpen={true}
       onClose={onClose}
       onAddNewProduct={onAddNewProduct}
-    />
+    />,
   );
 
   const productNameInput = screen.getByPlaceholderText("Product Name");
