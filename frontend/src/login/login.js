@@ -37,7 +37,7 @@ function Login() {
 
         console.log("Login successful!");
         // Redirect to user portal
-        navigate("/base-portal");
+        navigate("/location");
       } else {
         console.log("Invalid email or password", response.status);
       }

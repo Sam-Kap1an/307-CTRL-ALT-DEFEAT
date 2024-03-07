@@ -89,13 +89,11 @@ app.post("/signup", registerUser);
 app.post("/login", loginUser);
 
 // returns a list of all locations provided a user email address
-app.get("/locations", async (req, res) => {
+app.get("/location", authenticateUser, async (req, res) => {
+  const userEmail = req.user.username;
   try {
-    const { email } = req.body;
-    // const email = "sohini@gmail.com";
-    console.log(email);
     //const user = User.findOne({ email });
-    const user = await userServices.findUserByEmail(email);
+    const user = await userServices.findUserByEmail(userEmail);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -107,6 +105,77 @@ app.get("/locations", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+app.get("/username", authenticateUser, async (req, res) => {
+  const username = req.user.username;
+  try {
+    //const user = User.findOne({ email });
+    const user = await userServices.findUserByEmail(username);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    // Now you can access the user object and send it in the response
+    res.status(200).json(user.name);
+  } catch (error) {
+    console.error("Error fetching username:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.post("/location", authenticateUser, async (req, res) => {
+  const locationToAdd = req.body;
+  const userEmail = req.user.username;
+  try {
+    const user = await locationServices.findByEmail(userEmail);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Add location to locationServices and get the created location
+    const createdLocation = await locationServices.addLocation(locationToAdd);
+
+    // Add the created location's id to the user's locations array
+    user.locations.push(createdLocation._id);
+    await user.save();
+
+    res.status(201).json(createdLocation); // Return the created location
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+app.delete("/location/:locationId", authenticateUser, async (req, res) => {
+  const { locationId } = req.params;
+  const userEmail = req.user.username;
+  try {
+    const user = await userServices.findUserByEmail(userEmail);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // If location is not found, return error
+    if (!locationId) {
+      return res.status(404).json({ message: "Location not found for this user" });
+    }
+
+    // Remove the location from user's locations array
+    user.locations = user.locations.filter(location => !location.equals(locationId));
+
+    // Save the user
+    await user.save();
+
+    // Delete the item from locations
+    await locationServices.deleteItemFromLocations(locationId);
+
+
+    res.status(200).send("Item deleted successfully");
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 
 app.get("/:id/categories", async (req, res) => {
   try {
