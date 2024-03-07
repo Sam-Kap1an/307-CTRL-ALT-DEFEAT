@@ -29,7 +29,7 @@ function BasePortal() {
   const navigate = useNavigate();
   const { isOpen: locIO, onOpen: LO, onClose: LC } = useDisclosure(); // Manage modal state
   const { isOpen: NIO, onOpen: NO, onClose: NC } = useDisclosure(); // Manage modal state
-  const { isOpen: UserLog, onOpen: UserOpen, onClose: UserClose } = useDisclosure(); // Manage modal state
+  const { onOpen: UserOpen} = useDisclosure(); // Manage modal state
   const { isOpen: LocationDelete, onOpen: LocationDeleteOpen, onClose: LocationDeleteClose } = useDisclosure(); // Manage modal state
 
 
