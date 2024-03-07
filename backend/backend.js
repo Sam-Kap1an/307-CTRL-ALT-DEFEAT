@@ -17,7 +17,7 @@ app.get("/", async (req, res) => {
 });
 
 // gets inventory for a specific areaID, used to navigate from the area portal to inventory page
-app.get("/inventory", async (req, res) => {
+app.get("/inventory", authenticateUser, async (req, res) => {
   try {
     const { areaID, search } = req.query;
 
@@ -180,7 +180,7 @@ app.delete("/location/:locationId", authenticateUser, async (req, res) => {
 });
 
 // used to navigate from the locations page to the areas page
-app.get("/categories", async (req, res) => {
+app.get("/categories", authenticateUser, async (req, res) => {
   try {
     const { locationID } = req.query;
     console.log(locationID);
@@ -194,6 +194,27 @@ app.get("/categories", async (req, res) => {
   } catch (error) {
     console.error("Error fetching categories:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.post("/categories", authenticateUser, async (req, res) => {
+  const categoryToAdd = req.body;
+  const { locationID } = req.query;
+
+  try {
+    const location = await categoryServices.findLocationById(locationID);
+    if (!location) {
+      return res.status(404).json({ message: "Location not found" });
+    }
+    const createdCategory = await categoryServices.addCategory(categoryToAdd);
+
+    location.categories.push(createdCategory._id);
+    await location.save();
+
+    res.status(201).json(createdCategory);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 });
 

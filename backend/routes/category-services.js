@@ -30,7 +30,13 @@ async function findCategoryByLocation(Location) {
   return Category.find({ _id: { $in: Location.categories } });
 }
 
+async function addCategory(category) {
+  const newCategory = new Category(category);
+  return newCategory.save();
+}
+
 export default {
   findLocationById,
   findCategoryByLocation,
+  addCategory,
 };
