@@ -156,26 +156,19 @@ app.delete("/location/:locationId", authenticateUser, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-  
-    // Convert locationId to ObjectId
-    const locationObjectId = mongoose.Types.ObjectId(locationId);
-
-    // Find the location to be deleted
-    const locationToDelete = user.locations.find(location => location.equals(locationObjectId));
-
     // If location is not found, return error
-    if (!locationToDelete) {
+    if (!locationId) {
       return res.status(404).json({ message: "Location not found for this user" });
     }
 
     // Remove the location from user's locations array
-    user.locations = user.locations.filter(location => !location.equals(locationObjectId));
+    user.locations = user.locations.filter(location => !location.equals(locationId));
 
     // Save the user
     await user.save();
 
     // Delete the item from locations
-    await locationServices.deleteItemFromLocations(locationObjectId);
+    await locationServices.deleteItemFromLocations(locationId);
 
 
     res.status(200).send("Item deleted successfully");
