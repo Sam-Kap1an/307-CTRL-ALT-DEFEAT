@@ -163,7 +163,7 @@ app.delete("/location/:locationId", authenticateUser, async (req, res) => {
 
     // Remove the location from user's locations array
     user.locations = user.locations.filter(
-      (location) => !location.equals(locationId)
+      (location) => !location.equals(locationId),
     );
 
     // Save the user
