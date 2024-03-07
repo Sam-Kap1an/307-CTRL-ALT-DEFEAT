@@ -156,11 +156,15 @@ app.delete("/location/:locationId", authenticateUser, async (req, res) => {
 
     // If location is not found, return error
     if (!locationId) {
-      return res.status(404).json({ message: "Location not found for this user" });
+      return res
+        .status(404)
+        .json({ message: "Location not found for this user" });
     }
 
     // Remove the location from user's locations array
-    user.locations = user.locations.filter(location => !location.equals(locationId));
+    user.locations = user.locations.filter(
+      (location) => !location.equals(locationId),
+    );
 
     // Save the user
     await user.save();
@@ -168,14 +172,12 @@ app.delete("/location/:locationId", authenticateUser, async (req, res) => {
     // Delete the item from locations
     await locationServices.deleteItemFromLocations(locationId);
 
-
     res.status(200).send("Item deleted successfully");
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 });
-
 
 app.get("/:id/categories", async (req, res) => {
   try {
