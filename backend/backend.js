@@ -5,8 +5,6 @@ import userServices from "./routes/user-services.js";
 import locationServices from "./routes/location-services.js";
 import categoryServices from "./routes/category-services.js";
 import { authenticateUser, loginUser, registerUser } from "./routes/auth.js";
-import mongoose from "mongoose";
-
 
 const app = express();
 const port = 8000;

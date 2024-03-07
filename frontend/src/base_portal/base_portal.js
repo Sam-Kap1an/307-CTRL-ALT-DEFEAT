@@ -245,7 +245,7 @@ function BasePortal() {
       </Flex>
       ) : (
         <Flex borderRadius ='10' mt='2' mb='3'align="center" justify="center" backgroundColor='#D47697'>
-        <Text mt='2' mb='2' fontSize="20px">
+        <Text mt='2' mb='2' fontSize="20px" fontWeight="bold">
           <span style={{ color: "white" }}>Click on Groups To Delete Them</span>
         </Text>        
       </Flex>
@@ -287,7 +287,9 @@ function BasePortal() {
                 borderRadius="lg"
                 onClick={editMode ? () => { LocationDeleteOpen(); setSelectedLocationId(item._id); } : () => handleLocationClick(item._id)}
                 cursor="pointer"
-                backgroundColor="#EDC7B7"
+                backgroundColor={!editMode ? ("#EDC7B7") : ("#6e3652")}
+                
+                
                 height="150px"
               >
                 <Flex fontWeight="bold" align="center" justify="center" fontSize="25px">
@@ -342,13 +344,13 @@ function BasePortal() {
     </Box>
   </Box>
 )}
-    {editMode && (
+    {editMode ?(
       <Flex borderRadius ='10' mt='2' mb='3'align="center" justify="center" backgroundColor='#D47697' onClick={toggleEditMode}>
-        <Text mt='2' mb='2' fontSize="20px">
+        <Text mt='2' mb='2' fontSize="20px" fontWeight="bold">
           <span style={{ color: "white" }}>Exit Edit Mode</span>
         </Text>        
       </Flex>
-    )}
+    ):(
 
       <Box borderRadius ='10' backgroundColor="#EDC7B7" onClick={NO}>
         <Text ml='2' mt='3' fontSize="2xl" fontWeight="bold">
@@ -378,7 +380,8 @@ function BasePortal() {
           </Modal>
 
       </Box>
-    </Box>
+    )}
+  </Box>
   );
 }
 
