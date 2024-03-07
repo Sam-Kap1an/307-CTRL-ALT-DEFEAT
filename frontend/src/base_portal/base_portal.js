@@ -205,7 +205,7 @@ function BasePortal() {
           cursor="pointer"
         >
           <span style={{ color: "#D47697" }}>Welcome, </span>
-          <span style={{ color: "#6e3652" }}>{username}.</span>
+          <span style={{ color: "#6e3652" }}>{username} </span>
           <HamburgerIcon/>
         </MenuButton>
         <MenuList>

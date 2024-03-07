@@ -117,7 +117,7 @@ app.get("/username", authenticateUser, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     // Now you can access the user object and send it in the response
-    res.status(200).json(username);
+    res.status(200).json(user.name);
   } catch (error) {
     console.error("Error fetching username:", error);
     res.status(500).json({ message: "Internal server error" });
