@@ -1,11 +1,11 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./login/login.js";
-import Create from "./create/create.js";
-import Home from "./components/home/Home.js";
-import Inventory from "./inventory/Inventory.js";
-import BasePortal from "./base_portal/base_portal.js";
-import Areas from "./area_page/Areas.js";
+import Login from "./login/login";
+import Create from "./create/create";
+import Home from "./components/home/Home";
+import Inventory from "./inventory/Inventory";
+import BasePortal from "./base_portal/base_portal";
+import Areas from "./area_page/Areas";
 
 function App() {
   return (
