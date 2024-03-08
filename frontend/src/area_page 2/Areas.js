@@ -61,7 +61,7 @@ const Areas = () => {
       <Flex alignItems="center" justifyContent="space-between" mt="5">
         <Flex>
           <Text fontSize="40px" fontWeight="bold" color="#D47697" mr="3">
-            Home
+            Location
           </Text>
           <Text fontSize="40px" fontWeight="bold" color="#6e3652">
             Areas

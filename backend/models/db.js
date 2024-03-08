@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
-dotenv.config();
+require("dotenv").config();
 
 mongoose.set("debug", true);
+
+console.log(process.env.MONGO_URI);
 
 mongoose
   .connect(process.env.MONGO_URI, {

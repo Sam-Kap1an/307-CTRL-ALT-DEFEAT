@@ -4,38 +4,25 @@ import {
   Box,
   Button,
   Input,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
   Text,
   Select,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
   useDisclosure,
   Flex,
 } from "@chakra-ui/react";
 import LogoutButton from "../components/Logout.js";
+import AddNewProductModal from "./AddNewProductModal.js";
+import ProductTable from "./ProductTable.js";
+import BackButton from "./BackButton.js";
 
 function Inventory() {
   const navigate = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const handleBackClick = () => {
-    navigate("/areas");
-  };
+  const { onClose } = useDisclosure();
 
   const handleSortifyClick = () => {
     navigate("/");
   };
 
-  const [newProduct, setNewProduct] = useState({
+  const [setNewProduct] = useState({
     name: "",
     quantity: "",
     description: "",
@@ -47,6 +34,11 @@ function Inventory() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterOption, setFilterOption] = useState("All");
   const [userEmail, setUserEmail] = useState("");
+  const [isAddNewModalOpen, setIsAddNewModalOpen] = useState(false);
+
+  const handleAddNewClick = () => {
+    setIsAddNewModalOpen(true);
+  };
 
   const fetchInventory = useCallback(async () => {
     try {
@@ -87,11 +79,7 @@ function Inventory() {
     fetchInventory();
   }, [fetchInventory]);
 
-  const handleAddNewClick = () => {
-    onOpen();
-  };
-
-  const handleAddNewProduct = () => {
+  const handleAddNewProduct = (newProduct) => {
     try {
       const authToken = localStorage.getItem("authToken");
 
@@ -219,9 +207,27 @@ function Inventory() {
     setInventory(updatedInventory);
   };
 
-  const filteredInventory = (inventory ?? []).filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const filteredInventory = (inventory ?? []).filter((item) => {
+    const nameIncludesSearchTerm = item.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+
+    if (filterOption === "All") {
+      return nameIncludesSearchTerm;
+    } else if (filterOption === "Low") {
+      return (
+        nameIncludesSearchTerm &&
+        parseFloat(item.minimumThreshold) > parseFloat(item.quantity)
+      );
+    } else if (filterOption === "High") {
+      return (
+        nameIncludesSearchTerm &&
+        parseFloat(item.minimumThreshold) <= parseFloat(item.quantity)
+      );
+    }
+
+    return false;
+  });
 
   return (
     <>
@@ -240,14 +246,7 @@ function Inventory() {
           </Text>
         </Flex>
         <Flex>
-          <Button
-            onClick={handleBackClick}
-            colorScheme="teal"
-            variant="outline"
-            mr="3"
-          >
-            Back
-          </Button>
+          <BackButton />
           <LogoutButton />
         </Flex>
       </Flex>
@@ -294,184 +293,20 @@ function Inventory() {
           </Box>
         </Flex>
 
-        <Table>
-          <Thead>
-            <Tr>
-              <Th>Product</Th>
-              <Th>Quantity</Th>
-              <Th>Description</Th>
-              <Th>Minimum Threshold</Th>
-              <Th>Edit</Th>
-              <Th>Delete</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {filteredInventory.map((item) => (
-              <Tr
-                key={item._id}
-                style={{
-                  backgroundColor:
-                    parseFloat(item.minimumThreshold) >
-                    parseFloat(item.quantity)
-                      ? "rgba(255, 0, 0, 0.1)" // Red with transparency
-                      : "rgba(0, 255, 0, 0.1)", // Green with transparency
-                }}
-                display={
-                  filterOption === "All" ||
-                  (filterOption === "Low" &&
-                    parseFloat(item.minimumThreshold) >
-                      parseFloat(item.quantity)) ||
-                  (filterOption === "High" &&
-                    parseFloat(item.minimumThreshold) <=
-                      parseFloat(item.quantity))
-                    ? "table-row"
-                    : "none"
-                }
-              >
-                <Td>
-                  {editedItemId === item._id ? (
-                    <Input
-                      type="text"
-                      id={`name-${item._id}`}
-                      value={item.name}
-                      onChange={(e) => handleInputChange(e, item._id, "name")}
-                    />
-                  ) : (
-                    item.name
-                  )}
-                </Td>
-                <Td>
-                  {editedItemId === item._id ? (
-                    <Input
-                      type="text"
-                      id={`quantity-${item._id}`}
-                      value={item.quantity}
-                      onChange={(e) =>
-                        handleInputChange(e, item._id, "quantity")
-                      }
-                    />
-                  ) : (
-                    item.quantity
-                  )}
-                </Td>
-                <Td>
-                  {editedItemId === item._id ? (
-                    <Input
-                      type="text"
-                      id={`description-${item._id}`}
-                      value={item.description}
-                      onChange={(e) =>
-                        handleInputChange(e, item._id, "description")
-                      }
-                    />
-                  ) : (
-                    item.description
-                  )}
-                </Td>
-                <Td>
-                  {editedItemId === item._id ? (
-                    <Input
-                      type="text"
-                      id={`minimumThreshold-${item._id}`}
-                      value={item.minimumThreshold}
-                      onChange={(e) =>
-                        handleInputChange(e, item._id, "minimumThreshold")
-                      }
-                    />
-                  ) : (
-                    item.minimumThreshold
-                  )}
-                </Td>
-                <Td>
-                  {editedItemId === item._id ? (
-                    <Button
-                      onClick={() => handleSaveEdit(item._id)}
-                      colorScheme="teal"
-                    >
-                      Save
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={() => handleEditClick(item._id)}
-                      colorScheme="teal"
-                    >
-                      Edit
-                    </Button>
-                  )}
-                </Td>
-                <Td>
-                  <Button
-                    onClick={() => handleDeleteClick(item._id)}
-                    colorScheme="red"
-                    variant="outline"
-                  >
-                    🗑️
-                  </Button>
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
+        <ProductTable
+          filteredInventory={filteredInventory}
+          editedItemId={editedItemId}
+          handleEditClick={handleEditClick}
+          handleSaveEdit={handleSaveEdit}
+          handleDeleteClick={handleDeleteClick}
+          handleInputChange={handleInputChange}
+        />
 
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Add New Product</ModalHeader>
-            <ModalBody>
-              <Input
-                type="text"
-                placeholder="Product Name"
-                value={newProduct.name}
-                onChange={(e) =>
-                  setNewProduct({ ...newProduct, name: e.target.value })
-                }
-              />
-              <Flex mt="3" mb="3">
-                <Input
-                  mr="3"
-                  type="text"
-                  placeholder="Quantity"
-                  value={newProduct.quantity}
-                  onChange={(e) =>
-                    setNewProduct({ ...newProduct, quantity: e.target.value })
-                  }
-                />
-                <Input
-                  type="text"
-                  placeholder="Minimum Threshold"
-                  value={newProduct.minimumThreshold}
-                  onChange={(e) =>
-                    setNewProduct({
-                      ...newProduct,
-                      minimumThreshold: e.target.value,
-                    })
-                  }
-                />
-              </Flex>
-
-              <Input
-                type="text"
-                placeholder="Description"
-                value={newProduct.description}
-                onChange={(e) =>
-                  setNewProduct({ ...newProduct, description: e.target.value })
-                }
-              />
-            </ModalBody>
-            <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={onClose}>
-                Close
-              </Button>
-              <Button
-                backgroundColor="darkBlue"
-                color="white"
-                onClick={handleAddNewProduct}
-              >
-                Add
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+        <AddNewProductModal
+          isOpen={isAddNewModalOpen}
+          onClose={() => setIsAddNewModalOpen(false)}
+          onAddNewProduct={handleAddNewProduct}
+        />
       </Box>
     </>
   );

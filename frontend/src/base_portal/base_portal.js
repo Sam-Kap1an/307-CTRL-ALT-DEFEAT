@@ -22,7 +22,7 @@ import {
   MenuItem,
   useDisclosure, // Import useDisclosure to control the modal state
 } from "@chakra-ui/react";
-import LogoutButton from "../components/Logout";
+import LogoutButton from "../components/Logout.js";
 import { HamburgerIcon } from "@chakra-ui/icons";
 
 function BasePortal() {
