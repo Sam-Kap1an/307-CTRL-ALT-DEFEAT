@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
-require('dotenv').config();
+require("dotenv").config();
 
 mongoose.set("debug", true);
 
