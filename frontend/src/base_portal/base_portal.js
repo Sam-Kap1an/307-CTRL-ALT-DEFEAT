@@ -82,7 +82,7 @@ function BasePortal() {
             Authorization: `Bearer ${authToken}`,
             "Content-Type": "application/json",
           },
-        },
+        }
       );
       if (response.status === 200) {
         const username = await response.json();
@@ -112,7 +112,7 @@ function BasePortal() {
             Authorization: `Bearer ${authToken}`,
             "Content-Type": "application/json",
           },
-        },
+        }
       );
       if (response.status === 200) {
         const locations = await response.json();
@@ -177,7 +177,7 @@ function BasePortal() {
             Authorization: `Bearer ${authToken}`,
             "Content-Type": "application/json",
           },
-        },
+        }
       )
         .then((response) => {
           if (response.ok) {
@@ -193,7 +193,7 @@ function BasePortal() {
   };
 
   return (
-    <Box className="Location-container">
+    <Box className="Location-container" width="1000px">
       <Flex justifyContent="space-between" alignItems="center">
         {/* Sortify logo */}
         <Box id="sortify-text" onClick={handleSortifyClick}>
