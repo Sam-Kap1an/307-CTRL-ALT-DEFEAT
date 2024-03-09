@@ -47,12 +47,19 @@ function updateItemInInventory(itemId, updatedData) {
   return Inventory.findByIdAndUpdate(itemId, updatedData, { new: true });
 }
 
+function removeInventoryFromCategory(categoryId, inventoryId) {
+  return Category.updateOne(
+    { _id: categoryId },
+    { $pull: { inventory: inventoryId } },
+  );
+}
+
 export default {
-  // getInventory,
   findCategoryById,
   findInventoryByCategory,
   addItemToInventory,
   deleteItemFromInventory,
   searchInventory,
   updateItemInInventory,
+  removeInventoryFromCategory,
 };

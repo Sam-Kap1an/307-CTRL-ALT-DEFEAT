@@ -30,7 +30,26 @@ async function findCategoryByLocation(Location) {
   return Category.find({ _id: { $in: Location.categories } });
 }
 
+async function addCategory(category) {
+  const newCategory = new Category(category);
+  return newCategory.save();
+}
+
+function removeCategoryFromLocation(locationId, categoryId) {
+  return Location.updateOne(
+    { _id: locationId },
+    { $pull: { categories: categoryId } },
+  );
+}
+
+function deleteCategory(categoryId) {
+  return Category.findByIdAndDelete(categoryId);
+}
+
 export default {
   findLocationById,
   findCategoryByLocation,
+  addCategory,
+  deleteCategory,
+  removeCategoryFromLocation,
 };

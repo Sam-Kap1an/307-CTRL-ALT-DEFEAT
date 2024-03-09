@@ -17,7 +17,7 @@ app.get("/", async (req, res) => {
 });
 
 // gets inventory for a specific areaID, used to navigate from the area portal to inventory page
-app.get("/inventory", async (req, res) => {
+app.get("/inventory", authenticateUser, async (req, res) => {
   try {
     const { areaID, search } = req.query;
 
@@ -41,27 +41,46 @@ app.get("/inventory", async (req, res) => {
   }
 });
 
-app.post("/inventory", authenticateUser, (req, res) => {
+// adding inventory to a category
+app.post("/inventory", authenticateUser, async (req, res) => {
   const itemToAdd = req.body;
+  const { categoryID } = req.query;
 
-  inventoryServices
-    .addItemToInventory(itemToAdd)
-    .then((result) => {
-      res.status(201).send(result);
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
-    });
+  try {
+    const category = await inventoryServices.findCategoryById(categoryID);
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+    const createdInventory =
+      await inventoryServices.addItemToInventory(itemToAdd);
+
+    category.inventory.push(createdInventory._id);
+    await category.save();
+
+    res.status(201).json(createdInventory);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
-app.delete("/inventory/:id", authenticateUser, (req, res) => {
-  const itemId = req.params.id;
+// deletes the inventory from inventory and from the categories list given both ids (invetory as param, category as query)
+app.delete("/inventory/:inventoryId", authenticateUser, (req, res) => {
+  const { categoryId } = req.query;
+  const inventoryId = req.params.inventoryId;
 
   inventoryServices
-    .deleteItemFromInventory(itemId)
+    .deleteItemFromInventory(inventoryId)
     .then(() => {
-      res.status(200).send("Item deleted successfully");
+      return inventoryServices.removeInventoryFromCategory(
+        categoryId,
+        inventoryId,
+      );
+    })
+    .then(() => {
+      res
+        .status(200)
+        .send("Item deleted successfully from inventory and category");
     })
     .catch((error) => {
       console.error(error);
@@ -180,7 +199,7 @@ app.delete("/location/:locationId", authenticateUser, async (req, res) => {
 });
 
 // used to navigate from the locations page to the areas page
-app.get("/categories", async (req, res) => {
+app.get("/categories", authenticateUser, async (req, res) => {
   try {
     const { locationID } = req.query;
     console.log(locationID);
@@ -195,6 +214,51 @@ app.get("/categories", async (req, res) => {
     console.error("Error fetching categories:", error);
     res.status(500).json({ message: "Internal server error" });
   }
+});
+
+app.post("/categories", authenticateUser, async (req, res) => {
+  const categoryToAdd = req.body;
+  const { locationID } = req.query;
+
+  try {
+    const location = await categoryServices.findLocationById(locationID);
+    if (!location) {
+      return res.status(404).json({ message: "Location not found" });
+    }
+    const createdCategory = await categoryServices.addCategory(categoryToAdd);
+
+    location.categories.push(createdCategory._id);
+    await location.save();
+
+    res.status(201).json(createdCategory);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// delete a category given its id as a param and its location id as a query
+app.delete("/category/:categoryId", authenticateUser, (req, res) => {
+  const categoryId = req.params.categoryId;
+  const { locationId } = req.query;
+
+  categoryServices
+    .deleteCategory(categoryId)
+    .then(() => {
+      return categoryServices.removeCategoryFromLocation(
+        locationId,
+        categoryId,
+      );
+    })
+    .then(() => {
+      res
+        .status(200)
+        .send("Category deleted successfully from categories and location");
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    });
 });
 
 app.listen(process.env.PORT || port, () => {
