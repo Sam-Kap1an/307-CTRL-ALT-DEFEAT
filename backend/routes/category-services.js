@@ -35,8 +35,21 @@ async function addCategory(category) {
   return newCategory.save();
 }
 
+function removeCategoryFromLocation(locationId, categoryId) {
+  return Location.updateOne(
+    { _id: locationId },
+    { $pull: { categories: categoryId } },
+  );
+}
+
+function deleteCategory(categoryId) {
+  return Category.findByIdAndDelete(categoryId);
+}
+
 export default {
   findLocationById,
   findCategoryByLocation,
   addCategory,
+  deleteCategory,
+  removeCategoryFromLocation,
 };
