@@ -238,7 +238,7 @@ app.post("/categories", authenticateUser, async (req, res) => {
 });
 
 // delete a category given its id as a param and its location id as a query
-app.delete("/category/:categoryId", (req, res) => {
+app.delete("/category/:categoryId", authenticateUser, (req, res) => {
   const categoryId = req.params.categoryId;
   const { locationId } = req.query;
 
