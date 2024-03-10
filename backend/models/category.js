@@ -15,8 +15,13 @@ const CategorySchema = new mongoose.Schema(
         required: false,
       },
     ],
+    notes: {
+      type: String,
+      required: true,
+      trim: true,
+    },
   },
-  { collection: "categories" },
+  { collection: "categories" }
 );
 
 const Category = mongoose.model("Category", CategorySchema);
