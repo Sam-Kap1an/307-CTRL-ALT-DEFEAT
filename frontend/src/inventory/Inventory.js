@@ -56,7 +56,7 @@ function Inventory() {
             Authorization: `Bearer ${authToken}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -115,7 +115,7 @@ function Inventory() {
           } else {
             console.error(
               "Error adding new product: Invalid response format",
-              data
+              data,
             );
           }
         })
@@ -186,7 +186,7 @@ function Inventory() {
           console.log("Item updated successfully");
           setInventory((prevInventory) => {
             const updatedInventory = prevInventory.map((item) =>
-              item._id === itemId ? { ...item, ...editedData } : item
+              item._id === itemId ? { ...item, ...editedData } : item,
             );
             return updatedInventory;
           });
@@ -202,7 +202,7 @@ function Inventory() {
 
   const handleInputChange = (e, itemId, field) => {
     const updatedInventory = inventory.map((item) =>
-      item._id === itemId ? { ...item, [field]: e.target.value } : item
+      item._id === itemId ? { ...item, [field]: e.target.value } : item,
     );
     setInventory(updatedInventory);
   };

@@ -46,7 +46,7 @@ const Areas = () => {
             Authorization: `Bearer ${authToken}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
       if (response.status === 200) {
         const locations = await response.json();
@@ -85,7 +85,7 @@ const Areas = () => {
             "Content-Type": "application/json",
             // Include authentication headers if required
           },
-        }
+        },
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -94,6 +94,7 @@ const Areas = () => {
       const extractedData = data.map((item) => ({
         _id: item._id,
         Name: item.name,
+        Notes: item.notes,
       }));
       console.log(extractedData);
       setInventories(extractedData);
@@ -103,14 +104,62 @@ const Areas = () => {
     }
   }, [setInventories, location, navigate]);
 
+  const handleAddNewCat = async (newCat) => {
+    try {
+      const authToken = localStorage.getItem("authToken");
+
+      if (!authToken) {
+        console.log("Authentication token not found");
+        navigate("/login");
+      }
+
+      const response = await fetch(
+        `https://sortify-backend.azurewebsites.net/categories?locationID=${location}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+
+            // Include authentication headers if required
+          },
+          body: JSON.stringify(newCat),
+        },
+      );
+      if (response.status === 201) {
+        const createdCategory = await response.json();
+        // Assuming response returns the newly created category object
+        console.log("New category added:", createdCategory);
+        setInventories((prevState) => [
+          ...prevState,
+          {
+            _id: createdCategory._id,
+            Name: createdCategory.name,
+            Notes: createdCategory.notes,
+          },
+        ]);
+        // You may want to update state or refetch data to reflect the changes
+      } else {
+        console.error("Failed to add new category:", response.status);
+      }
+    } catch (error) {
+      console.error("Error adding Inventory:", error);
+    }
+  };
+
   useEffect(() => {
     fetchLocation();
     fetchCategories();
   }, [fetchCategories, fetchLocation]);
 
   return (
-    <Flex direction="column" width="900px">
-      <Flex alignItems="center" justifyContent="space-between" mt="5">
+    <Flex direction="column" width="900px" alignItems="center">
+      <Flex
+        alignItems="center"
+        justifyContent="space-between"
+        mt="5"
+        width="full"
+      >
         <Flex>
           <Text fontSize="40px" fontWeight="bold" color="#D47697" mr="3">
             {locationName}
@@ -132,8 +181,14 @@ const Areas = () => {
         </Flex>
       </Flex>
 
-      <Box className="inventory-container" p="6">
-        <Flex mt="2" mb="2" className="search-filter-buttons" direction="row">
+      <Box className="inventory-container" p="6" width="full">
+        <Flex
+          mt="2"
+          mb="2"
+          className="search-filter-buttons"
+          direction="row"
+          width="full"
+        >
           <Input
             type="text"
             placeholder="Search Areas"
@@ -156,26 +211,26 @@ const Areas = () => {
           </Box>
         </Flex>
       </Box>
-      <Flex
-        flexWrap="wrap"
-        justifyContent="space-between"
-        alignItems="center"
-        gap="4"
-      >
+      <Flex flexWrap="wrap" alignItems="center" gap="15px" width="full">
         {inventories.map((item) => (
           <Flex key={item._id}>
             <AreaCards
               name={item.Name}
+              id={item._id}
               lowItems={5}
               highItems={5}
               totalItems={5}
-              details={"Add notes field"}
+              details={item.Notes}
             />
           </Flex>
         ))}
       </Flex>
 
-      <AddNewArea isOpen={isOpen} onClose={onClose} />
+      <AddNewArea
+        isOpen={isOpen}
+        onClose={onClose}
+        onAddArea={handleAddNewCat}
+      />
     </Flex>
   );
 };

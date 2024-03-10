@@ -82,7 +82,7 @@ function BasePortal() {
             Authorization: `Bearer ${authToken}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
       if (response.status === 200) {
         const username = await response.json();
@@ -112,7 +112,7 @@ function BasePortal() {
             Authorization: `Bearer ${authToken}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
       if (response.status === 200) {
         const locations = await response.json();
@@ -177,7 +177,7 @@ function BasePortal() {
             Authorization: `Bearer ${authToken}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       )
         .then((response) => {
           if (response.ok) {

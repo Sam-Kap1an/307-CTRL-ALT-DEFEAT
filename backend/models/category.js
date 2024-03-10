@@ -21,7 +21,7 @@ const CategorySchema = new mongoose.Schema(
       trim: true,
     },
   },
-  { collection: "categories" }
+  { collection: "categories" },
 );
 
 const Category = mongoose.model("Category", CategorySchema);
