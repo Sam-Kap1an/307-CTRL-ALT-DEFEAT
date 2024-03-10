@@ -54,7 +54,7 @@ function BasePortal() {
   };
 
   const handleLocationClick = (ID) => {
-    navigate(`/categories`);
+    navigate(`/categories/${ID}`);
     //navigate(`/categories?${ID}`);
   };
 
@@ -193,7 +193,7 @@ function BasePortal() {
   };
 
   return (
-    <Box className="Location-container">
+    <Box className="Location-container" width="1000px">
       <Flex justifyContent="space-between" alignItems="center">
         {/* Sortify logo */}
         <Box id="sortify-text" onClick={handleSortifyClick}>

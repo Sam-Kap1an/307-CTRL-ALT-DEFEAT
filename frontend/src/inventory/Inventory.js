@@ -250,10 +250,6 @@ function Inventory() {
           <LogoutButton />
         </Flex>
       </Flex>
-
-      <Box>
-        <Text fontSize="md">User Email: {userEmail}</Text>
-      </Box>
       <Box className="inventory-container" p="6">
         <Flex direction="row" justifyContent="space-between">
           <Text fontSize="2xl" fontWeight="bold">

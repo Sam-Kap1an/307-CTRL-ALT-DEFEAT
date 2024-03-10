@@ -16,7 +16,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Create />} />
         <Route path="/location" element={<BasePortal />} />
-        <Route path="/categories" element={<Areas />} />
+        <Route path="/categories/:location" element={<Areas />} />
       </Routes>
     </Router>
   );

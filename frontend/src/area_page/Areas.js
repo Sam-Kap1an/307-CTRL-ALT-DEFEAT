@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Flex,
   Text,
@@ -7,76 +7,188 @@ import {
   Select,
   Box,
   useDisclosure,
-  Modal,
-  ModalFooter,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
 } from "@chakra-ui/react";
 import AreaCards from "./AreaCards.js";
 import LogoutButton from "../components/Logout.js";
+import AddNewArea from "./AddNewArea.js";
+import { useParams, useNavigate } from "react-router-dom";
 
 const Areas = () => {
   // need a header for the name of the location
   // need a search bar and add button similar to the inventory page
   // need a flexbox with cards for each area
+  const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const { location } = useParams();
+  const [inventories, setInventories] = useState([]);
+  const [locationName, setLocationName] = useState();
+
   const handleAddNewClick = () => {
     onOpen();
   };
 
-  const inventories = [
-    {
-      inventory: "Kitchen",
-      numLow: 5,
-      numHigh: 3,
-      totalItems: 4,
-      details: "Main kitchen space.",
-    },
-    {
-      inventory: "Garage",
-      numLow: 2,
-      numHigh: 0,
-      totalItems: 2,
-      details: "Two car garage.",
-    },
-    {
-      inventory: "Bathroom",
-      numLow: 5,
-      numHigh: 13,
-      totalItems: 18,
-      details: "Upstairs bathroom 2 sinks.",
-    },
-    {
-      inventory: "Backyard",
-      numLow: 5,
-      numHigh: 13,
-      totalItems: 18,
-      details: "350 sq ft",
-    },
-  ];
+  const handleBackClick = () => {
+    navigate("/location");
+  };
+
+  const fetchLocation = useCallback(async () => {
+    try {
+      const authToken = localStorage.getItem("authToken");
+      if (!authToken) {
+        console.log("Authentication token not found");
+        return;
+      }
+      const response = await fetch(
+        `https://sortify-backend.azurewebsites.net/location`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      if (response.status === 200) {
+        const locations = await response.json();
+        const locationSelect = locations.find((loc) => loc._id === location); // Assuming locationId is available
+        if (location) {
+          setLocationName(locationSelect.name);
+        } else {
+          console.error("Location not found with _id:", location);
+        }
+      } else if (response.status === 401) {
+        console.error("User is not logged in or token is expired");
+        navigate("/login");
+      } else {
+        console.error("Error fetching Location:", response.status);
+      }
+    } catch (error) {
+      console.error("Error Fetching Location:", error);
+    }
+  }, [navigate, setLocationName, location]);
+
+  const fetchCategories = useCallback(async () => {
+    try {
+      const authToken = localStorage.getItem("authToken");
+
+      if (!authToken) {
+        console.log("Authentication token not found");
+        navigate("/login");
+      }
+
+      const response = await fetch(
+        `https://sortify-backend.azurewebsites.net/categories?locationID=${location}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+            // Include authentication headers if required
+          },
+        },
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      const extractedData = data.map((item) => ({
+        _id: item._id,
+        Name: item.name,
+        Notes: item.notes,
+      }));
+      console.log(extractedData);
+      setInventories(extractedData);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      // Handle error as needed
+    }
+  }, [setInventories, location, navigate]);
+
+  const handleAddNewCat = async (newCat) => {
+    try {
+      const authToken = localStorage.getItem("authToken");
+
+      if (!authToken) {
+        console.log("Authentication token not found");
+        navigate("/login");
+      }
+
+      const response = await fetch(
+        `https://sortify-backend.azurewebsites.net/categories?locationID=${location}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+
+            // Include authentication headers if required
+          },
+          body: JSON.stringify(newCat),
+        },
+      );
+      if (response.status === 201) {
+        const createdCategory = await response.json();
+        // Assuming response returns the newly created category object
+        console.log("New category added:", createdCategory);
+        setInventories((prevState) => [
+          ...prevState,
+          {
+            _id: createdCategory._id,
+            Name: createdCategory.name,
+            Notes: createdCategory.notes,
+          },
+        ]);
+        // You may want to update state or refetch data to reflect the changes
+      } else {
+        console.error("Failed to add new category:", response.status);
+      }
+    } catch (error) {
+      console.error("Error adding Inventory:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchLocation();
+    fetchCategories();
+  }, [fetchCategories, fetchLocation]);
+
   return (
-    <Flex direction="column">
-      <Flex alignItems="center" justifyContent="space-between" mt="5">
+    <Flex direction="column" width="900px" alignItems="center">
+      <Flex
+        alignItems="center"
+        justifyContent="space-between"
+        mt="5"
+        width="full"
+      >
         <Flex>
           <Text fontSize="40px" fontWeight="bold" color="#D47697" mr="3">
-            Home
+            {locationName}
           </Text>
           <Text fontSize="40px" fontWeight="bold" color="#6e3652">
-            Areas
+            Inventories
           </Text>
         </Flex>
         <Flex>
-          <Button colorScheme="teal" variant="outline" mr="3">
+          <Button
+            colorScheme="teal"
+            variant="outline"
+            mr="3"
+            onClick={handleBackClick}
+          >
             Back
           </Button>
           <LogoutButton />
         </Flex>
       </Flex>
 
-      <Box className="inventory-container" p="6">
-        <Flex mt="2" mb="2" className="search-filter-buttons" direction="row">
+      <Box className="inventory-container" p="6" width="full">
+        <Flex
+          mt="2"
+          mb="2"
+          className="search-filter-buttons"
+          direction="row"
+          width="full"
+        >
           <Input
             type="text"
             placeholder="Search Areas"
@@ -99,44 +211,26 @@ const Areas = () => {
           </Box>
         </Flex>
       </Box>
-      <Flex
-        flexWrap="wrap"
-        justifyContent="space-between"
-        alignItems="center"
-        gap="4"
-      >
+      <Flex flexWrap="wrap" alignItems="center" gap="15px" width="full">
         {inventories.map((item) => (
-          <button>
+          <Flex key={item._id}>
             <AreaCards
-              name={item.inventory}
-              lowItems={item.numLow}
-              highItems={item.numHigh}
-              totalItems={item.totalItems}
-              details={item.details}
+              name={item.Name}
+              id={item._id}
+              lowItems={5}
+              highItems={5}
+              totalItems={5}
+              details={item.Notes}
             />
-          </button>
+          </Flex>
         ))}
       </Flex>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Add New Product</ModalHeader>
-          <ModalBody>
-            <Input type="text" placeholder="Area Name" mb={4} />
-
-            <Input type="text" placeholder="Description" />
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button backgroundColor="darkBlue" color="white">
-              Add
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <AddNewArea
+        isOpen={isOpen}
+        onClose={onClose}
+        onAddArea={handleAddNewCat}
+      />
     </Flex>
   );
 };

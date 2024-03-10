@@ -15,6 +15,11 @@ const CategorySchema = new mongoose.Schema(
         required: false,
       },
     ],
+    notes: {
+      type: String,
+      required: true,
+      trim: true,
+    },
   },
   { collection: "categories" },
 );

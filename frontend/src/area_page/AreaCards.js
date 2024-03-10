@@ -14,17 +14,17 @@ import {
   Flex,
 } from "@chakra-ui/react";
 
-const AreaCards = ({ name, lowItems, highItems, totalItems, details }) => {
+const AreaCards = ({ name, id, lowItems, highItems, totalItems, details }) => {
   return (
     <Card
       direction="column"
       justify="center"
-      height="200px"
-      width="200px"
+      height="213.75px"
+      width="213.75px"
       backgroundColor="#F0D9CF"
     >
-      <CardBody>
-        <Flex direction="column">
+      <CardBody overflow="scroll" height="150px">
+        <Flex direction="column" alignItems="center" justifyContent="center">
           <Text fontSize="20px" fontWeight="bold" color="#6e3652">
             {name}
           </Text>
