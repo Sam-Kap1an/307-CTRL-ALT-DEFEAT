@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import { useParams } from 'react-router-dom';
+import { useNavigate, useLocation } from "react-router-dom";
+
 
 import {
   Box,
@@ -19,7 +19,9 @@ import BackButton from "./BackButton.js";
 function Inventory() {
   const navigate = useNavigate();
   const { onClose } = useDisclosure();
-
+  const location = useLocation();
+  const areaName = location.state?.areaName || "";
+  
 
   const handleSortifyClick = () => {
     navigate("/");
@@ -36,7 +38,7 @@ function Inventory() {
   const [editedItemId, setEditedItemId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterOption, setFilterOption] = useState("All");
-  const [userEmail, setUserEmail] = useState("");
+ 
   const [isAddNewModalOpen, setIsAddNewModalOpen] = useState(false);
 
 
@@ -75,7 +77,7 @@ function Inventory() {
       if (response.status === 200) {
         const data = await response.json();
         setInventory(data.inventory);
-        setUserEmail(data.userEmail);
+        
         
       } else if (response.status === 401) {
         console.error("User is not logged in or token is expired");
@@ -86,7 +88,7 @@ function Inventory() {
     } catch (error) {
       console.error("Error fetching inventory:", error);
     }
-  }, [navigate, setInventory, setUserEmail]);
+  }, [navigate, setInventory]);
 
   
   
@@ -256,7 +258,7 @@ function Inventory() {
       >
         <Flex>
           <Text fontSize="40px" fontWeight="bold" color="#D47697" mr="3">
-            Title
+          {areaName}
           </Text>
           <Text fontSize="40px" fontWeight="bold" color="#6e3652">
             Inventory

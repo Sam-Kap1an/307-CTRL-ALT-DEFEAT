@@ -23,7 +23,8 @@ const Areas = () => {
   const { location } = useParams();
   const [inventories, setInventories] = useState([]);
   const [locationName, setLocationName] = useState();
-  const [areaName, setAreaName] = useState("");
+
+  
 
   const handleAddNewClick = () => {
     onOpen();
@@ -155,11 +156,13 @@ const Areas = () => {
 
 
   // new testing
-  const handleCategoryClick = (categoryId) => {
+  const handleCategoryClick = (categoryId, categoryName) => {
     // Construct the URL by combining the location ID and category ID
-     
+   
     const url = `/categories/${location}/${categoryId}`;
-    navigate(url);
+    navigate(url, { state: { areaName: categoryName } });
+    
+   // navigate(url);
   };
 
   return (
@@ -223,7 +226,7 @@ const Areas = () => {
       </Box>
       <Flex flexWrap="wrap" alignItems="center" gap="15px" width="full">
         {inventories.map((item) => (
-          <Flex key={item._id} onClick={() => handleCategoryClick(item._id)}>
+          <Flex key={item._id} onClick={() => handleCategoryClick(item._id, item.Name)}>
             <AreaCards
               name={item.Name}
               id={item._id}
