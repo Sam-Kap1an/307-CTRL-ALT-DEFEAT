@@ -7,7 +7,7 @@ const BackButton = () => {
   const navigate = useNavigate();
 
   const handleBackClick = () => {
-    navigate("/categories");
+    navigate(-1);
   };
 
   return (

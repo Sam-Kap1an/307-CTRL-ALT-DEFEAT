@@ -23,6 +23,7 @@ const Areas = () => {
   const { location } = useParams();
   const [inventories, setInventories] = useState([]);
   const [locationName, setLocationName] = useState();
+  const [areaName, setAreaName] = useState("");
 
   const handleAddNewClick = () => {
     onOpen();
@@ -156,6 +157,7 @@ const Areas = () => {
   // new testing
   const handleCategoryClick = (categoryId) => {
     // Construct the URL by combining the location ID and category ID
+     
     const url = `/categories/${location}/${categoryId}`;
     navigate(url);
   };

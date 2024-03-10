@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useParams } from 'react-router-dom';
+
 import {
   Box,
   Button,
@@ -18,11 +20,12 @@ function Inventory() {
   const navigate = useNavigate();
   const { onClose } = useDisclosure();
 
+
   const handleSortifyClick = () => {
     navigate("/");
   };
 
-  const [setNewProduct] = useState({
+  const [newProduct, setNewProduct] = useState({
     name: "",
     quantity: "",
     description: "",
@@ -36,21 +39,31 @@ function Inventory() {
   const [userEmail, setUserEmail] = useState("");
   const [isAddNewModalOpen, setIsAddNewModalOpen] = useState(false);
 
+
+
   const handleAddNewClick = () => {
     setIsAddNewModalOpen(true);
   };
 
+  const getCategoryIdFromURL = () => {
+    const pathArray = window.location.pathname.split("/");
+    return pathArray[pathArray.length - 1];
+  };
+
+
   const fetchInventory = useCallback(async () => {
     try {
       const authToken = localStorage.getItem("authToken");
-
+  
       if (!authToken) {
         console.log("Authentication token not found");
         navigate("/login");
+        return; // Add a return statement to avoid continuing the function
       }
 
+      const areaId = getCategoryIdFromURL(); // Add this function to get the area ID from the URL
       const response = await fetch(
-        "https://sortify-backend.azurewebsites.net/inventory",
+        `https://sortify-backend.azurewebsites.net/inventory?areaID=${areaId}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -63,7 +76,7 @@ function Inventory() {
         const data = await response.json();
         setInventory(data.inventory);
         setUserEmail(data.userEmail);
-        console.log(userEmail);
+        
       } else if (response.status === 401) {
         console.error("User is not logged in or token is expired");
         navigate("/login");
@@ -73,58 +86,61 @@ function Inventory() {
     } catch (error) {
       console.error("Error fetching inventory:", error);
     }
-  }, [navigate, setInventory, userEmail]);
+  }, [navigate, setInventory, setUserEmail]);
 
+  
+  
   useEffect(() => {
+  
     fetchInventory();
   }, [fetchInventory]);
 
-  const handleAddNewProduct = (newProduct) => {
+  
+  const handleAddNewProduct = async (newProduct) => {
     try {
       const authToken = localStorage.getItem("authToken");
-
+      const categoryID = getCategoryIdFromURL(); // Change to categoryID
+  
       if (!authToken) {
         console.log("Authentication token not found");
         return;
       }
-
-      fetch("https://sortify-backend.azurewebsites.net/inventory", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newProduct),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data && data._id) {
-            setInventory((prevInventory) => {
-              const newArray = Array.isArray(prevInventory)
-                ? prevInventory
-                : [];
-              return [...newArray, data];
-            });
-            setNewProduct({
-              name: "",
-              quantity: "",
-              description: "",
-              minimumThreshold: "",
-            });
-            onClose();
-          } else {
-            console.error(
-              "Error adding new product: Invalid response format",
-              data,
-            );
-          }
-        })
-        .catch((error) => console.error("Error adding new product:", error));
+  
+      const response = await fetch(
+        `https://sortify-backend.azurewebsites.net/inventory?categoryID=${categoryID}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newProduct),
+        }
+      );
+  
+      if (response.status === 201) {
+        const data = await response.json();
+        setInventory((prevInventory) => {
+          const newArray = Array.isArray(prevInventory) ? prevInventory : [];
+          return [...newArray, data];
+        });
+        setNewProduct({
+          name: "",
+          quantity: "",
+          description: "",
+          minimumThreshold: "",
+        });
+        onClose();
+      } else {
+        console.error("Error adding new product:", response.status);
+      }
     } catch (error) {
       console.error("Error adding inventory:", error);
     }
   };
-
+  
+  
+  
   const handleDeleteClick = (itemId) => {
     try {
       const authToken = localStorage.getItem("authToken");
@@ -157,49 +173,50 @@ function Inventory() {
     setEditedItemId(itemId);
   };
 
-  const handleSaveEdit = (itemId) => {
+  const handleSaveEdit = async (itemId) => {
     const editedData = {
       name: document.getElementById(`name-${itemId}`).value,
       quantity: document.getElementById(`quantity-${itemId}`).value,
       description: document.getElementById(`description-${itemId}`).value,
-      minimumThreshold: document.getElementById(`minimumThreshold-${itemId}`)
-        .value,
+      minimumThreshold: document.getElementById(`minimumThreshold-${itemId}`).value,
     };
+  
     try {
       const authToken = localStorage.getItem("authToken");
-
+  
       if (!authToken) {
         console.log("Authentication token not found");
         return;
       }
-
-      fetch(`https://sortify-backend.azurewebsites.net/inventory/${itemId}`, {
+  
+      const response = await fetch(`https://sortify-backend.azurewebsites.net/inventory/${itemId}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(editedData),
-      })
-        .then((response) => response.json())
-        .then(() => {
-          console.log("Item updated successfully");
-          setInventory((prevInventory) => {
-            const updatedInventory = prevInventory.map((item) =>
-              item._id === itemId ? { ...item, ...editedData } : item,
-            );
-            return updatedInventory;
-          });
-        })
-        .catch((error) => console.error("Error updating item:", error))
-        .finally(() => {
-          setEditedItemId(null);
+      });
+  
+      if (response.ok) {
+        console.log("Item updated successfully");
+        setInventory((prevInventory) => {
+          const updatedInventory = prevInventory.map((item) =>
+            item._id === itemId ? { ...item, ...editedData } : item
+          );
+          return updatedInventory;
         });
+      } else {
+        console.error("Error updating item:", response.status);
+      }
     } catch (error) {
-      console.error("Error deleting inventory:", error);
+      console.error("Error updating item:", error);
+    } finally {
+      setEditedItemId(null);
     }
   };
-
+  
+  
   const handleInputChange = (e, itemId, field) => {
     const updatedInventory = inventory.map((item) =>
       item._id === itemId ? { ...item, [field]: e.target.value } : item,
@@ -239,7 +256,7 @@ function Inventory() {
       >
         <Flex>
           <Text fontSize="40px" fontWeight="bold" color="#D47697" mr="3">
-            Kitchen
+            Title
           </Text>
           <Text fontSize="40px" fontWeight="bold" color="#6e3652">
             Inventory
@@ -302,6 +319,8 @@ function Inventory() {
           isOpen={isAddNewModalOpen}
           onClose={() => setIsAddNewModalOpen(false)}
           onAddNewProduct={handleAddNewProduct}
+          newProduct={newProduct}
+          setNewProduct={setNewProduct}
         />
       </Box>
     </>

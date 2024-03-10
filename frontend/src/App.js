@@ -17,7 +17,7 @@ function App() {
         <Route path="/signup" element={<Create />} />
         <Route path="/location" element={<BasePortal />} />
         <Route path="/categories/:location" element={<Areas />} />
-        <Route path="/categories/:location/:areaId" element={<Inventory />} />
+        <Route path="/categories/:location/:categoryId" element={<Inventory />} />
         
       </Routes>
     </Router>
