@@ -152,6 +152,14 @@ const Areas = () => {
     fetchCategories();
   }, [fetchCategories, fetchLocation]);
 
+
+  // new testing
+  const handleCategoryClick = (categoryId) => {
+    // Construct the URL by combining the location ID and category ID
+    const url = `/categories/${location}/${categoryId}`;
+    navigate(url);
+  };
+
   return (
     <Flex direction="column" width="900px" alignItems="center">
       <Flex
@@ -213,7 +221,7 @@ const Areas = () => {
       </Box>
       <Flex flexWrap="wrap" alignItems="center" gap="15px" width="full">
         {inventories.map((item) => (
-          <Flex key={item._id}>
+          <Flex key={item._id} onClick={() => handleCategoryClick(item._id)}>
             <AreaCards
               name={item.Name}
               id={item._id}
