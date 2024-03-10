@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Flex,
   Text,
@@ -7,55 +7,64 @@ import {
   Select,
   Box,
   useDisclosure,
-  Modal,
-  ModalFooter,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
 } from "@chakra-ui/react";
 import AreaCards from "./AreaCards.js";
 import LogoutButton from "../components/Logout.js";
+import AddNewArea from "./AddNewArea.js";
+import { useParams, useNavigate } from "react-router-dom";
 
 const Areas = () => {
   // need a header for the name of the location
   // need a search bar and add button similar to the inventory page
   // need a flexbox with cards for each area
+  const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const handleAddNewClick = () => {
     onOpen();
   };
+  const { location } = useParams();
+  const [inventories, setInventories] = useState([]);
 
-  const inventories = [
-    {
-      inventory: "Kitchen",
-      numLow: 5,
-      numHigh: 3,
-      totalItems: 4,
-      details: "Main kitchen space.",
-    },
-    {
-      inventory: "Garage",
-      numLow: 2,
-      numHigh: 0,
-      totalItems: 2,
-      details: "Two car garage.",
-    },
-    {
-      inventory: "Bathroom",
-      numLow: 5,
-      numHigh: 13,
-      totalItems: 18,
-      details: "Upstairs bathroom 2 sinks.",
-    },
-    {
-      inventory: "Backyard",
-      numLow: 5,
-      numHigh: 13,
-      totalItems: 18,
-      details: "350 sq ft",
-    },
-  ];
+  const fetchCategories = useCallback(async () => {
+    try {
+      const authToken = localStorage.getItem("authToken");
+
+      if (!authToken) {
+        console.log("Authentication token not found");
+        navigate("/login");
+      }
+
+      const response = await fetch(
+        `https://sortify-backend.azurewebsites.net/categories?locationID=${location}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+            // Include authentication headers if required
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      const extractedData = data.map((item) => ({
+        _id: item._id,
+        Name: item.name,
+      }));
+      console.log(extractedData);
+      setInventories(extractedData);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      // Handle error as needed
+    }
+  }, [setInventories, location, navigate]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
   return (
     <Flex direction="column" width="900px">
       <Flex alignItems="center" justifyContent="space-between" mt="5">
@@ -106,37 +115,19 @@ const Areas = () => {
         gap="4"
       >
         {inventories.map((item) => (
-          <button>
+          <Flex key={item._id}>
             <AreaCards
-              name={item.inventory}
-              lowItems={item.numLow}
-              highItems={item.numHigh}
-              totalItems={item.totalItems}
-              details={item.details}
+              name={item.Name}
+              lowItems={5}
+              highItems={5}
+              totalItems={5}
+              details={"Add notes field"}
             />
-          </button>
+          </Flex>
         ))}
       </Flex>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Add New Product</ModalHeader>
-          <ModalBody>
-            <Input type="text" placeholder="Area Name" mb={4} />
-
-            <Input type="text" placeholder="Description" />
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button backgroundColor="darkBlue" color="white">
-              Add
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <AddNewArea isOpen={isOpen} onClose={onClose} />
     </Flex>
   );
 };

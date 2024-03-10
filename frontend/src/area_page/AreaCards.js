@@ -23,8 +23,8 @@ const AreaCards = ({ name, lowItems, highItems, totalItems, details }) => {
       width="200px"
       backgroundColor="#F0D9CF"
     >
-      <CardBody>
-        <Flex direction="column">
+      <CardBody overflow="scroll" height="150px">
+        <Flex direction="column" alignItems="center" justifyContent="center">
           <Text fontSize="20px" fontWeight="bold" color="#6e3652">
             {name}
           </Text>
