@@ -19,11 +19,53 @@ const Areas = () => {
   // need a flexbox with cards for each area
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const { location } = useParams();
+  const [inventories, setInventories] = useState([]);
+  const [locationName, setLocationName] = useState();
+
   const handleAddNewClick = () => {
     onOpen();
   };
-  const { location } = useParams();
-  const [inventories, setInventories] = useState([]);
+
+  const handleBackClick = () => {
+    navigate("/location");
+  };
+
+  const fetchLocation = useCallback(async () => {
+    try {
+      const authToken = localStorage.getItem("authToken");
+      if (!authToken) {
+        console.log("Authentication token not found");
+        return;
+      }
+      const response = await fetch(
+        `https://sortify-backend.azurewebsites.net/location`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.status === 200) {
+        const locations = await response.json();
+        const locationSelect = locations.find((loc) => loc._id === location); // Assuming locationId is available
+        if (location) {
+          setLocationName(locationSelect.name);
+        } else {
+          console.error("Location not found with _id:", location);
+        }
+      } else if (response.status === 401) {
+        console.error("User is not logged in or token is expired");
+        navigate("/login");
+      } else {
+        console.error("Error fetching Location:", response.status);
+      }
+    } catch (error) {
+      console.error("Error Fetching Location:", error);
+    }
+  }, [navigate, setLocationName, location]);
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -62,22 +104,28 @@ const Areas = () => {
   }, [setInventories, location, navigate]);
 
   useEffect(() => {
+    fetchLocation();
     fetchCategories();
-  }, [fetchCategories]);
+  }, [fetchCategories, fetchLocation]);
 
   return (
     <Flex direction="column" width="900px">
       <Flex alignItems="center" justifyContent="space-between" mt="5">
         <Flex>
           <Text fontSize="40px" fontWeight="bold" color="#D47697" mr="3">
-            Home
+            {locationName}
           </Text>
           <Text fontSize="40px" fontWeight="bold" color="#6e3652">
             Inventories
           </Text>
         </Flex>
         <Flex>
-          <Button colorScheme="teal" variant="outline" mr="3">
+          <Button
+            colorScheme="teal"
+            variant="outline"
+            mr="3"
+            onClick={handleBackClick}
+          >
             Back
           </Button>
           <LogoutButton />

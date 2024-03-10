@@ -54,7 +54,7 @@ function BasePortal() {
   };
 
   const handleLocationClick = (ID) => {
-    navigate(`/categories`);
+    navigate(`/categories/${ID}`);
     //navigate(`/categories?${ID}`);
   };
 
