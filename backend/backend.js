@@ -16,12 +16,11 @@ app.get("/", async (req, res) => {
   res.status(200).send("Successfully connected");
 });
 
-
 // gets inventory for a specific areaID, used to navigate from the area portal to inventory page
 app.get("/inventory", authenticateUser, async (req, res) => {
   try {
     const { areaID, search } = req.query;
-    
+
     let category;
     let inventory;
 
@@ -34,8 +33,6 @@ app.get("/inventory", authenticateUser, async (req, res) => {
       inventory = await inventoryServices.findInventoryByCategory(category);
       console.log(inventory);
     }
-
-    
 
     res.send({ inventory });
   } catch (error) {

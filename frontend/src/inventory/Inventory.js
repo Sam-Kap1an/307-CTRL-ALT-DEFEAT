@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-
 import {
   Box,
   Button,
@@ -21,7 +20,6 @@ function Inventory() {
   const { onClose } = useDisclosure();
   const location = useLocation();
   const areaName = location.state?.areaName || "";
-  
 
   const handleSortifyClick = () => {
     navigate("/");
@@ -38,10 +36,8 @@ function Inventory() {
   const [editedItemId, setEditedItemId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterOption, setFilterOption] = useState("All");
- 
+
   const [isAddNewModalOpen, setIsAddNewModalOpen] = useState(false);
-
-
 
   const handleAddNewClick = () => {
     setIsAddNewModalOpen(true);
@@ -52,11 +48,10 @@ function Inventory() {
     return pathArray[pathArray.length - 1];
   };
 
-
   const fetchInventory = useCallback(async () => {
     try {
       const authToken = localStorage.getItem("authToken");
-  
+
       if (!authToken) {
         console.log("Authentication token not found");
         navigate("/login");
@@ -77,8 +72,6 @@ function Inventory() {
       if (response.status === 200) {
         const data = await response.json();
         setInventory(data.inventory);
-        
-        
       } else if (response.status === 401) {
         console.error("User is not logged in or token is expired");
         navigate("/login");
@@ -90,24 +83,20 @@ function Inventory() {
     }
   }, [navigate, setInventory]);
 
-  
-  
   useEffect(() => {
-  
     fetchInventory();
   }, [fetchInventory]);
 
-  
   const handleAddNewProduct = async (newProduct) => {
     try {
       const authToken = localStorage.getItem("authToken");
       const categoryID = getCategoryIdFromURL(); // Change to categoryID
-  
+
       if (!authToken) {
         console.log("Authentication token not found");
         return;
       }
-  
+
       const response = await fetch(
         `https://sortify-backend.azurewebsites.net/inventory?categoryID=${categoryID}`,
         {
@@ -117,9 +106,9 @@ function Inventory() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(newProduct),
-        }
+        },
       );
-  
+
       if (response.status === 201) {
         const data = await response.json();
         setInventory((prevInventory) => {
@@ -140,9 +129,7 @@ function Inventory() {
       console.error("Error adding inventory:", error);
     }
   };
-  
-  
-  
+
   const handleDeleteClick = (itemId) => {
     try {
       const authToken = localStorage.getItem("authToken");
@@ -180,31 +167,35 @@ function Inventory() {
       name: document.getElementById(`name-${itemId}`).value,
       quantity: document.getElementById(`quantity-${itemId}`).value,
       description: document.getElementById(`description-${itemId}`).value,
-      minimumThreshold: document.getElementById(`minimumThreshold-${itemId}`).value,
+      minimumThreshold: document.getElementById(`minimumThreshold-${itemId}`)
+        .value,
     };
-  
+
     try {
       const authToken = localStorage.getItem("authToken");
-  
+
       if (!authToken) {
         console.log("Authentication token not found");
         return;
       }
-  
-      const response = await fetch(`https://sortify-backend.azurewebsites.net/inventory/${itemId}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
+
+      const response = await fetch(
+        `https://sortify-backend.azurewebsites.net/inventory/${itemId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(editedData),
         },
-        body: JSON.stringify(editedData),
-      });
-  
+      );
+
       if (response.ok) {
         console.log("Item updated successfully");
         setInventory((prevInventory) => {
           const updatedInventory = prevInventory.map((item) =>
-            item._id === itemId ? { ...item, ...editedData } : item
+            item._id === itemId ? { ...item, ...editedData } : item,
           );
           return updatedInventory;
         });
@@ -217,8 +208,7 @@ function Inventory() {
       setEditedItemId(null);
     }
   };
-  
-  
+
   const handleInputChange = (e, itemId, field) => {
     const updatedInventory = inventory.map((item) =>
       item._id === itemId ? { ...item, [field]: e.target.value } : item,
@@ -258,7 +248,7 @@ function Inventory() {
       >
         <Flex>
           <Text fontSize="40px" fontWeight="bold" color="#D47697" mr="3">
-          {areaName}
+            {areaName}
           </Text>
           <Text fontSize="40px" fontWeight="bold" color="#6e3652">
             Inventory
