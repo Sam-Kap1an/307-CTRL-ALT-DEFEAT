@@ -30,7 +30,9 @@ const AddNewProductModal = ({ isOpen, onClose, onAddNewProduct }) => {
       quantity: "",
       description: "",
       minimumThreshold: "",
+      categoryID: "", // added
     });
+    onClose(); // added
   };
 
   return (

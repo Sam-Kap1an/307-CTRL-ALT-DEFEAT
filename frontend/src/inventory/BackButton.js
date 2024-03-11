@@ -7,7 +7,7 @@ const BackButton = () => {
   const navigate = useNavigate();
 
   const handleBackClick = () => {
-    navigate("/areas");
+    navigate(-1);
   };
 
   return (
