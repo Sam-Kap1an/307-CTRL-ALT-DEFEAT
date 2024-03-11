@@ -40,7 +40,7 @@ function Create() {
         console.log("Token stored in local storage:", authToken);
 
         console.log("Sign up successful!");
-        // Redirect to user portal
+        navigate("/location");
       } else {
         console.log("Could not sign up", response.status);
       }

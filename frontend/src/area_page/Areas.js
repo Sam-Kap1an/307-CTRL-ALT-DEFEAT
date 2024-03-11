@@ -147,6 +147,34 @@ const Areas = () => {
     }
   };
 
+  const handleDelete = (itemId) => {
+    try {
+      const authToken = localStorage.getItem("authToken");
+
+      if (!authToken) {
+        console.log("Authentication token not found");
+        return;
+      }
+      fetch(`https://sortify-backend.azurewebsites.net/category/${itemId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            fetchCategories();
+          } else {
+            console.error("Error deleting area");
+          }
+        })
+        .catch((error) => console.error("Error deleting area:", error));
+    } catch (error) {
+      console.error("Error deleting area:", error);
+    }
+  };
+
   useEffect(() => {
     fetchLocation();
     fetchCategories();
@@ -175,7 +203,7 @@ const Areas = () => {
             {locationName}
           </Text>
           <Text fontSize="40px" fontWeight="bold" color="#6e3652">
-            Inventories
+            Areas
           </Text>
         </Flex>
         <Flex>
@@ -223,10 +251,7 @@ const Areas = () => {
       </Box>
       <Flex flexWrap="wrap" alignItems="center" gap="15px" width="full">
         {inventories.map((item) => (
-          <Flex
-            key={item._id}
-            onClick={() => handleCategoryClick(item._id, item.Name)}
-          >
+          <Flex key={item._id}>
             <AreaCards
               name={item.Name}
               id={item._id}
@@ -234,6 +259,8 @@ const Areas = () => {
               highItems={5}
               totalItems={5}
               details={item.Notes}
+              onClick={() => handleCategoryClick(item._id, item.Name)}
+              onDelete={() => handleDelete(item._id)}
             />
           </Flex>
         ))}

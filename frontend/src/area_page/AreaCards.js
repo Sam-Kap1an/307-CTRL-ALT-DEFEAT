@@ -14,7 +14,16 @@ import {
   Flex,
 } from "@chakra-ui/react";
 
-const AreaCards = ({ name, id, lowItems, highItems, totalItems, details }) => {
+const AreaCards = ({
+  name,
+  id,
+  lowItems,
+  highItems,
+  totalItems,
+  details,
+  onClick,
+  onDelete,
+}) => {
   return (
     <Card
       direction="column"
@@ -22,9 +31,27 @@ const AreaCards = ({ name, id, lowItems, highItems, totalItems, details }) => {
       height="213.75px"
       width="213.75px"
       backgroundColor="#F0D9CF"
+      position="relative"
     >
+      <Button
+        onClick={onDelete}
+        size="sm"
+        position="absolute"
+        top="2"
+        right="2"
+        variant="outline"
+        borderColor="white"
+      >
+        🗑️
+      </Button>
       <CardBody overflow="scroll" height="150px">
-        <Flex direction="column" alignItems="center" justifyContent="center">
+        <Flex
+          direction="column"
+          alignItems="center"
+          justifyContent="center"
+          onClick={onClick}
+          cursor="pointer"
+        >
           <Text fontSize="20px" fontWeight="bold" color="#6e3652">
             {name}
           </Text>
