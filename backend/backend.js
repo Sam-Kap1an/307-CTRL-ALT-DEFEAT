@@ -74,7 +74,7 @@ app.delete("/inventory/:inventoryId", authenticateUser, (req, res) => {
     .then(() => {
       return inventoryServices.removeInventoryFromCategory(
         categoryId,
-        inventoryId
+        inventoryId,
       );
     })
     .then(() => {
@@ -182,7 +182,7 @@ app.delete("/location/:locationId", authenticateUser, async (req, res) => {
 
     // Remove the location from user's locations array
     user.locations = user.locations.filter(
-      (location) => !location.equals(locationId)
+      (location) => !location.equals(locationId),
     );
 
     // Save the user
@@ -248,7 +248,7 @@ app.delete("/category/:categoryId", authenticateUser, (req, res) => {
     .then(() => {
       return categoryServices.removeCategoryFromLocation(
         locationId,
-        categoryId
+        categoryId,
       );
     })
     .then(() => {

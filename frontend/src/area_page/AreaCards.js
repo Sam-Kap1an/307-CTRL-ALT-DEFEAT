@@ -39,7 +39,7 @@ const AreaCards = ({ name, id, details, onClick, onDelete }) => {
             "Content-Type": "application/json",
             // Include authentication headers if required
           },
-        }
+        },
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");

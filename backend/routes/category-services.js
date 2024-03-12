@@ -62,7 +62,7 @@ async function addCategory(category) {
 function removeCategoryFromLocation(locationId, categoryId) {
   return Location.updateOne(
     { _id: locationId },
-    { $pull: { categories: categoryId } }
+    { $pull: { categories: categoryId } },
   );
 }
 

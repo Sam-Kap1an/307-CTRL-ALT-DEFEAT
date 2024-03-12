@@ -54,7 +54,7 @@ function updateItemInInventory(itemId, updatedData) {
 function removeInventoryFromCategory(categoryId, inventoryId) {
   return Category.updateOne(
     { _id: categoryId },
-    { $pull: { inventory: inventoryId } }
+    { $pull: { inventory: inventoryId } },
   );
 }
 

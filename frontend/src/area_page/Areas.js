@@ -46,7 +46,7 @@ const Areas = () => {
             Authorization: `Bearer ${authToken}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
       if (response.status === 200) {
         const locations = await response.json();
@@ -85,7 +85,7 @@ const Areas = () => {
             "Content-Type": "application/json",
             // Include authentication headers if required
           },
-        }
+        },
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -124,7 +124,7 @@ const Areas = () => {
             // Include authentication headers if required
           },
           body: JSON.stringify(newCat),
-        }
+        },
       );
       if (response.status === 201) {
         const createdCategory = await response.json();
@@ -198,7 +198,7 @@ const Areas = () => {
 
   const filteredInventories = inventories
     .filter((item) =>
-      item.Name.toLowerCase().includes(searchQuery.toLowerCase())
+      item.Name.toLowerCase().includes(searchQuery.toLowerCase()),
     )
     .slice()
     .sort((a, b) => {
