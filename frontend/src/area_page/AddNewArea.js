@@ -30,7 +30,7 @@ const AddNewArea = ({ isOpen, onClose, onAddArea }) => {
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add New Product</ModalHeader>
+        <ModalHeader>Add New Area</ModalHeader>
         <ModalBody>
           <Input
             type="text"
