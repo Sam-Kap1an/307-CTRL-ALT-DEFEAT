@@ -14,6 +14,7 @@ import LogoutButton from "../components/Logout.js";
 import AddNewProductModal from "./AddNewProductModal.js";
 import ProductTable from "./ProductTable.js";
 import BackButton from "./BackButton.js";
+import Footer from "../components/Footer.js";
 
 function Inventory() {
   const navigate = useNavigate();
@@ -239,7 +240,7 @@ function Inventory() {
   });
 
   return (
-    <>
+    <Box>
       <Flex
         mt="5"
         alignItems="center"
@@ -315,7 +316,8 @@ function Inventory() {
           setNewProduct={setNewProduct}
         />
       </Box>
-    </>
+      <Footer />
+    </Box>
   );
 }
 

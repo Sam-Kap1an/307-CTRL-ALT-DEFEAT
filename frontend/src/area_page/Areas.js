@@ -12,6 +12,7 @@ import AreaCards from "./AreaCards.js";
 import LogoutButton from "../components/Logout.js";
 import AddNewArea from "./AddNewArea.js";
 import { useParams, useNavigate } from "react-router-dom";
+import Footer from "../components/Footer.js";
 
 const Areas = () => {
   // need a header for the name of the location
@@ -210,93 +211,96 @@ const Areas = () => {
     });
 
   return (
-    <Flex direction="column" width="900px" alignItems="center">
-      <Flex
-        alignItems="center"
-        justifyContent="space-between"
-        mt="5"
-        width="full"
-      >
-        <Flex>
-          <Text fontSize="40px" fontWeight="bold" color="#D47697" mr="3">
-            {locationName}
-          </Text>
-          <Text fontSize="40px" fontWeight="bold" color="#6e3652">
-            Areas
-          </Text>
-        </Flex>
-        <Flex>
-          <Button
-            colorScheme="teal"
-            variant="outline"
-            mr="3"
-            onClick={handleBackClick}
-          >
-            Back
-          </Button>
-          <LogoutButton />
-        </Flex>
-      </Flex>
-
-      <Box className="inventory-container" p="6" width="full">
+    <Box className="Location-container" width="1000px" pb="100">
+      <Flex direction="column" width="900px" alignItems="center">
         <Flex
-          mt="2"
-          mb="2"
-          className="search-filter-buttons"
-          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          mt="5"
           width="full"
         >
-          <Input
-            type="text"
-            placeholder="Search Areas"
-            className="search-input"
-            mr="3"
-            value={searchQuery}
-            onChange={handleSearchChange}
-          />
-          <Select
-            placeholder="Filter"
-            mr="3"
-            value={filterOption}
-            onChange={handleFilterChange}
-          >
-            <option value="Alph">A - Z</option>
-            <option value="Quantity">Most - Least Items</option>
-          </Select>
-          <Box className="blue-buttons">
-            <Button
-              backgroundColor="darkBlue"
-              color="white"
-              onClick={handleAddNewClick}
-            >
-              Add New
-            </Button>
-          </Box>
-        </Flex>
-      </Box>
-      <Flex flexWrap="wrap" alignItems="center" gap="15px" width="full">
-        {filteredInventories.map((item) => (
-          <Flex key={item._id}>
-            <AreaCards
-              name={item.Name}
-              id={item._id}
-              lowItems={5}
-              highItems={5}
-              totalItems={5}
-              details={item.Notes}
-              onClick={() => handleCategoryClick(item._id, item.Name)}
-              onDelete={() => handleDelete(item._id)}
-            />
+          <Flex>
+            <Text fontSize="40px" fontWeight="bold" color="#D47697" mr="3">
+              {locationName}
+            </Text>
+            <Text fontSize="40px" fontWeight="bold" color="#6e3652">
+              Areas
+            </Text>
           </Flex>
-        ))}
-      </Flex>
+          <Flex>
+            <Button
+              colorScheme="teal"
+              variant="outline"
+              mr="3"
+              onClick={handleBackClick}
+            >
+              Back
+            </Button>
+            <LogoutButton />
+          </Flex>
+        </Flex>
 
-      <AddNewArea
-        isOpen={isOpen}
-        onClose={onClose}
-        onAddArea={handleAddNewCat}
-      />
-    </Flex>
+        <Box className="inventory-container" p="6" width="full">
+          <Flex
+            mt="2"
+            mb="2"
+            className="search-filter-buttons"
+            direction="row"
+            width="full"
+          >
+            <Input
+              type="text"
+              placeholder="Search Areas"
+              className="search-input"
+              mr="3"
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+            <Select
+              placeholder="Filter"
+              mr="3"
+              value={filterOption}
+              onChange={handleFilterChange}
+            >
+              <option value="Alph">A - Z</option>
+              <option value="Quantity">Most - Least Items</option>
+            </Select>
+            <Box className="blue-buttons">
+              <Button
+                backgroundColor="darkBlue"
+                color="white"
+                onClick={handleAddNewClick}
+              >
+                Add New
+              </Button>
+            </Box>
+          </Flex>
+        </Box>
+        <Flex flexWrap="wrap" alignItems="center" gap="15px" width="full">
+          {filteredInventories.map((item) => (
+            <Flex key={item._id}>
+              <AreaCards
+                name={item.Name}
+                id={item._id}
+                lowItems={5}
+                highItems={5}
+                totalItems={5}
+                details={item.Notes}
+                onClick={() => handleCategoryClick(item._id, item.Name)}
+                onDelete={() => handleDelete(item._id)}
+              />
+            </Flex>
+          ))}
+        </Flex>
+
+        <AddNewArea
+          isOpen={isOpen}
+          onClose={onClose}
+          onAddArea={handleAddNewCat}
+        />
+      </Flex>
+      <Footer />
+    </Box>
   );
 };
 
