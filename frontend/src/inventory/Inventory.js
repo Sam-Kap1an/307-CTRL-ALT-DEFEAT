@@ -66,7 +66,7 @@ function Inventory() {
             Authorization: `Bearer ${authToken}`,
             "Content-Type": "application/json",
           },
-        },
+        }
       );
 
       if (response.status === 200) {
@@ -106,7 +106,7 @@ function Inventory() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(newProduct),
-        },
+        }
       );
 
       if (response.status === 201) {
@@ -133,18 +133,21 @@ function Inventory() {
   const handleDeleteClick = (itemId) => {
     try {
       const authToken = localStorage.getItem("authToken");
-
+      const categoryID = getCategoryIdFromURL();
       if (!authToken) {
         console.log("Authentication token not found");
         return;
       }
-      fetch(`https://sortify-backend.azurewebsites.net/inventory/${itemId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
-        },
-      })
+      fetch(
+        `https://sortify-backend.azurewebsites.net/inventory/${itemId}?categoryId=${categoryID}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      )
         .then((response) => {
           if (response.ok) {
             fetchInventory();
@@ -188,14 +191,14 @@ function Inventory() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(editedData),
-        },
+        }
       );
 
       if (response.ok) {
         console.log("Item updated successfully");
         setInventory((prevInventory) => {
           const updatedInventory = prevInventory.map((item) =>
-            item._id === itemId ? { ...item, ...editedData } : item,
+            item._id === itemId ? { ...item, ...editedData } : item
           );
           return updatedInventory;
         });
@@ -211,7 +214,7 @@ function Inventory() {
 
   const handleInputChange = (e, itemId, field) => {
     const updatedInventory = inventory.map((item) =>
-      item._id === itemId ? { ...item, [field]: e.target.value } : item,
+      item._id === itemId ? { ...item, [field]: e.target.value } : item
     );
     setInventory(updatedInventory);
   };

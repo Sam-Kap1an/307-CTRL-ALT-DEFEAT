@@ -199,7 +199,7 @@ app.delete("/location/:locationId", authenticateUser, async (req, res) => {
 });
 
 // used to navigate from the locations page to the areas page
-app.get("/categories", authenticateUser, async (req, res) => {
+app.get("/categories", async (req, res) => {
   try {
     const { locationID } = req.query;
     console.log(locationID);
@@ -209,6 +209,7 @@ app.get("/categories", authenticateUser, async (req, res) => {
       return res.status(404).json({ message: "Location not found" });
     }
     const categories = await categoryServices.findCategoryByLocation(location);
+    console.log(categories);
     res.status(200).json(categories);
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -265,7 +266,7 @@ app.get("/category/facts/:categoryId", authenticateUser, async (req, res) => {
   const categoryId = req.params.categoryId;
   try {
     const category = await categoryServices.findCategoryById(categoryId);
-    console.log(category);
+
     if (!category) {
       return res.status(404).json({ message: "Category not found" });
     }
