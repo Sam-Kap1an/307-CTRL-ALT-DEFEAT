@@ -30,6 +30,10 @@ async function findInventoryByCategory(Category) {
   return Inventory.find({ _id: { $in: Category.inventory } });
 }
 
+async function findInventoryById(_id) {
+  return Inventory.findOne({ _id });
+}
+
 function addItemToInventory(item) {
   const newItem = new Inventory(item);
   return newItem.save();
@@ -50,7 +54,7 @@ function updateItemInInventory(itemId, updatedData) {
 function removeInventoryFromCategory(categoryId, inventoryId) {
   return Category.updateOne(
     { _id: categoryId },
-    { $pull: { inventory: inventoryId } },
+    { $pull: { inventory: inventoryId } }
   );
 }
 
@@ -62,4 +66,5 @@ export default {
   searchInventory,
   updateItemInInventory,
   removeInventoryFromCategory,
+  findInventoryById,
 };
