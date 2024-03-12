@@ -197,17 +197,17 @@ const Areas = () => {
   };
 
   const filteredInventories = inventories
-  .filter((item) =>
-    item.Name.toLowerCase().includes(searchQuery.toLowerCase())
-  )
-  .slice() 
-  .sort((a, b) => {
-    if (filterOption === "Alph") {
-      return a.Name.localeCompare(b.Name);
-    }
-    
-    return 0; 
-  });
+    .filter((item) =>
+      item.Name.toLowerCase().includes(searchQuery.toLowerCase()),
+    )
+    .slice()
+    .sort((a, b) => {
+      if (filterOption === "Alph") {
+        return a.Name.localeCompare(b.Name);
+      }
+
+      return 0;
+    });
 
   return (
     <Flex direction="column" width="900px" alignItems="center">
@@ -251,13 +251,14 @@ const Areas = () => {
             placeholder="Search Areas"
             className="search-input"
             mr="3"
-            value={searchQuery} 
+            value={searchQuery}
             onChange={handleSearchChange}
           />
-          <Select placeholder="Filter" 
-          mr="3"
-          value={filterOption}
-          onChange={handleFilterChange}
+          <Select
+            placeholder="Filter"
+            mr="3"
+            value={filterOption}
+            onChange={handleFilterChange}
           >
             <option value="Alph">A - Z</option>
             <option value="Quantity">Most - Least Items</option>

@@ -10,7 +10,7 @@ const ProductRow = ({
   onDeleteClick,
   onInputChange,
 }) => {
-  const cellWidth = '150px';
+  const cellWidth = "150px";
 
   return (
     <tr
