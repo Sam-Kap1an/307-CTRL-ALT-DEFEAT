@@ -7,6 +7,10 @@ import {
   Input,
   Text,
   Select,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
   useDisclosure,
   Flex,
 } from "@chakra-ui/react";
@@ -14,16 +18,21 @@ import LogoutButton from "../components/Logout.js";
 import AddNewProductModal from "./AddNewProductModal.js";
 import ProductTable from "./ProductTable.js";
 import BackButton from "./BackButton.js";
+import { HamburgerIcon } from "@chakra-ui/icons";
 
 function Inventory() {
   const navigate = useNavigate();
   const { onClose } = useDisclosure();
   const location = useLocation();
   const areaName = location.state?.areaName || "";
+  const { onOpen: MenueOpen } = useDisclosure(); // Manage modal state
 
+
+  
   const handleSortifyClick = () => {
     navigate("/");
   };
+
 
   const [newProduct, setNewProduct] = useState({
     name: "",
@@ -240,25 +249,40 @@ function Inventory() {
 
   return (
     <>
-      <Flex
-        mt="5"
-        alignItems="center"
-        justifyContent="space-between"
-        onClick={handleSortifyClick}
-      >
-        <Flex>
-          <Text fontSize="40px" fontWeight="bold" color="#D47697" mr="3">
-            {areaName}
-          </Text>
-          <Text fontSize="40px" fontWeight="bold" color="#6e3652">
-            Inventory
-          </Text>
-        </Flex>
-        <Flex>
-          <BackButton />
-          <LogoutButton />
-        </Flex>
-      </Flex>
+     
+    <Flex justifyContent="space-between" alignItems="center">
+
+
+    {/* Sortify logo */}
+    <Box id="sortify-text" onClick={handleSortifyClick}>
+      <Text fontSize="50px" fontWeight="bold" letterSpacing="10px">
+        <span style={{ color: "#D47697" }}>SOR</span>
+        <span style={{ color: "#6e3652" }}>TIFY</span>
+      </Text>
+    </Box>
+    <Box width="350px" onClick={MenueOpen} />
+    {/* Welcome user message and logout dropdown */}
+      <Menu>
+        <MenuButton
+          as={Text}
+          fontSize="30px"
+          fontWeight="bold"
+          cursor="pointer"
+        >          
+          <span style={{ color: "#D47697" }}>Inventory: </span>
+          <span style={{ color: "#6e3652" }}> {areaName} </span>
+          <HamburgerIcon />
+        </MenuButton>
+        <MenuList>
+          <MenuItem>
+          <BackButton/>
+        </MenuItem>
+        <MenuItem>
+        <LogoutButton />
+          </MenuItem>
+        </MenuList>
+      </Menu>
+    </Flex>
       <Box className="inventory-container" p="6">
         <Flex direction="row" justifyContent="space-between">
           <Text fontSize="2xl" fontWeight="bold">

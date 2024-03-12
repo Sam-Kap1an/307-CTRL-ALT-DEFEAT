@@ -3,7 +3,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Flex,
-  Textarea,
   Box,
   Button,
   Input,
@@ -28,7 +27,6 @@ import { HamburgerIcon } from "@chakra-ui/icons";
 function BasePortal() {
   const navigate = useNavigate();
   const { isOpen: locIO, onOpen: LO, onClose: LC } = useDisclosure(); // Manage modal state
-  const { isOpen: NIO, onOpen: NO, onClose: NC } = useDisclosure(); // Manage modal state
   const { onOpen: UserOpen } = useDisclosure(); // Manage modal state
   const {
     isOpen: LocationDelete,
@@ -36,7 +34,6 @@ function BasePortal() {
     onClose: LocationDeleteClose,
   } = useDisclosure(); // Manage modal state
 
-  const [editMode, setEditMode] = useState(false);
   const [selectedLocationId, setSelectedLocationId] = useState(null); // State for selected location ID
 
   const [locations, setLocations] = useState([]);
@@ -44,10 +41,8 @@ function BasePortal() {
     name: "",
     categories: "",
   });
+  const [loading, setLoading] = useState(true);
 
-  const toggleEditMode = () => {
-    setEditMode(!editMode);
-  };
 
   const handleSortifyClick = () => {
     navigate("/");
@@ -58,15 +53,9 @@ function BasePortal() {
     //navigate(`/categories?${ID}`);
   };
 
-  let handlesetNotesInputChange = (e) => {
-    let inputValue = e.target.value;
-    setNotes(inputValue);
-  };
-
-  const [location, setLocation] = useState([]);
+  const [location, setLocation] = useState({});
   const [username, setUsername] = useState("");
 
-  let [NotesTxt, setNotes] = React.useState("");
 
   const fetchUsername = useCallback(async () => {
     try {
@@ -125,8 +114,11 @@ function BasePortal() {
       }
     } catch (error) {
       console.error("Error Fetching Location:", error);
+    } finally {
+      setLoading(false); // Set loading to false when the fetch completes
     }
-  }, [navigate, setLocations]);
+  }, [navigate, setLocations, setLoading]);
+
 
   useEffect(() => {
     fetchLocation();
@@ -152,7 +144,7 @@ function BasePortal() {
         .then((response) => response.json())
         .then((data) => {
           setNewLocation({ name: "", catagories: "" });
-          setLocation([...location, data]);
+          setLocations([...locations, data]);
           LC(); // Close the modal after adding a new product
         })
         .catch((error) => console.error("Error adding new product:", error));
@@ -216,29 +208,6 @@ function BasePortal() {
             <HamburgerIcon />
           </MenuButton>
           <MenuList>
-            {editMode ? (
-              <MenuItem>
-                <Button
-                  backgroundColor="darkBlue"
-                  color="white"
-                  variant="outline"
-                  onClick={toggleEditMode}
-                >
-                  Exit Edit Mode
-                </Button>
-              </MenuItem>
-            ) : (
-              <MenuItem>
-                <Button
-                  backgroundColor="darkBlue"
-                  color="white"
-                  variant="outline"
-                  onClick={toggleEditMode}
-                >
-                  Edit Locations
-                </Button>
-              </MenuItem>
-            )}
             <MenuItem>
               <LogoutButton />
             </MenuItem>
@@ -246,7 +215,6 @@ function BasePortal() {
         </Menu>
       </Flex>
 
-      {!editMode ? (
         <Flex
           borderRadius="10"
           mt="2"
@@ -260,23 +228,7 @@ function BasePortal() {
             <span style={{ color: "white" }}>Add Group</span>
           </Text>
         </Flex>
-      ) : (
-        <Flex
-          borderRadius="10"
-          mt="2"
-          mb="3"
-          align="center"
-          justify="center"
-          backgroundColor="#D47697"
-        >
-          <Text mt="2" mb="2" fontSize="20px" fontWeight="bold">
-            <span style={{ color: "white" }}>
-              Click on Groups To Delete Them
-            </span>
-          </Text>
-        </Flex>
-      )}
-
+  
       {/* Modal for adding a new product */}
       <Modal isOpen={locIO} onClose={LC}>
         <ModalOverlay />
@@ -304,45 +256,80 @@ function BasePortal() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      {locations && locations.length > 0 ? (
-        <Flex
+      {loading ? (
+          <Box justifyContent="center" alignItems="center">
+            <Box
+              align="center"
+              justify="center"
+              borderWidth="1px"
+              borderRadius="lg"
+              backgroundColor="#EDC7B7"
+              p={4}
+            >
+              <Text color="white" fontWeight="bold">
+                Loading Locations...
+              </Text>
+  
+              <Spinner
+                align="center"
+                justify="center"
+                mt={2}
+                thickness="4px"
+                speed="0.65s"
+                emptyColor="#D47697"
+                color="#6e3652"
+                size="xl"
+              />
+            </Box>
+          </Box>
+      ) : locations.length > 0 ? (
+              <Flex
           display="grid"
           gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr))"
           gap={2}
         >
           {locations.map((item) => (
-            <React.Fragment key={item._id}>
-              <Flex
-                align="center"
-                justify="center"
-                p={4}
-                borderWidth="1px"
-                borderRadius="lg"
-                onClick={
-                  editMode
-                    ? () => {
-                        LocationDeleteOpen();
-                        setSelectedLocationId(item._id);
-                      }
-                    : () => handleLocationClick(item._id)
-                }
-                cursor="pointer"
-                backgroundColor={!editMode ? "#EDC7B7" : "#6e3652"}
-                height="150px"
-              >
+              <React.Fragment key={item._id}>
                 <Flex
-                  fontWeight="bold"
                   align="center"
                   justify="center"
-                  fontSize="25px"
+                  p={4}
+                  borderWidth="1px"
+                  borderRadius="lg"
+                  onClick={() => handleLocationClick(item._id)}
+                  cursor="pointer"
+                  backgroundColor={"#EDC7B7" }
+                  height="150px"
+                  position="relative" // Add this to make the position absolute relative to the parent
                 >
-                  <span style={{ color: "White" }}>{item.name}</span>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent location click when trash icon is clicked
+                      LocationDeleteOpen(); 
+                      setSelectedLocationId(item._id);
+                    }}
+                    size="sm"
+                    position="absolute"
+                    top="2"
+                    right="2" // Adjusted left position
+                    variant="outline"
+                    borderColor="white"
+                  >
+                    🗑️
+                  </Button> 
+                  <Flex
+                    fontWeight="bold"
+                    align="center"
+                    justify="center"
+                    fontSize="25px"
+                  >
+                    <span style={{ color: "White" }}>{item.name}</span>
+                  </Flex>
                 </Flex>
-              </Flex>
-              <Modal
-                isOpen={LocationDelete && selectedLocationId === item._id}
-                onClose={LocationDeleteClose}
-              >
+                <Modal
+                  isOpen={LocationDelete && selectedLocationId === item._id}
+                  onClose={LocationDeleteClose}
+                >
                 <ModalOverlay />
                 <ModalContent>
                   <ModalHeader>Confirm Deletion</ModalHeader>
@@ -370,75 +357,24 @@ function BasePortal() {
             </React.Fragment>
           ))}
         </Flex>
-      ) : (
-        <Box justifyContent="center" alignItems="center">
-          <Box
-            align="center"
-            justify="center"
-            borderWidth="1px"
-            borderRadius="lg"
-            backgroundColor="#EDC7B7"
-            p={4}
-          >
-            <Text color="white" fontWeight="bold">
-              Loading Locations...
-            </Text>
-
-            <Spinner
+         ) : (
+          <Box justifyContent="center" alignItems="center">
+            <Box
               align="center"
               justify="center"
-              mt={2}
-              thickness="4px"
-              speed="0.65s"
-              emptyColor="#D47697"
-              color="#6e3652"
-              size="xl"
-            />
+              borderWidth="1px"
+              borderRadius="lg"
+              backgroundColor="#EDC7B7"
+              p={4}
+            >
+              <Text color="white" fontWeight="bold">
+                No locations available.
+              </Text>
+            </Box>
           </Box>
-        </Box>
-      )}
-      {editMode ? (
-        <Flex
-          borderRadius="10"
-          mt="2"
-          mb="3"
-          align="center"
-          justify="center"
-          backgroundColor="#D47697"
-          onClick={toggleEditMode}
-        >
-          <Text mt="2" mb="2" fontSize="20px" fontWeight="bold">
-            <span style={{ color: "white" }}>Exit Edit Mode</span>
-          </Text>
-        </Flex>
-      ) : (
-        <Box borderRadius="10" backgroundColor="#EDC7B7" onClick={NO}>
-          <Text ml="2" mt="3" fontSize="2xl" fontWeight="bold">
-            <span style={{ color: "White" }}>Notes:</span>
-          </Text>
-          <Text ml="2" fontSize="2xl">
-            <span style={{ color: "White" }}>{NotesTxt}</span>
-          </Text>
-          <Modal isOpen={NIO} onClose={NC}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Add New Location</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <>
-                  <Textarea
-                    value={NotesTxt}
-                    onChange={handlesetNotesInputChange}
-                    placeholder="Put user Notes Here"
-                    size="sm"
-                  />
-                </>
-              </ModalBody>
-              <ModalFooter></ModalFooter>
-            </ModalContent>
-          </Modal>
-        </Box>
-      )}
+        )
+      }
+        {/*new footer*/}
     </Box>
   );
 }
