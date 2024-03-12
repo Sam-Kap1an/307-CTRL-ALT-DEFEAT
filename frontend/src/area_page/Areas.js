@@ -180,15 +180,34 @@ const Areas = () => {
     fetchCategories();
   }, [fetchCategories, fetchLocation]);
 
-  // new testing
   const handleCategoryClick = (categoryId, categoryName) => {
-    // Construct the URL by combining the location ID and category ID
-
     const url = `/categories/${location}/${categoryId}`;
     navigate(url, { state: { areaName: categoryName } });
-
-    // navigate(url);
   };
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterOption, setFilterOption] = useState("All");
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleFilterChange = (event) => {
+    setFilterOption(event.target.value);
+  };
+
+  const filteredInventories = inventories
+    .filter((item) =>
+      item.Name.toLowerCase().includes(searchQuery.toLowerCase()),
+    )
+    .slice()
+    .sort((a, b) => {
+      if (filterOption === "Alph") {
+        return a.Name.localeCompare(b.Name);
+      }
+
+      return 0;
+    });
 
   return (
     <Flex direction="column" width="900px" alignItems="center">
@@ -232,11 +251,17 @@ const Areas = () => {
             placeholder="Search Areas"
             className="search-input"
             mr="3"
+            value={searchQuery}
+            onChange={handleSearchChange}
           />
-          <Select placeholder="Filter" mr="3">
-            <option value="All">All</option>
-            <option value="Low">A - Z</option>
-            <option value="High">Most - Least Items</option>
+          <Select
+            placeholder="Filter"
+            mr="3"
+            value={filterOption}
+            onChange={handleFilterChange}
+          >
+            <option value="Alph">A - Z</option>
+            <option value="Quantity">Most - Least Items</option>
           </Select>
           <Box className="blue-buttons">
             <Button
@@ -250,7 +275,7 @@ const Areas = () => {
         </Flex>
       </Box>
       <Flex flexWrap="wrap" alignItems="center" gap="15px" width="full">
-        {inventories.map((item) => (
+        {filteredInventories.map((item) => (
           <Flex key={item._id}>
             <AreaCards
               name={item.Name}
