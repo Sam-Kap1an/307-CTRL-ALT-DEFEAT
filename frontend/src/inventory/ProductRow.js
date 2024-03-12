@@ -11,6 +11,9 @@ const ProductRow = ({
   onDeleteClick,
   onInputChange,
 }) => {
+
+  const cellWidth = "150px";
+
   return (
     <tr
       key={item._id}
@@ -21,7 +24,7 @@ const ProductRow = ({
             : "rgba(0, 255, 0, 0.1)", // Green with transparency
       }}
     >
-      <Td>
+      <Td width={cellWidth}>
         {editedItemId === item._id ? (
           <Input
             type="text"
@@ -33,7 +36,7 @@ const ProductRow = ({
           item.name
         )}
       </Td>
-      <Td>
+      <Td width={cellWidth}>
         {editedItemId === item._id ? (
           <Input
             type="text"
@@ -45,7 +48,7 @@ const ProductRow = ({
           item.quantity
         )}
       </Td>
-      <Td>
+      <Td width={cellWidth}>
         {editedItemId === item._id ? (
           <Input
             type="text"
@@ -57,7 +60,7 @@ const ProductRow = ({
           item.description
         )}
       </Td>
-      <Td>
+      <Td width={cellWidth}>
         {editedItemId === item._id ? (
           <Input
             type="text"
@@ -69,7 +72,7 @@ const ProductRow = ({
           item.minimumThreshold
         )}
       </Td>
-      <Td>
+      <Td width={cellWidth}>
         {editedItemId === item._id ? (
           <Button onClick={() => onSaveEdit(item._id)} colorScheme="teal">
             Save
@@ -80,7 +83,7 @@ const ProductRow = ({
           </Button>
         )}
       </Td>
-      <Td>
+      <Td width={cellWidth}>
         <DeleteButton onDeleteClick={onDeleteClick} itemId={item._id} />
       </Td>
     </tr>
