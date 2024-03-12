@@ -11,7 +11,7 @@ const ProductTable = ({
   handleDeleteClick,
   handleInputChange,
 }) => (
-  <Table>
+  <Table >
     <Thead>
       <Tr>
         <Th>Product</Th>
