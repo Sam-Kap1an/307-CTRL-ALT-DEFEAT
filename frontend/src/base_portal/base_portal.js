@@ -53,7 +53,7 @@ function BasePortal() {
     //navigate(`/categories?${ID}`);
   };
 
-  const [location, setLocation] = useState({});
+  const [location, ] = useState({});
   const [username, setUsername] = useState("");
 
 
