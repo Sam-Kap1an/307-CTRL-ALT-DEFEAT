@@ -29,7 +29,7 @@ async function findLocationsByUser(User) {
   return Location.find({ _id: { $in: User.locations } });
 }
 
-async function deleteItemFromLocations(ID) {
+async function deleteLocation(ID) {
   console.log(`loc services call on delete id: ${ID}`);
   return Location.deleteOne({ _id: ID });
 }
@@ -43,5 +43,5 @@ export default {
   findByEmail,
   findLocationsByUser,
   addLocation,
-  deleteItemFromLocations,
+  deleteLocation,
 };

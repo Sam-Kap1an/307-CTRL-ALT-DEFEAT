@@ -189,7 +189,7 @@ app.delete("/location/:locationId", authenticateUser, async (req, res) => {
     await user.save();
 
     // Delete the item from locations
-    await locationServices.deleteItemFromLocations(locationId);
+    await locationServices.deleteLocation(locationId);
 
     res.status(200).send("Item deleted successfully");
   } catch (error) {
