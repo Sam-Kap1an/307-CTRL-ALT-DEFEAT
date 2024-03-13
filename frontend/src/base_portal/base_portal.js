@@ -23,6 +23,7 @@ import {
 } from "@chakra-ui/react";
 import LogoutButton from "../components/Logout.js";
 import { HamburgerIcon } from "@chakra-ui/icons";
+import Footer from "../components/Footer.js";
 
 function BasePortal() {
   const navigate = useNavigate();
@@ -185,7 +186,7 @@ function BasePortal() {
   };
 
   return (
-    <Box className="Location-container" width="1000px">
+    <Box className="Location-container" width="1000px" pb="100">
       <Flex justifyContent="space-between" alignItems="center">
         {/* Sortify logo */}
         <Box id="sortify-text" onClick={handleSortifyClick}>
@@ -374,7 +375,51 @@ function BasePortal() {
           </Box>
         )
       }
-        {/*new footer*/}
+        </Box>
+      )}
+      {editMode ? (
+        <Flex
+          borderRadius="10"
+          mt="2"
+          mb="3"
+          align="center"
+          justify="center"
+          backgroundColor="#D47697"
+          onClick={toggleEditMode}
+        >
+          <Text mt="2" mb="2" fontSize="20px" fontWeight="bold">
+            <span style={{ color: "white" }}>Exit Edit Mode</span>
+          </Text>
+        </Flex>
+      ) : (
+        <Box borderRadius="10" backgroundColor="#EDC7B7" onClick={NO}>
+          <Text ml="2" mt="3" fontSize="2xl" fontWeight="bold">
+            <span style={{ color: "White" }}>Notes:</span>
+          </Text>
+          <Text ml="2" fontSize="2xl">
+            <span style={{ color: "White" }}>{NotesTxt}</span>
+          </Text>
+          <Modal isOpen={NIO} onClose={NC}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Add New Location</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <>
+                  <Textarea
+                    value={NotesTxt}
+                    onChange={handlesetNotesInputChange}
+                    placeholder="Put user Notes Here"
+                    size="sm"
+                  />
+                </>
+              </ModalBody>
+              <ModalFooter></ModalFooter>
+            </ModalContent>
+          </Modal>
+        </Box>
+      )}
+      <Footer />
     </Box>
   );
 }

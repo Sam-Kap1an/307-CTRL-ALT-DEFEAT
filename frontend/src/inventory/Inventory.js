@@ -19,6 +19,7 @@ import AddNewProductModal from "./AddNewProductModal.js";
 import ProductTable from "./ProductTable.js";
 import BackButton from "./BackButton.js";
 import { HamburgerIcon } from "@chakra-ui/icons";
+import Footer from "../components/Footer.js";
 
 function Inventory() {
   const navigate = useNavigate();
@@ -283,6 +284,26 @@ function Inventory() {
         </MenuList>
       </Menu>
     </Flex>
+    <Box>
+      <Flex
+        mt="5"
+        alignItems="center"
+        justifyContent="space-between"
+        onClick={handleSortifyClick}
+      >
+        <Flex>
+          <Text fontSize="40px" fontWeight="bold" color="#D47697" mr="3">
+            {areaName}
+          </Text>
+          <Text fontSize="40px" fontWeight="bold" color="#6e3652">
+            Inventory
+          </Text>
+        </Flex>
+        <Flex>
+          <BackButton />
+          <LogoutButton />
+        </Flex>
+      </Flex>
       <Box className="inventory-container" p="6">
         <Flex direction="row" justifyContent="space-between">
           <Text fontSize="2xl" fontWeight="bold">
@@ -339,7 +360,8 @@ function Inventory() {
           setNewProduct={setNewProduct}
         />
       </Box>
-    </>
+      <Footer />
+    </Box>
   );
 }
 
