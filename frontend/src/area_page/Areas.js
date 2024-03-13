@@ -6,6 +6,10 @@ import {
   Input,
   Select,
   Box,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
   useDisclosure,
 } from "@chakra-ui/react";
 import AreaCards from "./AreaCards.js";
@@ -24,7 +28,12 @@ const Areas = () => {
   const { location } = useParams();
   const [inventories, setInventories] = useState([]);
   const [locationName, setLocationName] = useState();
-
+  const { onOpen: MenueOpen } = useDisclosure(); // Manage modal state
+  
+  const handleSortifyClick = () => {
+    navigate("/");
+  };
+  
   const handleAddNewClick = () => {
     onOpen();
   };

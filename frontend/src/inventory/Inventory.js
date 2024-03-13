@@ -43,6 +43,7 @@ function Inventory() {
   const [filterOption, setFilterOption] = useState("All");
 
   const [isAddNewModalOpen, setIsAddNewModalOpen] = useState(false);
+  const { onOpen: MenueOpen } = useDisclosure(); // Manage modal state
 
   const handleAddNewClick = () => {
     setIsAddNewModalOpen(true);
