@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Card,
   CardBody,
@@ -13,17 +13,50 @@ import {
   Portal,
   Flex,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
-const AreaCards = ({
-  name,
-  id,
-  lowItems,
-  highItems,
-  totalItems,
-  details,
-  onClick,
-  onDelete,
-}) => {
+const AreaCards = ({ name, id, details, onClick, onDelete }) => {
+  const [lowItems, setLowItems] = useState(0);
+  const [highItems, setHighItems] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
+
+  const navigate = useNavigate();
+  const fetchCategories = useCallback(async () => {
+    try {
+      const authToken = localStorage.getItem("authToken");
+
+      if (!authToken) {
+        console.log("Authentication token not found");
+        navigate("/login");
+      }
+
+      const response = await fetch(
+        `https://sortify-backend.azurewebsites.net/category/facts/${id}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+            // Include authentication headers if required
+          },
+        },
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      setLowItems(data.lowItems);
+      setHighItems(data.highItems);
+      setTotalItems(data.totalItems);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      // Handle error as needed
+    }
+  }, [id, navigate]);
+
+  useEffect(() => {
+    fetchCategories();
+  });
   return (
     <Card
       direction="column"

@@ -280,9 +280,6 @@ const Areas = () => {
             <AreaCards
               name={item.Name}
               id={item._id}
-              lowItems={5}
-              highItems={5}
-              totalItems={5}
               details={item.Notes}
               onClick={() => handleCategoryClick(item._id, item.Name)}
               onDelete={() => handleDelete(item._id)}

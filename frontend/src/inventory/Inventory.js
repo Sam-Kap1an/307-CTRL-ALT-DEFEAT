@@ -133,18 +133,21 @@ function Inventory() {
   const handleDeleteClick = (itemId) => {
     try {
       const authToken = localStorage.getItem("authToken");
-
+      const categoryID = getCategoryIdFromURL();
       if (!authToken) {
         console.log("Authentication token not found");
         return;
       }
-      fetch(`https://sortify-backend.azurewebsites.net/inventory/${itemId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
+      fetch(
+        `https://sortify-backend.azurewebsites.net/inventory/${itemId}?categoryId=${categoryID}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
         },
-      })
+      )
         .then((response) => {
           if (response.ok) {
             fetchInventory();

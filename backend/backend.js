@@ -74,7 +74,7 @@ app.delete("/inventory/:inventoryId", authenticateUser, (req, res) => {
     .then(() => {
       return inventoryServices.removeInventoryFromCategory(
         categoryId,
-        inventoryId,
+        inventoryId
       );
     })
     .then(() => {
@@ -182,7 +182,7 @@ app.delete("/location/:locationId", authenticateUser, async (req, res) => {
 
     // Remove the location from user's locations array
     user.locations = user.locations.filter(
-      (location) => !location.equals(locationId),
+      (location) => !location.equals(locationId)
     );
 
     // Save the user
@@ -209,6 +209,7 @@ app.get("/categories", authenticateUser, async (req, res) => {
       return res.status(404).json({ message: "Location not found" });
     }
     const categories = await categoryServices.findCategoryByLocation(location);
+    console.log(categories);
     res.status(200).json(categories);
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -247,7 +248,7 @@ app.delete("/category/:categoryId", authenticateUser, (req, res) => {
     .then(() => {
       return categoryServices.removeCategoryFromLocation(
         locationId,
-        categoryId,
+        categoryId
       );
     })
     .then(() => {
@@ -259,6 +260,24 @@ app.delete("/category/:categoryId", authenticateUser, (req, res) => {
       console.error(error);
       res.status(500).send("Internal Server Error");
     });
+});
+
+app.get("/category/facts/:categoryId", authenticateUser, async (req, res) => {
+  const categoryId = req.params.categoryId;
+  try {
+    const category = await categoryServices.findCategoryById(categoryId);
+
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+    const { totalItems, lowItems, highItems } =
+      await categoryServices.countItems(category);
+
+    res.status(200).json({ totalItems, lowItems, highItems });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 app.listen(process.env.PORT || port, () => {
