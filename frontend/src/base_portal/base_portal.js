@@ -24,7 +24,6 @@ import {
 } from "@chakra-ui/react";
 import LogoutButton from "../components/Logout.js";
 import { HamburgerIcon } from "@chakra-ui/icons";
-import Footer from "../components/Footer.js";
 
 function BasePortal() {
   const navigate = useNavigate();
@@ -194,7 +193,7 @@ function BasePortal() {
   };
 
   return (
-    <Box className="Location-container" width="1000px" pb="100">
+    <Box className="Location-container" width="1000px">
       <Flex justifyContent="space-between" alignItems="center">
         {/* Sortify logo */}
         <Box id="sortify-text" onClick={handleSortifyClick}>
@@ -440,7 +439,6 @@ function BasePortal() {
           </Modal>
         </Box>
       )}
-      <Footer />
     </Box>
   );
 }
