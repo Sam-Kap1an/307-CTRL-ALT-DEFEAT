@@ -259,27 +259,27 @@ function Inventory() {
         </Box>
         <Box width="350px" onClick={MenueOpen} />
         {/* Welcome user message and logout dropdown */}
-          <Menu>
-            <MenuButton
-              as={Text}
-              fontSize="30px"
-              fontWeight="bold"
-              cursor="pointer"
-            >          
-              <span style={{ color: "#D47697" }}>Inventory: </span>
-              <span style={{ color: "#6e3652" }}> {areaName} </span>
-              <HamburgerIcon />
-            </MenuButton>
-              <MenuList>
-                <MenuItem>
-                <BackButton/>
-              </MenuItem>
-              <MenuItem>
+        <Menu>
+          <MenuButton
+            as={Text}
+            fontSize="30px"
+            fontWeight="bold"
+            cursor="pointer"
+          >
+            <span style={{ color: "#D47697" }}>{areaName} </span>
+            <span style={{ color: "#6e3652" }}> Inventory </span>
+            <HamburgerIcon />
+          </MenuButton>
+          <MenuList>
+            <MenuItem>
+              <BackButton />
+            </MenuItem>
+            <MenuItem>
               <LogoutButton />
-                </MenuItem>
-              </MenuList>
-            </Menu>
-        </Flex>
+            </MenuItem>
+          </MenuList>
+        </Menu>
+      </Flex>
       <Box className="inventory-container" p="6">
         <Flex direction="row" justifyContent="space-between">
           <Text fontSize="2xl" fontWeight="bold">

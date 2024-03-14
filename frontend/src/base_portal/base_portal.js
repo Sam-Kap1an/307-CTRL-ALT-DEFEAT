@@ -43,7 +43,6 @@ function BasePortal() {
   });
   const [loading, setLoading] = useState(true);
 
-
   const handleSortifyClick = () => {
     navigate("/");
   };
@@ -53,9 +52,8 @@ function BasePortal() {
     //navigate(`/categories?${ID}`);
   };
 
-  const [location, ] = useState({});
+  const [location] = useState({});
   const [username, setUsername] = useState("");
-
 
   const fetchUsername = useCallback(async () => {
     try {
@@ -118,7 +116,6 @@ function BasePortal() {
       setLoading(false); // Set loading to false when the fetch completes
     }
   }, [navigate, setLocations, setLoading]);
-
 
   useEffect(() => {
     fetchLocation();
@@ -215,20 +212,20 @@ function BasePortal() {
         </Menu>
       </Flex>
 
-        <Flex
-          borderRadius="10"
-          mt="2"
-          mb="3"
-          align="center"
-          justify="center"
-          backgroundColor="#6e3652"
-          onClick={LO}
-        >
-          <Text mt="2" mb="2" fontSize="20px">
-            <span style={{ color: "white" }}>Add Group</span>
-          </Text>
-        </Flex>
-  
+      <Flex
+        borderRadius="10"
+        mt="2"
+        mb="3"
+        align="center"
+        justify="center"
+        backgroundColor="#6e3652"
+        onClick={LO}
+      >
+        <Text mt="2" mb="2" fontSize="20px">
+          <span style={{ color: "white" }}>Add Group</span>
+        </Text>
+      </Flex>
+
       {/* Modal for adding a new product */}
       <Modal isOpen={locIO} onClose={LC}>
         <ModalOverlay />
@@ -257,79 +254,79 @@ function BasePortal() {
         </ModalContent>
       </Modal>
       {loading ? (
-          <Box justifyContent="center" alignItems="center">
-            <Box
+        <Box justifyContent="center" alignItems="center">
+          <Box
+            align="center"
+            justify="center"
+            borderWidth="1px"
+            borderRadius="lg"
+            backgroundColor="#EDC7B7"
+            p={4}
+          >
+            <Text color="white" fontWeight="bold">
+              Loading Locations...
+            </Text>
+
+            <Spinner
               align="center"
               justify="center"
-              borderWidth="1px"
-              borderRadius="lg"
-              backgroundColor="#EDC7B7"
-              p={4}
-            >
-              <Text color="white" fontWeight="bold">
-                Loading Locations...
-              </Text>
-  
-              <Spinner
-                align="center"
-                justify="center"
-                mt={2}
-                thickness="4px"
-                speed="0.65s"
-                emptyColor="#D47697"
-                color="#6e3652"
-                size="xl"
-              />
-            </Box>
+              mt={2}
+              thickness="4px"
+              speed="0.65s"
+              emptyColor="#D47697"
+              color="#6e3652"
+              size="xl"
+            />
           </Box>
+        </Box>
       ) : locations.length > 0 ? (
-              <Flex
+        <Flex
           display="grid"
           gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr))"
           gap={2}
         >
           {locations.map((item) => (
-              <React.Fragment key={item._id}>
+            <React.Fragment key={item._id}>
+              <Flex
+                align="center"
+                justify="center"
+                p={4}
+                borderWidth="1px"
+                borderRadius="lg"
+                onClick={() => handleLocationClick(item._id)}
+                cursor="pointer"
+                backgroundColor={"#EDC7B7"}
+                height="150px"
+                position="relative" // Add this to make the position absolute relative to the parent
+              >
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent location click when trash icon is clicked
+                    LocationDeleteOpen();
+                    setSelectedLocationId(item._id);
+                  }}
+                  size="sm"
+                  position="absolute"
+                  top="2"
+                  right="2" // Adjusted left position
+                  variant="outline"
+                  borderColor="white"
+                >
+                  🗑️
+                </Button>
                 <Flex
+                  fontWeight="bold"
                   align="center"
                   justify="center"
-                  p={4}
-                  borderWidth="1px"
-                  borderRadius="lg"
-                  onClick={() => handleLocationClick(item._id)}
-                  cursor="pointer"
-                  backgroundColor={"#EDC7B7" }
-                  height="150px"
-                  position="relative" // Add this to make the position absolute relative to the parent
+                  fontSize="25px"
                 >
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent location click when trash icon is clicked
-                      LocationDeleteOpen(); 
-                      setSelectedLocationId(item._id);
-                    }}
-                    size="sm"
-                    position="absolute"
-                    top="2"
-                    right="2" // Adjusted left position
-                    variant="outline"
-                    borderColor="white"
-                  >
-                    🗑️
-                  </Button> 
-                  <Flex
-                    fontWeight="bold"
-                    align="center"
-                    justify="center"
-                    fontSize="25px"
-                  >
-                    <span style={{ color: "White" }}>{item.name}</span>
-                  </Flex>
+                  <span style={{ color: "White" }}>{item.name}</span>
                 </Flex>
-                <Modal
-                  isOpen={LocationDelete && selectedLocationId === item._id}
-                  onClose={LocationDeleteClose}
-                >
+              </Flex>
+              <Modal
+                isOpen={LocationDelete && selectedLocationId === item._id}
+                onClose={LocationDeleteClose}
+              >
                 <ModalOverlay />
                 <ModalContent>
                   <ModalHeader>Confirm Deletion</ModalHeader>
@@ -357,27 +354,25 @@ function BasePortal() {
             </React.Fragment>
           ))}
         </Flex>
-         ) : (
-          <Box justifyContent="center" alignItems="center">
-            <Box
-              align="center"
-              justify="center"
-              borderWidth="1px"
-              borderRadius="lg"
-              backgroundColor="#EDC7B7"
-              p={4}
-            >
-              <Text color="white" fontWeight="bold">
-                No locations available.
-              </Text>
-            </Box>
+      ) : (
+        <Box justifyContent="center" alignItems="center">
+          <Box
+            align="center"
+            justify="center"
+            borderWidth="1px"
+            borderRadius="lg"
+            backgroundColor="#EDC7B7"
+            p={4}
+          >
+            <Text color="white" fontWeight="bold">
+              No locations available.
+            </Text>
           </Box>
-        )
-      }
-        {/*new footer*/}
+        </Box>
+      )}
+      {/*new footer*/}
     </Box>
   );
 }
 
 export default BasePortal;
-

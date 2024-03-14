@@ -29,11 +29,11 @@ const Areas = () => {
   const [inventories, setInventories] = useState([]);
   const [locationName, setLocationName] = useState();
   const { onOpen: MenueOpen } = useDisclosure(); // Manage modal state
-  
+
   const handleSortifyClick = () => {
     navigate("/");
   };
-  
+
   const handleAddNewClick = () => {
     onOpen();
   };
@@ -227,8 +227,8 @@ const Areas = () => {
         mt="5"
         width="full"
       >
-       {/* Sortify logo */}
-       <Box id="sortify-text" onClick={handleSortifyClick}>
+        {/* Sortify logo */}
+        <Box id="sortify-text" onClick={handleSortifyClick}>
           <Text fontSize="50px" fontWeight="bold" letterSpacing="10px">
             <span style={{ color: "#D47697" }}>SOR</span>
             <span style={{ color: "#6e3652" }}>TIFY</span>
@@ -243,23 +243,23 @@ const Areas = () => {
             fontWeight="bold"
             cursor="pointer"
           >
-          <span style={{ color: "#D47697" }}>Areas: </span>
-          <span style={{ color: "#6e3652" }}> {locationName} </span>
+            <span style={{ color: "#D47697" }}>{locationName} </span>
+            <span style={{ color: "#6e3652" }}> Areas </span>
             <HamburgerIcon />
           </MenuButton>
           <MenuList>
             <MenuItem>
-            <Button
-            colorScheme="teal"
-            variant="outline"
-            mr="3"
-            onClick={handleBackClick}
-          >
-            Back
-          </Button>
-          </MenuItem>
-          <MenuItem>
-          <LogoutButton />
+              <Button
+                colorScheme="teal"
+                variant="outline"
+                mr="3"
+                onClick={handleBackClick}
+              >
+                Back
+              </Button>
+            </MenuItem>
+            <MenuItem>
+              <LogoutButton />
             </MenuItem>
           </MenuList>
         </Menu>
