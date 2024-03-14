@@ -318,15 +318,16 @@ function Inventory() {
             </Button>
           </Box>
         </Flex>
-
-        <ProductTable
-          filteredInventory={filteredInventory}
-          editedItemId={editedItemId}
-          handleEditClick={handleEditClick}
-          handleSaveEdit={handleSaveEdit}
-          handleDeleteClick={handleDeleteClick}
-          handleInputChange={handleInputChange}
-        />
+        <Box maxHeight="calc(100vh - 200px)" overflow="auto" pb="5">
+          <ProductTable
+            filteredInventory={filteredInventory}
+            editedItemId={editedItemId}
+            handleEditClick={handleEditClick}
+            handleSaveEdit={handleSaveEdit}
+            handleDeleteClick={handleDeleteClick}
+            handleInputChange={handleInputChange}
+          />
+        </Box>
 
         <AddNewProductModal
           isOpen={isAddNewModalOpen}

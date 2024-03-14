@@ -182,7 +182,7 @@ function BasePortal() {
   };
 
   return (
-    <Box className="Location-container" width="1000px">
+    <Box className="Location-container" width="1000px" pb="10">
       <Flex justifyContent="space-between" alignItems="center">
         {/* Sortify logo */}
         <Box id="sortify-text" onClick={handleSortifyClick}>
