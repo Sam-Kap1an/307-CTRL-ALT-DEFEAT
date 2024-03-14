@@ -301,7 +301,15 @@ const Areas = () => {
           </Box>
         </Flex>
       </Box>
-      <Flex flexWrap="wrap" alignItems="center" gap="15px" width="full">
+      <Flex
+        flexWrap="wrap"
+        alignItems="center"
+        gap="15px"
+        width="full"
+        maxHeight="calc(100vh - 200px)"
+        overflow="scroll"
+        pb="5"
+      >
         {filteredInventories.map((item) => (
           <Flex key={item._id}>
             <AreaCards
