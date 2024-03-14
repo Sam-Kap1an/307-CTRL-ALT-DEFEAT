@@ -6,12 +6,17 @@ import {
   Input,
   Select,
   Box,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
   useDisclosure,
 } from "@chakra-ui/react";
 import AreaCards from "./AreaCards.js";
 import LogoutButton from "../components/Logout.js";
 import AddNewArea from "./AddNewArea.js";
 import { useParams, useNavigate } from "react-router-dom";
+import { HamburgerIcon } from "@chakra-ui/icons";
 
 const Areas = () => {
   // need a header for the name of the location
@@ -23,7 +28,12 @@ const Areas = () => {
   const { location } = useParams();
   const [inventories, setInventories] = useState([]);
   const [locationName, setLocationName] = useState();
-
+  const { onOpen: MenueOpen } = useDisclosure(); // Manage modal state
+  
+  const handleSortifyClick = () => {
+    navigate("/");
+  };
+  
   const handleAddNewClick = () => {
     onOpen();
   };
@@ -217,16 +227,29 @@ const Areas = () => {
         mt="5"
         width="full"
       >
-        <Flex>
-          <Text fontSize="40px" fontWeight="bold" color="#D47697" mr="3">
-            {locationName}
+       {/* Sortify logo */}
+       <Box id="sortify-text" onClick={handleSortifyClick}>
+          <Text fontSize="50px" fontWeight="bold" letterSpacing="10px">
+            <span style={{ color: "#D47697" }}>SOR</span>
+            <span style={{ color: "#6e3652" }}>TIFY</span>
           </Text>
-          <Text fontSize="40px" fontWeight="bold" color="#6e3652">
-            Areas
-          </Text>
-        </Flex>
-        <Flex>
-          <Button
+        </Box>
+        <Box width="350px" onClick={MenueOpen} />
+        {/* Welcome user message and logout dropdown */}
+        <Menu>
+          <MenuButton
+            as={Text}
+            fontSize="30px"
+            fontWeight="bold"
+            cursor="pointer"
+          >
+          <span style={{ color: "#D47697" }}>Areas: </span>
+          <span style={{ color: "#6e3652" }}> {locationName} </span>
+            <HamburgerIcon />
+          </MenuButton>
+          <MenuList>
+            <MenuItem>
+            <Button
             colorScheme="teal"
             variant="outline"
             mr="3"
@@ -234,8 +257,12 @@ const Areas = () => {
           >
             Back
           </Button>
+          </MenuItem>
+          <MenuItem>
           <LogoutButton />
-        </Flex>
+            </MenuItem>
+          </MenuList>
+        </Menu>
       </Flex>
 
       <Box className="inventory-container" p="6" width="full">
